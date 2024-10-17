@@ -6858,15 +6858,16 @@ i965_ExportSurfaceHandle(VADriverContextP ctx, VASurfaceID surface_id,
     struct i965_driver_data *const i965 = i965_driver_data(ctx);
     struct object_surface *obj_surface = SURFACE(surface_id);
     const i965_fourcc_info *info;
-    VADRMPRIMESurfaceDescriptor *desc;
     unsigned int tiling, swizzle;
     uint32_t formats[4], pitch, height, offset, y_offset;
     int fd, p;
     int composite_object =
         flags & VA_EXPORT_SURFACE_COMPOSED_LAYERS;
 
-    if (!obj_surface || !obj_surface->bo)
-        return VA_STATUS_ERROR_INVALID_SURFACE;
+    if (!obj_surface || !obj_surface->bo) {
+		i965_log_info(ctx, "vaExportSurfaceHandle: Attempted to export unknown surface %08x.\n", surface_id);
+		return VA_STATUS_ERROR_INVALID_SURFACE;
+	}
 
     if (mem_type != VA_SURFACE_ATTRIB_MEM_TYPE_DRM_PRIME_2) {
         i965_log_info(ctx, "vaExportSurfaceHandle: memory type %08x "
@@ -6876,7 +6877,8 @@ i965_ExportSurfaceHandle(VADriverContextP ctx, VASurfaceID surface_id,
 
     info = get_fourcc_info(obj_surface->fourcc);
     if (!info)
-        return VA_STATUS_ERROR_INVALID_SURFACE;
+        return VA_STATUS_ERROR_UNSUPPORTED_RT_FORMAT;
+		
     if (composite_object) {
         formats[0] =
             drm_format_of_composite_object(obj_surface->fourcc);
@@ -6905,9 +6907,9 @@ i965_ExportSurfaceHandle(VADriverContextP ctx, VASurfaceID surface_id,
     if (drm_intel_bo_get_tiling(obj_surface->bo, &tiling, &swizzle))
         tiling = I915_TILING_NONE;
 
-    desc = descriptor;
+	VADRMPRIMESurfaceDescriptor *desc = (VADRMPRIMESurfaceDescriptor *)descriptor;
 
-    desc->fourcc = obj_surface->fourcc;
+	desc->fourcc = obj_surface->fourcc;
     desc->width  = obj_surface->orig_width;
     desc->height = obj_surface->orig_height;
 
