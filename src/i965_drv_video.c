@@ -287,6 +287,8 @@ i965_image_formats_map[I965_MAX_IMAGE_FORMATS + 1] = {
         I965_SURFACETYPE_YUV,
         { VA_FOURCC_P010, VA_LSB_FIRST, 24, }
     },
+	/* ARGB (https://github.com/intel/intel-vaapi-driver/issues/500) */
+	{I965_SURFACETYPE_RGBA, {VA_FOURCC_RGBA, VA_LSB_FIRST, 32, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000}},
 };
 
 /* List of supported subpicture formats */
@@ -1321,6 +1323,18 @@ i965_GetConfigAttributes(VADriverContextP ctx,
             }
             break;
 
+		case VAConfigAttribMaxPictureWidth:
+			if (profile == VAProfileNone)
+				break;
+			attrib_list[i].value = get_max_width_for_codec(i965, profile, entrypoint);
+			break;
+
+		case VAConfigAttribMaxPictureHeight:
+			if (profile == VAProfileNone)
+				break;
+			attrib_list[i].value = get_max_height_for_codec(i965, profile, entrypoint);
+			break;
+
         default:
             /* Do nothing */
             attrib_list[i].value = VA_ATTRIB_NOT_SUPPORTED;
@@ -1329,6 +1343,35 @@ i965_GetConfigAttributes(VADriverContextP ctx,
     }
 
     return VA_STATUS_SUCCESS;
+}
+
+/* "Max resolution supported for MPEG2 is 1920x1088.  However, frame rate can go much higher than 30 FPS." (https://community.intel.com/t5/Media-Intel-Video-Processing/Queries-on-Hardware-accelerated-MPEG2-encoding-support/m-p/1088271/highlight/true) */
+int get_max_width_for_codec(struct i965_driver_data *const i965, VAProfile profile, VAEntrypoint entrypoint)
+{
+    switch (profile)
+    {
+    case VAProfileMPEG2Main:
+    case VAProfileMPEG2Simple:
+        return i965->codec_info->max_width_mpeg2;
+    case VAProfileJPEGBaseline:
+        return i965->codec_info->max_width_jpeg;
+    default:
+        return i965->codec_info->max_width;
+    }
+}
+
+int get_max_height_for_codec(struct i965_driver_data *const i965, VAProfile profile, VAEntrypoint entrypoint)
+{
+    switch (profile)
+    {
+    case VAProfileMPEG2Main:
+    case VAProfileMPEG2Simple:
+        return i965->codec_info->max_height_mpeg2;
+    case VAProfileJPEGBaseline:
+        return i965->codec_info->max_height_jpeg;
+    default:
+        return i965->codec_info->max_height;
+    }
 }
 
 static void
@@ -2550,14 +2593,17 @@ i965_destroy_context(struct object_heap *heap, struct object_base *obj)
 static inline void
 max_resolution(struct i965_driver_data *i965,
                struct object_config *obj_config,
-               int *w,                                  /* out */
-               int *h)                                  /* out */
+               int *w, /* out */
+               int *h) /* out */
 {
-    if (i965->codec_info->max_resolution) {
+    if (i965->codec_info->max_resolution)
+    {
         i965->codec_info->max_resolution(i965, obj_config, w, h);
-    } else {
-        *w = i965->codec_info->max_width;
-        *h = i965->codec_info->max_height;
+    }
+    else
+    {
+        *w = get_max_width_for_codec(i965, obj_config->profile, obj_config->entrypoint);
+        *h = get_max_height_for_codec(i965, obj_config->profile, obj_config->entrypoint);
     }
 }
 

@@ -63,43 +63,59 @@ extern struct hw_context *g4x_dec_hw_context_init(VADriverContextP, struct objec
 extern bool genx_render_init(VADriverContextP);
 
 static struct hw_codec_info g4x_hw_codec_info = {
-    .dec_hw_context_init = g4x_dec_hw_context_init,
-    .enc_hw_context_init = NULL,
-    .proc_hw_context_init = NULL,
-    .render_init = genx_render_init,
-    .post_processing_context_init = NULL,
+	.dec_hw_context_init = g4x_dec_hw_context_init,
+	.enc_hw_context_init = NULL,
+	.proc_hw_context_init = NULL,
+	.render_init = genx_render_init,
+	.post_processing_context_init = NULL,
 
-    .max_width = 2048,
-    .max_height = 2048,
-    .min_linear_wpitch = 16,
-    .min_linear_hpitch = 4,
+	.max_width = 2048,
+	.max_height = 2048,
 
-    .has_mpeg2_decoding = 1,
+	.max_width_mpeg2 = 1920,
+	.max_height_mpeg2 = 1088,
 
-    .num_filters = 0,
+	/* Unsupported in HW */
+	.max_width_jpeg = -1,
+	.max_height_jpeg = -1,
+
+	.min_linear_wpitch = 16,
+	.min_linear_hpitch = 4,
+
+	.has_mpeg2_decoding = 1,
+
+	.num_filters = 0,
 };
 
 extern struct hw_context *ironlake_dec_hw_context_init(VADriverContextP, struct object_config *);
 extern void i965_post_processing_context_init(VADriverContextP, void *, struct intel_batchbuffer *);
 
 static struct hw_codec_info ilk_hw_codec_info = {
-    .dec_hw_context_init = ironlake_dec_hw_context_init,
-    .enc_hw_context_init = NULL,
-    .proc_hw_context_init = i965_proc_context_init,
-    .render_init = genx_render_init,
-    .post_processing_context_init = i965_post_processing_context_init,
+	.dec_hw_context_init = ironlake_dec_hw_context_init,
+	.enc_hw_context_init = NULL,
+	.proc_hw_context_init = i965_proc_context_init,
+	.render_init = genx_render_init,
+	.post_processing_context_init = i965_post_processing_context_init,
 
-    .max_width = 2048,
-    .max_height = 2048,
-    .min_linear_wpitch = 16,
-    .min_linear_hpitch = 4,
+	.max_width = 2048,
+	.max_height = 2048,
 
-    .has_mpeg2_decoding = 1,
-    .has_h264_decoding = 1,
-    .has_vpp = 1,
-    .has_accelerated_putimage = 1,
+	.max_width_mpeg2 = 1920,
+	.max_height_mpeg2 = 1088,
 
-    .num_filters = 0,
+	/* Unsupported in HW */
+	.max_width_jpeg = -1,
+	.max_height_jpeg = -1,
+
+	.min_linear_wpitch = 16,
+	.min_linear_hpitch = 4,
+
+	.has_mpeg2_decoding = 1,
+	.has_h264_decoding = 1,
+	.has_vpp = 1,
+	.has_accelerated_putimage = 1,
+
+	.num_filters = 0,
 };
 
 static void gen6_hw_codec_preinit(VADriverContextP ctx, struct hw_codec_info *codec_info);
@@ -107,38 +123,46 @@ static void gen6_hw_codec_preinit(VADriverContextP ctx, struct hw_codec_info *co
 extern struct hw_context *gen6_dec_hw_context_init(VADriverContextP, struct object_config *);
 extern struct hw_context *gen6_enc_hw_context_init(VADriverContextP, struct object_config *);
 static struct hw_codec_info snb_hw_codec_info = {
-    .dec_hw_context_init = gen6_dec_hw_context_init,
-    .enc_hw_context_init = gen6_enc_hw_context_init,
-    .proc_hw_context_init = i965_proc_context_init,
-    .render_init = genx_render_init,
-    .post_processing_context_init = i965_post_processing_context_init,
-    .preinit_hw_codec = gen6_hw_codec_preinit,
+	.dec_hw_context_init = gen6_dec_hw_context_init,
+	.enc_hw_context_init = gen6_enc_hw_context_init,
+	.proc_hw_context_init = i965_proc_context_init,
+	.render_init = genx_render_init,
+	.post_processing_context_init = i965_post_processing_context_init,
+	.preinit_hw_codec = gen6_hw_codec_preinit,
 
-    .max_width = 2048,
-    .max_height = 2048,
-    .min_linear_wpitch = 16,
-    .min_linear_hpitch = 4,
+	.max_width = 2048,
+	.max_height = 2048,
 
-    .h264_mvc_dec_profiles = VA_PROFILE_MASK(H264StereoHigh),
-    .h264_dec_chroma_formats = EXTRA_H264_DEC_CHROMA_FORMATS,
+	.max_width_mpeg2 = 1920,
+	.max_height_mpeg2 = 1088,
 
-    .has_mpeg2_decoding = 1,
-    .has_h264_decoding = 1,
-    .has_h264_encoding = 1,
-    .has_vc1_decoding = 1,
-    .has_vpp = 1,
-    .has_accelerated_getimage = 1,
-    .has_accelerated_putimage = 1,
-    .has_tiled_surface = 1,
-    .has_di_motion_adptive = 1,
+	/* Unsupported in HW */
+	.max_width_jpeg = -1,
+	.max_height_jpeg = -1,
 
-    .h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR,
+	.min_linear_wpitch = 16,
+	.min_linear_hpitch = 4,
 
-    .num_filters = 2,
-    .filters = {
-        { VAProcFilterNoiseReduction, I965_RING_NULL },
-        { VAProcFilterDeinterlacing, I965_RING_NULL },
-    },
+	.h264_mvc_dec_profiles = VA_PROFILE_MASK(H264StereoHigh),
+	.h264_dec_chroma_formats = EXTRA_H264_DEC_CHROMA_FORMATS,
+
+	.has_mpeg2_decoding = 1,
+	.has_h264_decoding = 1,
+	.has_h264_encoding = 1,
+	.has_vc1_decoding = 1,
+	.has_vpp = 1,
+	.has_accelerated_getimage = 1,
+	.has_accelerated_putimage = 1,
+	.has_tiled_surface = 1,
+	.has_di_motion_adptive = 1,
+
+	.h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR,
+
+	.num_filters = 2,
+	.filters = {
+		{VAProcFilterNoiseReduction, I965_RING_NULL},
+		{VAProcFilterDeinterlacing, I965_RING_NULL},
+	},
 };
 
 static void gen7_hw_codec_preinit(VADriverContextP ctx, struct hw_codec_info *codec_info);
@@ -146,42 +170,49 @@ static void gen7_hw_codec_preinit(VADriverContextP ctx, struct hw_codec_info *co
 extern struct hw_context *gen7_dec_hw_context_init(VADriverContextP, struct object_config *);
 extern struct hw_context *gen7_enc_hw_context_init(VADriverContextP, struct object_config *);
 static struct hw_codec_info ivb_hw_codec_info = {
-    .dec_hw_context_init = gen7_dec_hw_context_init,
-    .enc_hw_context_init = gen7_enc_hw_context_init,
-    .proc_hw_context_init = i965_proc_context_init,
-    .render_init = genx_render_init,
-    .post_processing_context_init = i965_post_processing_context_init,
-    .preinit_hw_codec = gen7_hw_codec_preinit,
+	.dec_hw_context_init = gen7_dec_hw_context_init,
+	.enc_hw_context_init = gen7_enc_hw_context_init,
+	.proc_hw_context_init = i965_proc_context_init,
+	.render_init = genx_render_init,
+	.post_processing_context_init = i965_post_processing_context_init,
+	.preinit_hw_codec = gen7_hw_codec_preinit,
 
-    .max_width = 4096,
-    .max_height = 4096,
-    .min_linear_wpitch = 64,
-    .min_linear_hpitch = 4,
+	.max_width = 4096,
+	.max_height = 4096,
 
-    .h264_mvc_dec_profiles = VA_PROFILE_MASK(H264StereoHigh),
-    .h264_dec_chroma_formats = EXTRA_H264_DEC_CHROMA_FORMATS,
-    .jpeg_dec_chroma_formats = EXTRA_JPEG_DEC_CHROMA_FORMATS,
+	.max_width_mpeg2 = 1920,
+	.max_height_mpeg2 = 1088,
 
-    .has_mpeg2_decoding = 1,
-    .has_mpeg2_encoding = 1,
-    .has_h264_decoding = 1,
-    .has_h264_encoding = 1,
-    .has_vc1_decoding = 1,
-    .has_jpeg_decoding = 1,
-    .has_vpp = 1,
-    .has_accelerated_getimage = 1,
-    .has_accelerated_putimage = 1,
-    .has_tiled_surface = 1,
-    .has_di_motion_adptive = 1,
-    .has_di_motion_compensated = 1,
+	.max_width_jpeg = 16384,
+	.max_height_jpeg = 16384,
 
-    .h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR,
+	.min_linear_wpitch = 64,
+	.min_linear_hpitch = 4,
 
-    .num_filters = 2,
-    .filters = {
-        { VAProcFilterNoiseReduction, I965_RING_NULL },
-        { VAProcFilterDeinterlacing, I965_RING_NULL },
-    },
+	.h264_mvc_dec_profiles = VA_PROFILE_MASK(H264StereoHigh),
+	.h264_dec_chroma_formats = EXTRA_H264_DEC_CHROMA_FORMATS,
+	.jpeg_dec_chroma_formats = EXTRA_JPEG_DEC_CHROMA_FORMATS,
+
+	.has_mpeg2_decoding = 1,
+	.has_mpeg2_encoding = 1,
+	.has_h264_decoding = 1,
+	.has_h264_encoding = 1,
+	.has_vc1_decoding = 1,
+	.has_jpeg_decoding = 1,
+	.has_vpp = 1,
+	.has_accelerated_getimage = 1,
+	.has_accelerated_putimage = 1,
+	.has_tiled_surface = 1,
+	.has_di_motion_adptive = 1,
+	.has_di_motion_compensated = 1,
+
+	.h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR,
+
+	.num_filters = 2,
+	.filters = {
+		{VAProcFilterNoiseReduction, I965_RING_NULL},
+		{VAProcFilterDeinterlacing, I965_RING_NULL},
+	},
 };
 
 static void hsw_hw_codec_preinit(VADriverContextP ctx, struct hw_codec_info *codec_info);
@@ -190,143 +221,164 @@ extern struct hw_context *gen75_dec_hw_context_init(VADriverContextP, struct obj
 extern struct hw_context *gen75_enc_hw_context_init(VADriverContextP, struct object_config *);
 extern struct hw_context *gen75_proc_context_init(VADriverContextP, struct object_config *);
 static struct hw_codec_info hsw_hw_codec_info = {
-    .dec_hw_context_init = gen75_dec_hw_context_init,
-    .enc_hw_context_init = gen75_enc_hw_context_init,
-    .proc_hw_context_init = gen75_proc_context_init,
-    .render_init = genx_render_init,
-    .post_processing_context_init = i965_post_processing_context_init,
-    .preinit_hw_codec = hsw_hw_codec_preinit,
+	.dec_hw_context_init = gen75_dec_hw_context_init,
+	.enc_hw_context_init = gen75_enc_hw_context_init,
+	.proc_hw_context_init = gen75_proc_context_init,
+	.render_init = genx_render_init,
+	.post_processing_context_init = i965_post_processing_context_init,
+	.preinit_hw_codec = hsw_hw_codec_preinit,
 
-    .max_width = 4096,
-    .max_height = 4096,
-    .min_linear_wpitch = 64,
-    .min_linear_hpitch = 4,
+	.max_width = 4096,
+	.max_height = 4096,
 
-    .h264_mvc_dec_profiles = (VA_PROFILE_MASK(H264StereoHigh) |
-    VA_PROFILE_MASK(H264MultiviewHigh)),
-    .h264_dec_chroma_formats = EXTRA_H264_DEC_CHROMA_FORMATS,
-    .jpeg_dec_chroma_formats = EXTRA_JPEG_DEC_CHROMA_FORMATS,
+	.max_width_mpeg2 = 1920,
+	.max_height_mpeg2 = 1088,
 
-    .has_mpeg2_decoding = 1,
-    .has_mpeg2_encoding = 1,
-    .has_h264_decoding = 1,
-    .has_h264_encoding = 1,
-    .has_vc1_decoding = 1,
-    .has_jpeg_decoding = 1,
-    .has_vpp = 1,
-    .has_accelerated_getimage = 1,
-    .has_accelerated_putimage = 1,
-    .has_tiled_surface = 1,
-    .has_di_motion_adptive = 1,
-    .has_di_motion_compensated = 1,
-    .has_h264_mvc_encoding = 1,
+	.max_width_jpeg = 16384,
+	.max_height_jpeg = 16384,
 
-    .h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR,
+	.min_linear_wpitch = 64,
+	.min_linear_hpitch = 4,
 
-    .num_filters = 5,
-    .filters = {
-        { VAProcFilterNoiseReduction, I965_RING_VEBOX },
-        { VAProcFilterDeinterlacing, I965_RING_VEBOX },
-        { VAProcFilterSharpening, I965_RING_NULL },
-        { VAProcFilterColorBalance, I965_RING_VEBOX},
-        { VAProcFilterSkinToneEnhancement, I965_RING_VEBOX},
-    },
+	.h264_mvc_dec_profiles = (VA_PROFILE_MASK(H264StereoHigh) |
+							  VA_PROFILE_MASK(H264MultiviewHigh)),
+	.h264_dec_chroma_formats = EXTRA_H264_DEC_CHROMA_FORMATS,
+	.jpeg_dec_chroma_formats = EXTRA_JPEG_DEC_CHROMA_FORMATS,
+
+	.has_mpeg2_decoding = 1,
+	.has_mpeg2_encoding = 1,
+	.has_h264_decoding = 1,
+	.has_h264_encoding = 1,
+	.has_vc1_decoding = 1,
+	.has_jpeg_decoding = 1,
+	.has_vpp = 1,
+	.has_accelerated_getimage = 1,
+	.has_accelerated_putimage = 1,
+	.has_tiled_surface = 1,
+	.has_di_motion_adptive = 1,
+	.has_di_motion_compensated = 1,
+	.has_h264_mvc_encoding = 1,
+
+	.h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR,
+
+	.num_filters = 5,
+	.filters = {
+		{VAProcFilterNoiseReduction, I965_RING_VEBOX},
+		{VAProcFilterDeinterlacing, I965_RING_VEBOX},
+		{VAProcFilterSharpening, I965_RING_NULL},
+		{VAProcFilterColorBalance, I965_RING_VEBOX},
+		{VAProcFilterSkinToneEnhancement, I965_RING_VEBOX},
+	},
 };
 
 extern struct hw_context *gen8_dec_hw_context_init(VADriverContextP, struct object_config *);
 extern struct hw_context *gen8_enc_hw_context_init(VADriverContextP, struct object_config *);
 extern void gen8_post_processing_context_init(VADriverContextP, void *, struct intel_batchbuffer *);
 static struct hw_codec_info bdw_hw_codec_info = {
-    .dec_hw_context_init = gen8_dec_hw_context_init,
-    .enc_hw_context_init = gen8_enc_hw_context_init,
-    .proc_hw_context_init = gen75_proc_context_init,
-    .render_init = gen8_render_init,
-    .post_processing_context_init = gen8_post_processing_context_init,
+	.dec_hw_context_init = gen8_dec_hw_context_init,
+	.enc_hw_context_init = gen8_enc_hw_context_init,
+	.proc_hw_context_init = gen75_proc_context_init,
+	.render_init = gen8_render_init,
+	.post_processing_context_init = gen8_post_processing_context_init,
 
-    .max_width = 4096,
-    .max_height = 4096,
-    .min_linear_wpitch = 64,
-    .min_linear_hpitch = 4,
+	.max_width = 4096,
+	.max_height = 4096,
 
-    .h264_mvc_dec_profiles = (VA_PROFILE_MASK(H264StereoHigh) |
-    VA_PROFILE_MASK(H264MultiviewHigh)),
-    .h264_dec_chroma_formats = EXTRA_H264_DEC_CHROMA_FORMATS,
-    .jpeg_dec_chroma_formats = EXTRA_JPEG_DEC_CHROMA_FORMATS,
+	.max_width_mpeg2 = 1920,
+	.max_height_mpeg2 = 1088,
 
-    .has_mpeg2_decoding = 1,
-    .has_mpeg2_encoding = 1,
-    .has_h264_decoding = 1,
-    .has_h264_encoding = 1,
-    .has_vc1_decoding = 1,
-    .has_jpeg_decoding = 1,
-    .has_vpp = 1,
-    .has_accelerated_getimage = 1,
-    .has_accelerated_putimage = 1,
-    .has_tiled_surface = 1,
-    .has_di_motion_adptive = 1,
-    .has_di_motion_compensated = 1,
-    .has_vp8_decoding = 1,
-    .has_h264_mvc_encoding = 1,
+	.max_width_jpeg = 16384,
+	.max_height_jpeg = 16384,
 
-    .h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR,
+	.min_linear_wpitch = 64,
+	.min_linear_hpitch = 4,
 
-    .num_filters = 5,
-    .filters = {
-        { VAProcFilterNoiseReduction, I965_RING_VEBOX },
-        { VAProcFilterDeinterlacing, I965_RING_VEBOX },
-        { VAProcFilterSharpening, I965_RING_NULL }, /* need to rebuild the shader for BDW */
-        { VAProcFilterColorBalance, I965_RING_VEBOX},
-        { VAProcFilterSkinToneEnhancement, I965_RING_VEBOX},
-    },
+	.h264_mvc_dec_profiles = (VA_PROFILE_MASK(H264StereoHigh) |
+							  VA_PROFILE_MASK(H264MultiviewHigh)),
+	.h264_dec_chroma_formats = EXTRA_H264_DEC_CHROMA_FORMATS,
+	.jpeg_dec_chroma_formats = EXTRA_JPEG_DEC_CHROMA_FORMATS,
+
+	.has_mpeg2_decoding = 1,
+	.has_mpeg2_encoding = 1,
+	.has_h264_decoding = 1,
+	.has_h264_encoding = 1,
+	.has_vc1_decoding = 1,
+	.has_jpeg_decoding = 1,
+	.has_vpp = 1,
+	.has_accelerated_getimage = 1,
+	.has_accelerated_putimage = 1,
+	.has_tiled_surface = 1,
+	.has_di_motion_adptive = 1,
+	.has_di_motion_compensated = 1,
+	.has_vp8_decoding = 1,
+	.has_h264_mvc_encoding = 1,
+
+	.h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR,
+
+	.num_filters = 5,
+	.filters = {
+		{VAProcFilterNoiseReduction, I965_RING_VEBOX},
+		{VAProcFilterDeinterlacing, I965_RING_VEBOX},
+		{VAProcFilterSharpening, I965_RING_NULL}, /* need to rebuild the shader for BDW */
+		{VAProcFilterColorBalance, I965_RING_VEBOX},
+		{VAProcFilterSkinToneEnhancement, I965_RING_VEBOX},
+	},
 };
 
 extern struct hw_context *gen9_dec_hw_context_init(VADriverContextP, struct object_config *);
 static struct hw_codec_info chv_hw_codec_info = {
-    .dec_hw_context_init = gen9_dec_hw_context_init,
-    .enc_hw_context_init = gen8_enc_hw_context_init,
-    .proc_hw_context_init = gen75_proc_context_init,
-    .render_init = gen8_render_init,
-    .post_processing_context_init = gen8_post_processing_context_init,
+	.dec_hw_context_init = gen9_dec_hw_context_init,
+	.enc_hw_context_init = gen8_enc_hw_context_init,
+	.proc_hw_context_init = gen75_proc_context_init,
+	.render_init = gen8_render_init,
+	.post_processing_context_init = gen8_post_processing_context_init,
 
-    .max_width = 4096,
-    .max_height = 4096,
-    .min_linear_wpitch = 64,
-    .min_linear_hpitch = 4,
+	.max_width = 4096,
+	.max_height = 4096,
 
-    .h264_mvc_dec_profiles = (VA_PROFILE_MASK(H264StereoHigh) |
-    VA_PROFILE_MASK(H264MultiviewHigh)),
-    .h264_dec_chroma_formats = EXTRA_H264_DEC_CHROMA_FORMATS,
-    .jpeg_dec_chroma_formats = EXTRA_JPEG_DEC_CHROMA_FORMATS,
-    .jpeg_enc_chroma_formats = EXTRA_JPEG_ENC_CHROMA_FORMATS,
+	.max_width_mpeg2 = 1920,
+	.max_height_mpeg2 = 1088,
 
-    .has_mpeg2_decoding = 1,
-    .has_mpeg2_encoding = 1,
-    .has_h264_decoding = 1,
-    .has_h264_encoding = 1,
-    .has_vc1_decoding = 1,
-    .has_jpeg_decoding = 1,
-    .has_jpeg_encoding = 1,
-    .has_vpp = 1,
-    .has_accelerated_getimage = 1,
-    .has_accelerated_putimage = 1,
-    .has_tiled_surface = 1,
-    .has_di_motion_adptive = 1,
-    .has_di_motion_compensated = 1,
-    .has_vp8_decoding = 1,
-    .has_vp8_encoding = 1,
-    .has_h264_mvc_encoding = 1,
-    .has_hevc_decoding = 1,
+	.max_width_jpeg = 16384,
+	.max_height_jpeg = 16384,
 
-    .h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR,
+	.min_linear_wpitch = 64,
+	.min_linear_hpitch = 4,
 
-    .num_filters = 5,
-    .filters = {
-        { VAProcFilterNoiseReduction, I965_RING_VEBOX },
-        { VAProcFilterDeinterlacing, I965_RING_VEBOX },
-        { VAProcFilterSharpening, I965_RING_NULL }, /* need to rebuild the shader for BDW */
-        { VAProcFilterColorBalance, I965_RING_VEBOX},
-        { VAProcFilterSkinToneEnhancement, I965_RING_VEBOX},
-    },
+	.h264_mvc_dec_profiles = (VA_PROFILE_MASK(H264StereoHigh) |
+							  VA_PROFILE_MASK(H264MultiviewHigh)),
+	.h264_dec_chroma_formats = EXTRA_H264_DEC_CHROMA_FORMATS,
+	.jpeg_dec_chroma_formats = EXTRA_JPEG_DEC_CHROMA_FORMATS,
+	.jpeg_enc_chroma_formats = EXTRA_JPEG_ENC_CHROMA_FORMATS,
+
+	.has_mpeg2_decoding = 1,
+	.has_mpeg2_encoding = 1,
+	.has_h264_decoding = 1,
+	.has_h264_encoding = 1,
+	.has_vc1_decoding = 1,
+	.has_jpeg_decoding = 1,
+	.has_jpeg_encoding = 1,
+	.has_vpp = 1,
+	.has_accelerated_getimage = 1,
+	.has_accelerated_putimage = 1,
+	.has_tiled_surface = 1,
+	.has_di_motion_adptive = 1,
+	.has_di_motion_compensated = 1,
+	.has_vp8_decoding = 1,
+	.has_vp8_encoding = 1,
+	.has_h264_mvc_encoding = 1,
+	.has_hevc_decoding = 1,
+
+	.h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR,
+
+	.num_filters = 5,
+	.filters = {
+		{VAProcFilterNoiseReduction, I965_RING_VEBOX},
+		{VAProcFilterDeinterlacing, I965_RING_VEBOX},
+		{VAProcFilterSharpening, I965_RING_NULL}, /* need to rebuild the shader for BDW */
+		{VAProcFilterColorBalance, I965_RING_VEBOX},
+		{VAProcFilterSkinToneEnhancement, I965_RING_VEBOX},
+	},
 };
 
 static void gen9_hw_codec_preinit(VADriverContextP ctx, struct hw_codec_info *codec_info);
@@ -335,381 +387,422 @@ extern struct hw_context *gen9_enc_hw_context_init(VADriverContextP, struct obje
 extern void gen9_post_processing_context_init(VADriverContextP, void *, struct intel_batchbuffer *);
 extern void gen9_max_resolution(struct i965_driver_data *, struct object_config *, int *, int *);
 static struct hw_codec_info skl_hw_codec_info = {
-    .dec_hw_context_init = gen9_dec_hw_context_init,
-    .enc_hw_context_init = gen9_enc_hw_context_init,
-    .proc_hw_context_init = gen75_proc_context_init,
-    .render_init = gen9_render_init,
-    .post_processing_context_init = gen9_post_processing_context_init,
-    .max_resolution = gen9_max_resolution,
-    .preinit_hw_codec = gen9_hw_codec_preinit,
+	.dec_hw_context_init = gen9_dec_hw_context_init,
+	.enc_hw_context_init = gen9_enc_hw_context_init,
+	.proc_hw_context_init = gen75_proc_context_init,
+	.render_init = gen9_render_init,
+	.post_processing_context_init = gen9_post_processing_context_init,
+	.max_resolution = gen9_max_resolution,
+	.preinit_hw_codec = gen9_hw_codec_preinit,
 
-    .max_width = 4096,  /* default. See max_resolution */
-    .max_height = 4096, /* default. See max_resolution */
-    .min_linear_wpitch = 64,
-    .min_linear_hpitch = 4,
+	.max_width = 4096,	/* default. See max_resolution */
+	.max_height = 4096, /* default. See max_resolution */
 
-    .h264_mvc_dec_profiles = (VA_PROFILE_MASK(H264StereoHigh) |
-    VA_PROFILE_MASK(H264MultiviewHigh)),
-    .h264_dec_chroma_formats = EXTRA_H264_DEC_CHROMA_FORMATS,
-    .jpeg_dec_chroma_formats = EXTRA_JPEG_DEC_CHROMA_FORMATS,
-    .jpeg_enc_chroma_formats = EXTRA_JPEG_ENC_CHROMA_FORMATS,
+	.max_width_mpeg2 = 1920,
+	.max_height_mpeg2 = 1088,
 
-    .has_mpeg2_decoding = 1,
-    .has_mpeg2_encoding = 1,
-    .has_h264_decoding = 1,
-    .has_h264_encoding = 1,
-    .has_vc1_decoding = 1,
-    .has_jpeg_decoding = 1,
-    .has_jpeg_encoding = 1,
-    .has_vpp = 1,
-    .has_accelerated_getimage = 1,
-    .has_accelerated_putimage = 1,
-    .has_tiled_surface = 1,
-    .has_di_motion_adptive = 1,
-    .has_di_motion_compensated = 1,
-    .has_vp8_decoding = 1,
-    .has_vp8_encoding = 1,
-    .has_h264_mvc_encoding = 1,
-    .has_hevc_decoding = 1,
-    .has_hevc_encoding = 1,
-    .has_lp_h264_encoding = 1,
-    .has_fei_h264_encoding = 1,
-    .has_h264_preenc = 1,
+	.max_width_jpeg = 16384,
+	.max_height_jpeg = 16384,
 
-    .lp_h264_brc_mode = VA_RC_CQP,
-    .h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR | VA_RC_MB,
+	.min_linear_wpitch = 64,
+	.min_linear_hpitch = 4,
 
-    .num_filters = 5,
-    .filters = {
-        { VAProcFilterNoiseReduction, I965_RING_VEBOX },
-        { VAProcFilterDeinterlacing, I965_RING_VEBOX },
-        { VAProcFilterSharpening, I965_RING_NULL }, /* need to rebuild the shader for BDW */
-        { VAProcFilterColorBalance, I965_RING_VEBOX},
-        { VAProcFilterSkinToneEnhancement, I965_RING_VEBOX},
-    },
+	.h264_mvc_dec_profiles = (VA_PROFILE_MASK(H264StereoHigh) |
+							  VA_PROFILE_MASK(H264MultiviewHigh)),
+	.h264_dec_chroma_formats = EXTRA_H264_DEC_CHROMA_FORMATS,
+	.jpeg_dec_chroma_formats = EXTRA_JPEG_DEC_CHROMA_FORMATS,
+	.jpeg_enc_chroma_formats = EXTRA_JPEG_ENC_CHROMA_FORMATS,
+
+	.has_mpeg2_decoding = 1,
+	.has_mpeg2_encoding = 1,
+	.has_h264_decoding = 1,
+	.has_h264_encoding = 1,
+	.has_vc1_decoding = 1,
+	.has_jpeg_decoding = 1,
+	.has_jpeg_encoding = 1,
+	.has_vpp = 1,
+	.has_accelerated_getimage = 1,
+	.has_accelerated_putimage = 1,
+	.has_tiled_surface = 1,
+	.has_di_motion_adptive = 1,
+	.has_di_motion_compensated = 1,
+	.has_vp8_decoding = 1,
+	.has_vp8_encoding = 1,
+	.has_h264_mvc_encoding = 1,
+	.has_hevc_decoding = 1,
+	.has_hevc_encoding = 1,
+	.has_lp_h264_encoding = 1,
+	.has_fei_h264_encoding = 1,
+	.has_h264_preenc = 1,
+
+	.lp_h264_brc_mode = VA_RC_CQP,
+	.h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR | VA_RC_MB,
+
+	.num_filters = 5,
+	.filters = {
+		{VAProcFilterNoiseReduction, I965_RING_VEBOX},
+		{VAProcFilterDeinterlacing, I965_RING_VEBOX},
+		{VAProcFilterSharpening, I965_RING_NULL}, /* need to rebuild the shader for BDW */
+		{VAProcFilterColorBalance, I965_RING_VEBOX},
+		{VAProcFilterSkinToneEnhancement, I965_RING_VEBOX},
+	},
 };
 
-
 static struct hw_codec_info bxt_hw_codec_info = {
-    .dec_hw_context_init = gen9_dec_hw_context_init,
-    .enc_hw_context_init = gen9_enc_hw_context_init,
-    .proc_hw_context_init = gen75_proc_context_init,
-    .render_init = gen9_render_init,
-    .post_processing_context_init = gen9_post_processing_context_init,
-    .max_resolution = gen9_max_resolution,
-    .preinit_hw_codec = gen9_hw_codec_preinit,
+	.dec_hw_context_init = gen9_dec_hw_context_init,
+	.enc_hw_context_init = gen9_enc_hw_context_init,
+	.proc_hw_context_init = gen75_proc_context_init,
+	.render_init = gen9_render_init,
+	.post_processing_context_init = gen9_post_processing_context_init,
+	.max_resolution = gen9_max_resolution,
+	.preinit_hw_codec = gen9_hw_codec_preinit,
 
-    .max_width = 4096,  /* default. See max_resolution */
-    .max_height = 4096, /* default. See max_resolution */
-    .min_linear_wpitch = 64,
-    .min_linear_hpitch = 4,
+	.max_width = 4096,	/* default. See max_resolution */
+	.max_height = 4096, /* default. See max_resolution */
 
-    .h264_mvc_dec_profiles = (VA_PROFILE_MASK(H264StereoHigh) |
-    VA_PROFILE_MASK(H264MultiviewHigh)),
-    .vp9_dec_profiles = VP9_PROFILE_MASK(0),
+	.max_width_mpeg2 = 1920,
+	.max_height_mpeg2 = 1088,
 
-    .h264_dec_chroma_formats = EXTRA_H264_DEC_CHROMA_FORMATS,
-    .jpeg_dec_chroma_formats = EXTRA_JPEG_DEC_CHROMA_FORMATS,
-    .jpeg_enc_chroma_formats = EXTRA_JPEG_ENC_CHROMA_FORMATS,
-    .hevc_dec_chroma_formats = EXTRA_HEVC_DEC_CHROMA_FORMATS,
+	.max_width_jpeg = 16384,
+	.max_height_jpeg = 16384,
 
-    .has_mpeg2_decoding = 1,
-    .has_h264_decoding = 1,
-    .has_h264_encoding = 1,
-    .has_vc1_decoding = 1,
-    .has_jpeg_decoding = 1,
-    .has_jpeg_encoding = 1,
-    .has_vpp = 1,
-    .has_accelerated_getimage = 1,
-    .has_accelerated_putimage = 1,
-    .has_tiled_surface = 1,
-    .has_di_motion_adptive = 1,
-    .has_di_motion_compensated = 1,
-    .has_vp8_decoding = 1,
-    .has_vp8_encoding = 1,
-    .has_h264_mvc_encoding = 1,
-    .has_hevc_decoding = 1,
-    .has_hevc_encoding = 1,
-    .has_hevc10_decoding = 1,
-    .has_vp9_decoding = 1,
-    .has_vpp_p010 = 1,
-    .has_lp_h264_encoding = 1,
+	.min_linear_wpitch = 64,
+	.min_linear_hpitch = 4,
 
-    .lp_h264_brc_mode = VA_RC_CQP,
-    .h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR | VA_RC_MB,
+	.h264_mvc_dec_profiles = (VA_PROFILE_MASK(H264StereoHigh) |
+							  VA_PROFILE_MASK(H264MultiviewHigh)),
+	.vp9_dec_profiles = VP9_PROFILE_MASK(0),
 
-    .num_filters = 5,
-    .filters = {
-        { VAProcFilterNoiseReduction, I965_RING_VEBOX },
-        { VAProcFilterDeinterlacing, I965_RING_VEBOX },
-        { VAProcFilterSharpening, I965_RING_NULL },
-        { VAProcFilterColorBalance, I965_RING_VEBOX},
-        { VAProcFilterSkinToneEnhancement, I965_RING_VEBOX},
-    },
+	.h264_dec_chroma_formats = EXTRA_H264_DEC_CHROMA_FORMATS,
+	.jpeg_dec_chroma_formats = EXTRA_JPEG_DEC_CHROMA_FORMATS,
+	.jpeg_enc_chroma_formats = EXTRA_JPEG_ENC_CHROMA_FORMATS,
+	.hevc_dec_chroma_formats = EXTRA_HEVC_DEC_CHROMA_FORMATS,
+
+	.has_mpeg2_decoding = 1,
+	.has_h264_decoding = 1,
+	.has_h264_encoding = 1,
+	.has_vc1_decoding = 1,
+	.has_jpeg_decoding = 1,
+	.has_jpeg_encoding = 1,
+	.has_vpp = 1,
+	.has_accelerated_getimage = 1,
+	.has_accelerated_putimage = 1,
+	.has_tiled_surface = 1,
+	.has_di_motion_adptive = 1,
+	.has_di_motion_compensated = 1,
+	.has_vp8_decoding = 1,
+	.has_vp8_encoding = 1,
+	.has_h264_mvc_encoding = 1,
+	.has_hevc_decoding = 1,
+	.has_hevc_encoding = 1,
+	.has_hevc10_decoding = 1,
+	.has_vp9_decoding = 1,
+	.has_vpp_p010 = 1,
+	.has_lp_h264_encoding = 1,
+
+	.lp_h264_brc_mode = VA_RC_CQP,
+	.h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR | VA_RC_MB,
+
+	.num_filters = 5,
+	.filters = {
+		{VAProcFilterNoiseReduction, I965_RING_VEBOX},
+		{VAProcFilterDeinterlacing, I965_RING_VEBOX},
+		{VAProcFilterSharpening, I965_RING_NULL},
+		{VAProcFilterColorBalance, I965_RING_VEBOX},
+		{VAProcFilterSkinToneEnhancement, I965_RING_VEBOX},
+	},
 };
 
 static struct hw_codec_info kbl_hw_codec_info = {
-    .dec_hw_context_init = gen9_dec_hw_context_init,
-    .enc_hw_context_init = gen9_enc_hw_context_init,
-    .proc_hw_context_init = gen75_proc_context_init,
-    .render_init = gen9_render_init,
-    .post_processing_context_init = gen9_post_processing_context_init,
-    .max_resolution = gen9_max_resolution,
-    .preinit_hw_codec = gen9_hw_codec_preinit,
+	.dec_hw_context_init = gen9_dec_hw_context_init,
+	.enc_hw_context_init = gen9_enc_hw_context_init,
+	.proc_hw_context_init = gen75_proc_context_init,
+	.render_init = gen9_render_init,
+	.post_processing_context_init = gen9_post_processing_context_init,
+	.max_resolution = gen9_max_resolution,
+	.preinit_hw_codec = gen9_hw_codec_preinit,
 
-    .max_width = 4096,   /* default. See max_resolution */
-    .max_height = 4096,  /* default. See max_resolution */
-    .min_linear_wpitch = 64,
-    .min_linear_hpitch = 4,
+	.max_width = 4096,	/* default. See max_resolution */
+	.max_height = 4096, /* default. See max_resolution */
 
-    .h264_mvc_dec_profiles = (VA_PROFILE_MASK(H264StereoHigh) |
-    VA_PROFILE_MASK(H264MultiviewHigh)),
-    .vp9_dec_profiles = VP9_PROFILE_MASK(0) |
-    VP9_PROFILE_MASK(2),
-    .vp9_enc_profiles = VP9_PROFILE_MASK(0),
+	.max_width_mpeg2 = 1920,
+	.max_height_mpeg2 = 1088,
 
-    .h264_dec_chroma_formats = EXTRA_H264_DEC_CHROMA_FORMATS,
-    .jpeg_dec_chroma_formats = EXTRA_JPEG_DEC_CHROMA_FORMATS,
-    .jpeg_enc_chroma_formats = EXTRA_JPEG_ENC_CHROMA_FORMATS,
-    .hevc_dec_chroma_formats = EXTRA_HEVC_DEC_CHROMA_FORMATS,
-    .vp9_dec_chroma_formats = EXTRA_VP9_DEC_CHROMA_FORMATS,
+	.max_width_jpeg = 16384,
+	.max_height_jpeg = 16384,
 
-    .has_mpeg2_decoding = 1,
-    .has_mpeg2_encoding = 1,
-    .has_h264_decoding = 1,
-    .has_h264_encoding = 1,
-    .has_vc1_decoding = 1,
-    .has_jpeg_decoding = 1,
-    .has_jpeg_encoding = 1,
-    .has_vpp = 1,
-    .has_accelerated_getimage = 1,
-    .has_accelerated_putimage = 1,
-    .has_tiled_surface = 1,
-    .has_di_motion_adptive = 1,
-    .has_di_motion_compensated = 1,
-    .has_vp8_decoding = 1,
-    .has_vp8_encoding = 1,
-    .has_h264_mvc_encoding = 1,
-    .has_hevc_decoding = 1,
-    .has_hevc_encoding = 1,
-    .has_hevc10_encoding = 1,
-    .has_hevc10_decoding = 1,
-    .has_vp9_decoding = 1,
-    .has_vpp_p010 = 1,
-    .has_vp9_encoding = 1,
-    .has_lp_h264_encoding = 1,
+	.min_linear_wpitch = 64,
+	.min_linear_hpitch = 4,
 
-    .lp_h264_brc_mode = VA_RC_CQP,
-    .h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR | VA_RC_MB,
+	.h264_mvc_dec_profiles = (VA_PROFILE_MASK(H264StereoHigh) |
+							  VA_PROFILE_MASK(H264MultiviewHigh)),
+	.vp9_dec_profiles = VP9_PROFILE_MASK(0) |
+						VP9_PROFILE_MASK(2),
+	.vp9_enc_profiles = VP9_PROFILE_MASK(0),
 
-    .vp9_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR,
+	.h264_dec_chroma_formats = EXTRA_H264_DEC_CHROMA_FORMATS,
+	.jpeg_dec_chroma_formats = EXTRA_JPEG_DEC_CHROMA_FORMATS,
+	.jpeg_enc_chroma_formats = EXTRA_JPEG_ENC_CHROMA_FORMATS,
+	.hevc_dec_chroma_formats = EXTRA_HEVC_DEC_CHROMA_FORMATS,
+	.vp9_dec_chroma_formats = EXTRA_VP9_DEC_CHROMA_FORMATS,
 
-    .num_filters = 5,
-    .filters = {
-        { VAProcFilterNoiseReduction, I965_RING_VEBOX },
-        { VAProcFilterDeinterlacing, I965_RING_VEBOX },
-        { VAProcFilterSharpening, I965_RING_NULL },
-        { VAProcFilterColorBalance, I965_RING_VEBOX},
-        { VAProcFilterSkinToneEnhancement, I965_RING_VEBOX},
-    },
+	.has_mpeg2_decoding = 1,
+	.has_mpeg2_encoding = 1,
+	.has_h264_decoding = 1,
+	.has_h264_encoding = 1,
+	.has_vc1_decoding = 1,
+	.has_jpeg_decoding = 1,
+	.has_jpeg_encoding = 1,
+	.has_vpp = 1,
+	.has_accelerated_getimage = 1,
+	.has_accelerated_putimage = 1,
+	.has_tiled_surface = 1,
+	.has_di_motion_adptive = 1,
+	.has_di_motion_compensated = 1,
+	.has_vp8_decoding = 1,
+	.has_vp8_encoding = 1,
+	.has_h264_mvc_encoding = 1,
+	.has_hevc_decoding = 1,
+	.has_hevc_encoding = 1,
+	.has_hevc10_encoding = 1,
+	.has_hevc10_decoding = 1,
+	.has_vp9_decoding = 1,
+	.has_vpp_p010 = 1,
+	.has_vp9_encoding = 1,
+	.has_lp_h264_encoding = 1,
+
+	.lp_h264_brc_mode = VA_RC_CQP,
+	.h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR | VA_RC_MB,
+
+	.vp9_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR,
+
+	.num_filters = 5,
+	.filters = {
+		{VAProcFilterNoiseReduction, I965_RING_VEBOX},
+		{VAProcFilterDeinterlacing, I965_RING_VEBOX},
+		{VAProcFilterSharpening, I965_RING_NULL},
+		{VAProcFilterColorBalance, I965_RING_VEBOX},
+		{VAProcFilterSkinToneEnhancement, I965_RING_VEBOX},
+	},
 };
 
 static struct hw_codec_info glk_hw_codec_info = {
-    .dec_hw_context_init = gen9_dec_hw_context_init,
-    .enc_hw_context_init = gen9_enc_hw_context_init,
-    .proc_hw_context_init = gen75_proc_context_init,
-    .render_init = gen9_render_init,
-    .post_processing_context_init = gen9_post_processing_context_init,
+	.dec_hw_context_init = gen9_dec_hw_context_init,
+	.enc_hw_context_init = gen9_enc_hw_context_init,
+	.proc_hw_context_init = gen75_proc_context_init,
+	.render_init = gen9_render_init,
+	.post_processing_context_init = gen9_post_processing_context_init,
 
-    .max_resolution = gen9_max_resolution,
-    .preinit_hw_codec = gen9_hw_codec_preinit,
+	.max_resolution = gen9_max_resolution,
+	.preinit_hw_codec = gen9_hw_codec_preinit,
 
-    .max_width = 4096,
-    .max_height = 4096,
-    .min_linear_wpitch = 64,
-    .min_linear_hpitch = 4,
+	.max_width = 4096,
+	.max_height = 4096,
 
-    .h264_mvc_dec_profiles = (VA_PROFILE_MASK(H264StereoHigh) |
-    VA_PROFILE_MASK(H264MultiviewHigh)),
-    .vp9_dec_profiles = VP9_PROFILE_MASK(0) |
-    VP9_PROFILE_MASK(2),
+	.max_width_mpeg2 = 1920,
+	.max_height_mpeg2 = 1088,
 
-    .vp9_enc_profiles = VP9_PROFILE_MASK(0),
+	.max_width_jpeg = 16384,
+	.max_height_jpeg = 16384,
 
-    .h264_dec_chroma_formats = EXTRA_H264_DEC_CHROMA_FORMATS,
-    .jpeg_dec_chroma_formats = EXTRA_JPEG_DEC_CHROMA_FORMATS,
-    .jpeg_enc_chroma_formats = EXTRA_JPEG_ENC_CHROMA_FORMATS,
-    .hevc_dec_chroma_formats = EXTRA_HEVC_DEC_CHROMA_FORMATS,
-    .vp9_dec_chroma_formats = EXTRA_VP9_DEC_CHROMA_FORMATS,
+	.min_linear_wpitch = 64,
+	.min_linear_hpitch = 4,
 
-    .has_mpeg2_decoding = 1,
-    .has_h264_decoding = 1,
-    .has_h264_encoding = 1,
-    .has_vc1_decoding = 1,
-    .has_jpeg_decoding = 1,
-    .has_jpeg_encoding = 1,
-    .has_vpp = 1,
-    .has_accelerated_getimage = 1,
-    .has_accelerated_putimage = 1,
-    .has_tiled_surface = 1,
-    .has_di_motion_adptive = 1,
-    .has_di_motion_compensated = 1,
-    .has_vp8_decoding = 1,
-    .has_vp8_encoding = 1,
-    .has_h264_mvc_encoding = 1,
-    .has_hevc_decoding = 1,
-    .has_hevc_encoding = 1,
-    .has_hevc10_decoding = 1,
-    .has_hevc10_encoding = 1,
-    .has_vp9_decoding = 1,
-    .has_vpp_p010 = 1,
-    .has_vp9_encoding = 1,
-    .has_lp_h264_encoding = 1,
+	.h264_mvc_dec_profiles = (VA_PROFILE_MASK(H264StereoHigh) |
+							  VA_PROFILE_MASK(H264MultiviewHigh)),
+	.vp9_dec_profiles = VP9_PROFILE_MASK(0) |
+						VP9_PROFILE_MASK(2),
 
-    .lp_h264_brc_mode = VA_RC_CQP,
-    .h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR | VA_RC_MB,
+	.vp9_enc_profiles = VP9_PROFILE_MASK(0),
 
-    .vp9_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR,
+	.h264_dec_chroma_formats = EXTRA_H264_DEC_CHROMA_FORMATS,
+	.jpeg_dec_chroma_formats = EXTRA_JPEG_DEC_CHROMA_FORMATS,
+	.jpeg_enc_chroma_formats = EXTRA_JPEG_ENC_CHROMA_FORMATS,
+	.hevc_dec_chroma_formats = EXTRA_HEVC_DEC_CHROMA_FORMATS,
+	.vp9_dec_chroma_formats = EXTRA_VP9_DEC_CHROMA_FORMATS,
 
-    .num_filters = 5,
-    .filters = {
-        { VAProcFilterNoiseReduction, I965_RING_VEBOX },
-        { VAProcFilterDeinterlacing, I965_RING_VEBOX },
-        { VAProcFilterSharpening, I965_RING_NULL },
-        { VAProcFilterColorBalance, I965_RING_VEBOX},
-        { VAProcFilterSkinToneEnhancement, I965_RING_VEBOX},
-    },
+	.has_mpeg2_decoding = 1,
+	.has_h264_decoding = 1,
+	.has_h264_encoding = 1,
+	.has_vc1_decoding = 1,
+	.has_jpeg_decoding = 1,
+	.has_jpeg_encoding = 1,
+	.has_vpp = 1,
+	.has_accelerated_getimage = 1,
+	.has_accelerated_putimage = 1,
+	.has_tiled_surface = 1,
+	.has_di_motion_adptive = 1,
+	.has_di_motion_compensated = 1,
+	.has_vp8_decoding = 1,
+	.has_vp8_encoding = 1,
+	.has_h264_mvc_encoding = 1,
+	.has_hevc_decoding = 1,
+	.has_hevc_encoding = 1,
+	.has_hevc10_decoding = 1,
+	.has_hevc10_encoding = 1,
+	.has_vp9_decoding = 1,
+	.has_vpp_p010 = 1,
+	.has_vp9_encoding = 1,
+	.has_lp_h264_encoding = 1,
+
+	.lp_h264_brc_mode = VA_RC_CQP,
+	.h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR | VA_RC_MB,
+
+	.vp9_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR,
+
+	.num_filters = 5,
+	.filters = {
+		{VAProcFilterNoiseReduction, I965_RING_VEBOX},
+		{VAProcFilterDeinterlacing, I965_RING_VEBOX},
+		{VAProcFilterSharpening, I965_RING_NULL},
+		{VAProcFilterColorBalance, I965_RING_VEBOX},
+		{VAProcFilterSkinToneEnhancement, I965_RING_VEBOX},
+	},
 };
 
 static struct hw_codec_info cfl_hw_codec_info = {
-    .dec_hw_context_init = gen9_dec_hw_context_init,
-    .enc_hw_context_init = gen9_enc_hw_context_init,
-    .proc_hw_context_init = gen75_proc_context_init,
-    .render_init = gen9_render_init,
-    .post_processing_context_init = gen9_post_processing_context_init,
-    .max_resolution = gen9_max_resolution,
-    .preinit_hw_codec = gen9_hw_codec_preinit,
+	.dec_hw_context_init = gen9_dec_hw_context_init,
+	.enc_hw_context_init = gen9_enc_hw_context_init,
+	.proc_hw_context_init = gen75_proc_context_init,
+	.render_init = gen9_render_init,
+	.post_processing_context_init = gen9_post_processing_context_init,
+	.max_resolution = gen9_max_resolution,
+	.preinit_hw_codec = gen9_hw_codec_preinit,
 
-    .max_width = 4096,   /* default. See max_resolution */
-    .max_height = 4096,  /* default. See max_resolution */
-    .min_linear_wpitch = 64,
-    .min_linear_hpitch = 16,
+	.max_width = 4096,	/* default. See max_resolution */
+	.max_height = 4096, /* default. See max_resolution */
 
-    .h264_mvc_dec_profiles = (VA_PROFILE_MASK(H264StereoHigh) |
-    VA_PROFILE_MASK(H264MultiviewHigh)),
-    .vp9_dec_profiles = VP9_PROFILE_MASK(0) |
-    VP9_PROFILE_MASK(2),
-    .vp9_enc_profiles = VP9_PROFILE_MASK(0),
+	.max_width_mpeg2 = 1920,
+	.max_height_mpeg2 = 1088,
 
-    .h264_dec_chroma_formats = EXTRA_H264_DEC_CHROMA_FORMATS,
-    .jpeg_dec_chroma_formats = EXTRA_JPEG_DEC_CHROMA_FORMATS,
-    .jpeg_enc_chroma_formats = EXTRA_JPEG_ENC_CHROMA_FORMATS,
-    .hevc_dec_chroma_formats = EXTRA_HEVC_DEC_CHROMA_FORMATS,
-    .vp9_dec_chroma_formats = EXTRA_VP9_DEC_CHROMA_FORMATS,
+	.max_width_jpeg = 16384,
+	.max_height_jpeg = 16384,
 
-    .has_mpeg2_decoding = 1,
-    .has_mpeg2_encoding = 1,
-    .has_h264_decoding = 1,
-    .has_h264_encoding = 1,
-    .has_vc1_decoding = 1,
-    .has_jpeg_decoding = 1,
-    .has_jpeg_encoding = 1,
-    .has_vpp = 1,
-    .has_accelerated_getimage = 1,
-    .has_accelerated_putimage = 1,
-    .has_tiled_surface = 1,
-    .has_di_motion_adptive = 1,
-    .has_di_motion_compensated = 1,
-    .has_vp8_decoding = 1,
-    .has_vp8_encoding = 1,
-    .has_h264_mvc_encoding = 1,
-    .has_hevc_decoding = 1,
-    .has_hevc_encoding = 1,
-    .has_hevc10_encoding = 1,
-    .has_hevc10_decoding = 1,
-    .has_vp9_decoding = 1,
-    .has_vpp_p010 = 1,
-    .has_vp9_encoding = 1,
-    .has_lp_h264_encoding = 1,
+	.min_linear_wpitch = 64,
+	.min_linear_hpitch = 16,
 
-    .lp_h264_brc_mode = VA_RC_CQP,
-    .h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR | VA_RC_MB,
+	.h264_mvc_dec_profiles = (VA_PROFILE_MASK(H264StereoHigh) |
+							  VA_PROFILE_MASK(H264MultiviewHigh)),
+	.vp9_dec_profiles = VP9_PROFILE_MASK(0) |
+						VP9_PROFILE_MASK(2),
+	.vp9_enc_profiles = VP9_PROFILE_MASK(0),
 
-    .vp9_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR,
+	.h264_dec_chroma_formats = EXTRA_H264_DEC_CHROMA_FORMATS,
+	.jpeg_dec_chroma_formats = EXTRA_JPEG_DEC_CHROMA_FORMATS,
+	.jpeg_enc_chroma_formats = EXTRA_JPEG_ENC_CHROMA_FORMATS,
+	.hevc_dec_chroma_formats = EXTRA_HEVC_DEC_CHROMA_FORMATS,
+	.vp9_dec_chroma_formats = EXTRA_VP9_DEC_CHROMA_FORMATS,
 
-    .num_filters = 5,
-    .filters = {
-        { VAProcFilterNoiseReduction, I965_RING_VEBOX },
-        { VAProcFilterDeinterlacing, I965_RING_VEBOX },
-        { VAProcFilterSharpening, I965_RING_NULL },
-        { VAProcFilterColorBalance, I965_RING_VEBOX},
-        { VAProcFilterSkinToneEnhancement, I965_RING_VEBOX},
-    },
+	.has_mpeg2_decoding = 1,
+	.has_mpeg2_encoding = 1,
+	.has_h264_decoding = 1,
+	.has_h264_encoding = 1,
+	.has_vc1_decoding = 1,
+	.has_jpeg_decoding = 1,
+	.has_jpeg_encoding = 1,
+	.has_vpp = 1,
+	.has_accelerated_getimage = 1,
+	.has_accelerated_putimage = 1,
+	.has_tiled_surface = 1,
+	.has_di_motion_adptive = 1,
+	.has_di_motion_compensated = 1,
+	.has_vp8_decoding = 1,
+	.has_vp8_encoding = 1,
+	.has_h264_mvc_encoding = 1,
+	.has_hevc_decoding = 1,
+	.has_hevc_encoding = 1,
+	.has_hevc10_encoding = 1,
+	.has_hevc10_decoding = 1,
+	.has_vp9_decoding = 1,
+	.has_vpp_p010 = 1,
+	.has_vp9_encoding = 1,
+	.has_lp_h264_encoding = 1,
+
+	.lp_h264_brc_mode = VA_RC_CQP,
+	.h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR | VA_RC_MB,
+
+	.vp9_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR,
+
+	.num_filters = 5,
+	.filters = {
+		{VAProcFilterNoiseReduction, I965_RING_VEBOX},
+		{VAProcFilterDeinterlacing, I965_RING_VEBOX},
+		{VAProcFilterSharpening, I965_RING_NULL},
+		{VAProcFilterColorBalance, I965_RING_VEBOX},
+		{VAProcFilterSkinToneEnhancement, I965_RING_VEBOX},
+	},
 };
 
 static struct hw_codec_info cnl_hw_codec_info = {
-    .dec_hw_context_init = gen9_dec_hw_context_init,
-    .enc_hw_context_init = gen9_enc_hw_context_init,
-    .proc_hw_context_init = gen75_proc_context_init,
-    .render_init = gen9_render_init,
-    .post_processing_context_init = gen9_post_processing_context_init,
-    .max_resolution = gen9_max_resolution,
-    .preinit_hw_codec = gen9_hw_codec_preinit,
+	.dec_hw_context_init = gen9_dec_hw_context_init,
+	.enc_hw_context_init = gen9_enc_hw_context_init,
+	.proc_hw_context_init = gen75_proc_context_init,
+	.render_init = gen9_render_init,
+	.post_processing_context_init = gen9_post_processing_context_init,
+	.max_resolution = gen9_max_resolution,
+	.preinit_hw_codec = gen9_hw_codec_preinit,
 
-    .max_width = 4096,   /* default. See max_resolution */
-    .max_height = 4096,  /* default. See max_resolution */
-    .min_linear_wpitch = 64,
-    .min_linear_hpitch = 16,
+	.max_width = 4096,	/* default. See max_resolution */
+	.max_height = 4096, /* default. See max_resolution */
 
-    .h264_mvc_dec_profiles = (VA_PROFILE_MASK(H264StereoHigh) | VA_PROFILE_MASK(H264MultiviewHigh)),
-    .vp9_dec_profiles = VP9_PROFILE_MASK(0) | VP9_PROFILE_MASK(2),
-    .vp9_enc_profiles = VP9_PROFILE_MASK(0),
+	.max_width_mpeg2 = 1920,
+	.max_height_mpeg2 = 1088,
 
-    .h264_dec_chroma_formats = EXTRA_H264_DEC_CHROMA_FORMATS,
-    .jpeg_dec_chroma_formats = EXTRA_JPEG_DEC_CHROMA_FORMATS,
-    .jpeg_enc_chroma_formats = EXTRA_JPEG_ENC_CHROMA_FORMATS,
-    .hevc_dec_chroma_formats = EXTRA_HEVC_DEC_CHROMA_FORMATS,
-    .vp9_dec_chroma_formats = EXTRA_VP9_DEC_CHROMA_FORMATS,
+	.max_width_jpeg = 16384,
+	.max_height_jpeg = 16384,
 
-    .has_mpeg2_decoding = 1,
-    .has_mpeg2_encoding = 1,
-    .has_h264_decoding = 1,
-    .has_h264_encoding = 1,
-    .has_vc1_decoding = 1,
-    .has_jpeg_decoding = 1,
-    .has_jpeg_encoding = 1,
-    .has_vpp = 1,
-    .has_accelerated_getimage = 1,
-    .has_accelerated_putimage = 1,
-    .has_tiled_surface = 1,
-    .has_di_motion_adptive = 1,
-    .has_di_motion_compensated = 1,
-    .has_vp8_decoding = 1,
-    .has_vp8_encoding = 1,
-    .has_h264_mvc_encoding = 1,
-    .has_hevc_decoding = 1,
-    .has_hevc_encoding = 1,
-    .has_hevc10_decoding = 1,
-    .has_hevc10_encoding = 1,
-    .has_vp9_decoding = 1,
-    .has_vpp_p010 = 1,
-    .has_vp9_encoding = 1,
-    .has_lp_h264_encoding = 1,
-    .has_lp_vp9_encoding = 1,
+	.min_linear_wpitch = 64,
+	.min_linear_hpitch = 16,
 
-    .lp_h264_brc_mode = VA_RC_CQP,
-    .h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR | VA_RC_MB,
+	.h264_mvc_dec_profiles = (VA_PROFILE_MASK(H264StereoHigh) | VA_PROFILE_MASK(H264MultiviewHigh)),
+	.vp9_dec_profiles = VP9_PROFILE_MASK(0) | VP9_PROFILE_MASK(2),
+	.vp9_enc_profiles = VP9_PROFILE_MASK(0),
 
-    .vp9_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR,
+	.h264_dec_chroma_formats = EXTRA_H264_DEC_CHROMA_FORMATS,
+	.jpeg_dec_chroma_formats = EXTRA_JPEG_DEC_CHROMA_FORMATS,
+	.jpeg_enc_chroma_formats = EXTRA_JPEG_ENC_CHROMA_FORMATS,
+	.hevc_dec_chroma_formats = EXTRA_HEVC_DEC_CHROMA_FORMATS,
+	.vp9_dec_chroma_formats = EXTRA_VP9_DEC_CHROMA_FORMATS,
 
-    .num_filters = 5,
-    .filters = {
-        { VAProcFilterNoiseReduction, I965_RING_VEBOX },
-        { VAProcFilterDeinterlacing, I965_RING_VEBOX },
-        { VAProcFilterSharpening, I965_RING_NULL },
-        { VAProcFilterColorBalance, I965_RING_VEBOX},
-        { VAProcFilterSkinToneEnhancement, I965_RING_VEBOX},
-    },
+	.has_mpeg2_decoding = 1,
+	.has_mpeg2_encoding = 1,
+	.has_h264_decoding = 1,
+	.has_h264_encoding = 1,
+	.has_vc1_decoding = 1,
+	.has_jpeg_decoding = 1,
+	.has_jpeg_encoding = 1,
+	.has_vpp = 1,
+	.has_accelerated_getimage = 1,
+	.has_accelerated_putimage = 1,
+	.has_tiled_surface = 1,
+	.has_di_motion_adptive = 1,
+	.has_di_motion_compensated = 1,
+	.has_vp8_decoding = 1,
+	.has_vp8_encoding = 1,
+	.has_h264_mvc_encoding = 1,
+	.has_hevc_decoding = 1,
+	.has_hevc_encoding = 1,
+	.has_hevc10_decoding = 1,
+	.has_hevc10_encoding = 1,
+	.has_vp9_decoding = 1,
+	.has_vpp_p010 = 1,
+	.has_vp9_encoding = 1,
+	.has_lp_h264_encoding = 1,
+	.has_lp_vp9_encoding = 1,
+
+	.lp_h264_brc_mode = VA_RC_CQP,
+	.h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR | VA_RC_MB,
+
+	.vp9_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR,
+
+	.num_filters = 5,
+	.filters = {
+		{VAProcFilterNoiseReduction, I965_RING_VEBOX},
+		{VAProcFilterDeinterlacing, I965_RING_VEBOX},
+		{VAProcFilterSharpening, I965_RING_NULL},
+		{VAProcFilterColorBalance, I965_RING_VEBOX},
+		{VAProcFilterSkinToneEnhancement, I965_RING_VEBOX},
+	},
 };
 
 struct hw_codec_info *
