@@ -2036,11 +2036,25 @@ i965_CreateSurfaces2(
 			ASSERT_RET(attrib_list[i].value.type == VAGenericValueTypeInteger, VA_STATUS_ERROR_INVALID_PARAMETER);
 
 			if (attrib_list[i].value.value.i == VA_SURFACE_ATTRIB_MEM_TYPE_KERNEL_DRM)
+			{
 				memory_type = I965_SURFACE_MEM_GEM_FLINK; /* flinked GEM handle */
+			}
 			else if (attrib_list[i].value.value.i == VA_SURFACE_ATTRIB_MEM_TYPE_DRM_PRIME)
+			{
 				memory_type = I965_SURFACE_MEM_DRM_PRIME; /* drm prime fd */
+			}
 			else if (attrib_list[i].value.value.i == VA_SURFACE_ATTRIB_MEM_TYPE_VA)
+			{
 				memory_type = I965_SURFACE_MEM_NATIVE; /* va native memory, to be allocated */
+			}
+			else if (attrib_list[i].value.value.i == VA_SURFACE_ATTRIB_MEM_TYPE_USER_PTR)
+			{
+				return VA_STATUS_ERROR_INVALID_PARAMETER;
+			}
+			else
+			{
+				fprintf(stderr, "i965_CreateSurfaces2: Unknown VA_SURFACE_TYPE: %i\n", attrib_list[i].value.value.i);
+			}
 		}
 
 		if ((attrib_list[i].type == VASurfaceAttribExternalBufferDescriptor) &&
