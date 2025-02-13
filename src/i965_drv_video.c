@@ -5622,13 +5622,18 @@ i965_sw_putimage(VADriverContextP ctx,
 		src_rect->height != dst_rect->height)
 		return VA_STATUS_ERROR_INVALID_PARAMETER;
 
-	if (obj_surface->fourcc) {
+	if (obj_surface->fourcc)
+	{
 		/* Don't allow format mismatch */
 		if (obj_surface->fourcc != obj_image->image.format.fourcc)
+		{
+			fprintf(stderr, "i965_sw_putimage: Format mismatch, rejecting call. (surface: %#010x, image: %#010x)\r\n",
+					obj_surface->fourcc, obj_image->image.format.fourcc);
 			return VA_STATUS_ERROR_INVALID_IMAGE_FORMAT;
+		}
 	}
-
-	else {
+	else
+	{
 		/* VA is surface not used for decoding, use same VA image format */
 		va_status = i965_check_alloc_surface_bo(
 						ctx,
@@ -5706,6 +5711,25 @@ i965_hw_putimage(VADriverContextP ctx,
 	return  va_status;
 }
 
+static Bool use_hw_put_image(struct i965_driver_data *const i965, struct object_surface *const obj_surface,
+							 struct object_image *obj_image)
+{
+	if (!HAS_ACCELERATED_PUTIMAGE(i965))
+		return false;
+
+	/* i965_image_processing() immediately checks for this. */
+	if (!HAS_VPP(i965))
+		return false;
+
+#define HAS_VPP_P010(ctx) ((ctx)->codec_info->has_vpp_p010 && \
+						   (ctx)->intel.has_bsd)
+	/* mpv will try to probe all formats, even if we don't have support for it. */
+	if (obj_image && obj_image->image.format.fourcc == VA_FOURCC_P010 && !HAS_VPP_P010(i965))
+		return false;
+	
+	return true;
+}
+
 static VAStatus
 i965_PutImage(VADriverContextP ctx,
 			  VASurfaceID surface,
@@ -5757,7 +5781,7 @@ i965_PutImage(VADriverContextP ctx,
 	dst_rect.width  = dest_width;
 	dst_rect.height = dest_height;
 
-	if (HAS_ACCELERATED_PUTIMAGE(i965))
+	if (use_hw_put_image(i965, obj_surface, obj_image))
 		va_status = i965_hw_putimage(ctx, obj_surface, obj_image,
 									 &src_rect, &dst_rect);
 	else

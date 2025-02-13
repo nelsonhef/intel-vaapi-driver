@@ -5548,7 +5548,7 @@ i965_image_processing(VADriverContextP ctx,
 											   dst_rect);
 			break;
 
-		case  VA_FOURCC_NV12:
+		case VA_FOURCC_NV12:
 			status = i965_image_pl2_processing(ctx,
 											   src_surface,
 											   src_rect,
@@ -5580,6 +5580,7 @@ i965_image_processing(VADriverContextP ctx,
 												dst_surface,
 												dst_rect);
 			break;
+
 		default:
 			status = VA_STATUS_ERROR_UNIMPLEMENTED;
 			break;
