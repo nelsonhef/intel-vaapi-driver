@@ -97,6 +97,7 @@ intel_driver_init(VADriverContextP ctx)
 	struct drm_state * const drm_state = (struct drm_state *)ctx->drm_state;
 	int has_exec2 = 0, has_bsd = 0, has_blt = 0, has_vebox = 0;
 	char *env_str = NULL;
+	char *env_str2 = NULL;
 	int ret_value = 0;
 
 	g_intel_debug_option_flags = 0;
@@ -157,6 +158,10 @@ intel_driver_init(VADriverContextP ctx)
 	}
 
 	intel->mocs_state = 0;
+	intel->hybrid_vp8 = 0;
+
+	if ((env_str2 = getenv("I965_VP8_ENCODE")))
+		intel->hybrid_vp8 = atoi(env_str2);
 
 #define GEN9_PTE_CACHE    2
 

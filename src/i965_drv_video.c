@@ -695,8 +695,8 @@ i965_QueryConfigEntrypoints(VADriverContextP ctx,
 		if (HAS_VP8_ENCODING(i965))
 			entrypoint_list[n++] = VAEntrypointEncSlice;
 
-#if defined(HAVE_HYBRID_CODEC) && defined(ENABLE_HYBRID_CODEC_BROKEN_VP8)
-		if (i965->wrapper_pdrvctx)
+#if defined(HAVE_HYBRID_CODEC)
+		if (i965->wrapper_pdrvctx && i965->intel.hybrid_vp8)
 		{
 			VAStatus va_status = VA_STATUS_SUCCESS;
 			VADriverContextP pdrvctx = i965->wrapper_pdrvctx;
@@ -850,8 +850,8 @@ i965_validate_config(VADriverContextP ctx, VAProfile profile,
 			va_status = VA_STATUS_ERROR_UNSUPPORTED_ENTRYPOINT;
 		}
 
-#if defined(HAVE_HYBRID_CODEC) && defined(ENABLE_HYBRID_CODEC_BROKEN_VP8)
-		if (i965->wrapper_pdrvctx && va_status != VA_STATUS_SUCCESS)
+#if defined(HAVE_HYBRID_CODEC)
+		if (i965->wrapper_pdrvctx && i965->intel.hybrid_vp8 && va_status != VA_STATUS_SUCCESS)
 		{
 			VAEntrypoint wrapper_entrypoints[5] = {0};
 			int32_t wrapper_num_entrypoints = 0;
@@ -2663,6 +2663,22 @@ max_resolution(struct i965_driver_data *i965,
 	}
 }
 
+#if defined(HAVE_HYBRID_CODEC)
+static inline bool needs_vp8_hybrid_workaround(struct i965_driver_data *i965, struct object_config *obj_config)
+{
+	if (obj_config->wrapper_config == VA_INVALID_ID)
+		return false;
+
+	if (obj_config->entrypoint != VAEntrypointEncSlice)
+		return false;
+
+	if (i965->codec_info->has_vp8_encoding)
+		return false;
+
+	return obj_config->profile == VAProfileVP8Version0_3;
+}
+#endif
+
 VAStatus
 i965_CreateContext(VADriverContextP ctx,
 				   VAConfigID config_id,
@@ -2745,9 +2761,8 @@ i965_CreateContext(VADriverContextP ctx,
 		obj_context->render_targets[i] = render_targets[i];
 	}
 
-#if defined(HAVE_HYBRID_CODEC) && defined(ENABLE_HYBRID_CODEC_BROKEN_VP8)
-	const bool is_vp8_hybrid = obj_config->wrapper_config != VA_INVALID_ID && VAEntrypointEncSlice == obj_config->entrypoint && obj_config->profile == VAProfileVP8Version0_3 && !i965->codec_info->has_vp8_encoding;
-	if (VA_STATUS_SUCCESS == vaStatus && !is_vp8_hybrid)
+#if defined(HAVE_HYBRID_CODEC)
+	if (VA_STATUS_SUCCESS == vaStatus && !needs_vp8_hybrid_workaround(i965, obj_config))
 #else
 	if (VA_STATUS_SUCCESS == vaStatus)
 #endif
