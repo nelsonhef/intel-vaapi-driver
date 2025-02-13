@@ -695,6 +695,19 @@ i965_QueryConfigEntrypoints(VADriverContextP ctx,
 		if (HAS_VP8_ENCODING(i965))
 			entrypoint_list[n++] = VAEntrypointEncSlice;
 
+#if defined(HAVE_HYBRID_CODEC) && defined(ENABLE_HYBRID_CODEC_BROKEN_VP8)
+		if (i965->wrapper_pdrvctx)
+		{
+			VAStatus va_status = VA_STATUS_SUCCESS;
+			VADriverContextP pdrvctx = i965->wrapper_pdrvctx;
+			CALL_VTABLE(pdrvctx, va_status,
+						vaQueryConfigEntrypoints(pdrvctx, profile,
+												 entrypoint_list,
+												 num_entrypoints));
+			return va_status;
+		}
+#endif
+
 		break;
 
 	case VAProfileHEVCMain:
@@ -739,6 +752,10 @@ i965_QueryConfigEntrypoints(VADriverContextP ctx,
 			}
 		}
 
+		break;
+
+	case VAProfileVP9Profile3:
+		/* Unsupported. */
 		break;
 
 	default:
@@ -832,6 +849,29 @@ i965_validate_config(VADriverContextP ctx, VAProfile profile,
 		} else {
 			va_status = VA_STATUS_ERROR_UNSUPPORTED_ENTRYPOINT;
 		}
+
+#if defined(HAVE_HYBRID_CODEC) && defined(ENABLE_HYBRID_CODEC_BROKEN_VP8)
+		if (i965->wrapper_pdrvctx && va_status != VA_STATUS_SUCCESS)
+		{
+			VAEntrypoint wrapper_entrypoints[5] = {0};
+			int32_t wrapper_num_entrypoints = 0;
+			VADriverContextP pdrvctx = i965->wrapper_pdrvctx;
+			CALL_VTABLE(pdrvctx, va_status,
+				vaQueryConfigEntrypoints(pdrvctx, profile, 
+					wrapper_entrypoints, &wrapper_num_entrypoints));
+			if (va_status == VA_STATUS_SUCCESS)
+			{
+				va_status = VA_STATUS_ERROR_UNSUPPORTED_ENTRYPOINT;
+				for (int i = 0; i < wrapper_num_entrypoints; i++)
+				{
+					if (entrypoint == wrapper_entrypoints[i])
+					{
+						va_status = VA_STATUS_SUCCESS;
+					}
+				}
+			}
+		}
+#endif
 		break;
 
 	case VAProfileH264MultiviewHigh:
@@ -896,6 +936,7 @@ i965_validate_config(VADriverContextP ctx, VAProfile profile,
 			va_status = VA_STATUS_ERROR_UNSUPPORTED_ENTRYPOINT;
 		}
 
+#ifdef HAVE_HYBRID_CODEC
 		if (i965->wrapper_pdrvctx && va_status != VA_STATUS_SUCCESS) {
 			VAEntrypoint wrapper_entrypoints[5] = {0};
 			int32_t wrapper_num_entrypoints = 0;
@@ -916,6 +957,7 @@ i965_validate_config(VADriverContextP ctx, VAProfile profile,
 				}
 			}
 		}
+#endif
 
 		break;
 
@@ -2689,7 +2731,13 @@ i965_CreateContext(VADriverContextP ctx,
 		obj_context->render_targets[i] = render_targets[i];
 	}
 
-	if (VA_STATUS_SUCCESS == vaStatus) {
+#if defined(HAVE_HYBRID_CODEC) && defined(ENABLE_HYBRID_CODEC_BROKEN_VP8)
+	const bool is_vp8_hybrid = obj_config->wrapper_config != VA_INVALID_ID && VAEntrypointEncSlice == obj_config->entrypoint && obj_config->profile == VAProfileVP8Version0_3 && !i965->codec_info->has_vp8_encoding;
+	if (VA_STATUS_SUCCESS == vaStatus && !is_vp8_hybrid)
+#else
+	if (VA_STATUS_SUCCESS == vaStatus)
+#endif
+	{
 		if (VAEntrypointVideoProc == obj_config->entrypoint) {
 			obj_context->codec_type = CODEC_PROC;
 			memset(&obj_context->codec_state.proc, 0, sizeof(obj_context->codec_state.proc));
@@ -7636,15 +7684,17 @@ i965_initialize_wrapper(VADriverContextP ctx, const char *driver_name)
 				int major;
 				int minor;
 			} compatible_versions[] = {
-				{ VA_MAJOR_VERSION, VA_MINOR_VERSION },
-				{ 0, 37 },
-				{ 0, 36 },
-				{ 0, 35 },
-				{ 0, 34 },
-				{ 0, 33 },
-				{ 0, 32 },
-				{ -1, }
-			};
+				{VA_MAJOR_VERSION, VA_MINOR_VERSION},
+				{1, 18},
+				{0, 37},
+				{0, 36},
+				{0, 35},
+				{0, 34},
+				{0, 33},
+				{0, 32},
+				{
+					-1,
+				}};
 			for (i = 0; compatible_versions[i].major >= 0; i++) {
 				snprintf(init_func_s, sizeof(init_func_s),
 						 "__vaDriverInit_%d_%d",
@@ -7668,7 +7718,7 @@ i965_initialize_wrapper(VADriverContextP ctx, const char *driver_name)
 
 			if (va_status != VA_STATUS_SUCCESS) {
 				dlclose(handle);
-				fprintf(stderr, "%s init failed\n", driver_path);
+				fprintf(stderr, "%s init failed, got status %i.\n", driver_path, va_status);
 				driver_dir = strtok_r(NULL, ":", &saveptr);
 				continue;
 			}
