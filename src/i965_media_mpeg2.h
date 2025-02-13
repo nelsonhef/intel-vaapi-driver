@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009 Intel Corporation
+ * Copyright (C) 2009 Intel Corporation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the
@@ -41,9 +41,9 @@ struct i965_media_context;
 #define NUM_MPEG2_VLD_KERNELS           15
 
 struct i965_mpeg2_context {
-    struct i965_kernel vld_kernels[NUM_MPEG2_VLD_KERNELS];
-    VAIQMatrixBufferMPEG2 iq_matrix;
-    int wa_slice_vertical_position;
+	struct i965_kernel vld_kernels[NUM_MPEG2_VLD_KERNELS];
+	VAIQMatrixBufferMPEG2 iq_matrix;
+	int wa_slice_vertical_position;
 };
 
 void i965_media_mpeg2_decode_init(VADriverContextP ctx, struct decode_state * decode_state, struct i965_media_context *media_context);

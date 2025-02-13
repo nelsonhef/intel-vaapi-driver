@@ -1,5 +1,5 @@
 /*
- * Copyright © 2010 Intel Corporation
+ * Copyright (C) 2010 Intel Corporation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the
@@ -33,16 +33,16 @@
 #include "gen75_vpp_vebox.h"
 
 struct intel_video_process_context {
-    struct hw_context base;
-    void* driver_context;
+	struct hw_context base;
+	void* driver_context;
 
-    struct intel_vebox_context *vpp_vebox_ctx;
-    struct hw_context          *vpp_fmt_cvt_ctx;
+	struct intel_vebox_context *vpp_vebox_ctx;
+	struct hw_context          *vpp_fmt_cvt_ctx;
 
-    VAProcPipelineParameterBuffer* pipeline_param;
+	VAProcPipelineParameterBuffer* pipeline_param;
 
-    struct object_surface *surface_render_output_object;
-    struct object_surface *surface_pipeline_input_object;
+	struct object_surface *surface_render_output_object;
+	struct object_surface *surface_pipeline_input_object;
 };
 
 struct hw_context *

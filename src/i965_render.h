@@ -1,5 +1,5 @@
 /*
- * Copyright © 2006 Intel Corporation
+ * Copyright (C) 2006 Intel Corporation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -39,87 +39,87 @@
 struct i965_kernel;
 
 struct i965_render_state {
-    struct {
-        dri_bo *vertex_buffer;
-    } vb;
+	struct {
+		dri_bo *vertex_buffer;
+	} vb;
 
-    struct {
-        dri_bo *state;
-    } vs;
+	struct {
+		dri_bo *state;
+	} vs;
 
-    struct {
-        dri_bo *state;
-    } sf;
+	struct {
+		dri_bo *state;
+	} sf;
 
-    struct {
-        int sampler_count;
-        dri_bo *sampler;
-        dri_bo *state;
-        dri_bo *surface_state_binding_table_bo;
-    } wm;
+	struct {
+		int sampler_count;
+		dri_bo *sampler;
+		dri_bo *state;
+		dri_bo *surface_state_binding_table_bo;
+	} wm;
 
-    struct {
-        dri_bo *state;
-        dri_bo *viewport;
-        dri_bo *blend;
-        dri_bo *depth_stencil;
-    } cc;
+	struct {
+		dri_bo *state;
+		dri_bo *viewport;
+		dri_bo *blend;
+		dri_bo *depth_stencil;
+	} cc;
 
-    struct {
-        dri_bo *bo;
-    } curbe;
+	struct {
+		dri_bo *bo;
+	} curbe;
 
-    struct intel_region *draw_region;
+	struct intel_region *draw_region;
 
-    int pp_flag; /* 0: disable, 1: enable */
+	int pp_flag; /* 0: disable, 1: enable */
 
-    struct i965_kernel render_kernels[NUM_RENDER_KERNEL];
+	struct i965_kernel render_kernels[NUM_RENDER_KERNEL];
 
-    struct {
-        dri_bo *bo;
-        int bo_size;
-        unsigned int end_offset;
-    } instruction_state;
+	struct {
+		dri_bo *bo;
+		int bo_size;
+		unsigned int end_offset;
+	} instruction_state;
 
-    struct {
-        dri_bo *bo;
-    } indirect_state;
+	struct {
+		dri_bo *bo;
+	} indirect_state;
 
-    struct {
-        dri_bo *bo;
-        int bo_size;
-        unsigned int end_offset;
-    } dynamic_state;
+	struct {
+		dri_bo *bo;
+		int bo_size;
+		unsigned int end_offset;
+	} dynamic_state;
 
-    unsigned int curbe_offset;
-    int curbe_size;
+	unsigned int curbe_offset;
+	int curbe_size;
 
-    unsigned int sampler_offset;
-    int sampler_size;
+	unsigned int sampler_offset;
+	int sampler_size;
 
-    unsigned int cc_viewport_offset;
-    int cc_viewport_size;
+	unsigned int cc_viewport_offset;
+	int cc_viewport_size;
 
-    unsigned int cc_state_offset;
-    int cc_state_size;
+	unsigned int cc_state_offset;
+	int cc_state_size;
 
-    unsigned int blend_state_offset;
-    int blend_state_size;
+	unsigned int blend_state_offset;
+	int blend_state_size;
 
-    unsigned int sf_clip_offset;
-    int sf_clip_size;
+	unsigned int sf_clip_offset;
+	int sf_clip_size;
 
-    unsigned int scissor_offset;
-    int scissor_size;
+	unsigned int scissor_offset;
+	int scissor_size;
 
-    void (*render_put_surface)(VADriverContextP ctx, struct object_surface *,
-                               const VARectangle *src_rec,
-                               const VARectangle *dst_rect,
-                               unsigned int flags);
-    void (*render_put_subpicture)(VADriverContextP ctx, struct object_surface *,
-                                  const VARectangle *src_rec,
-                                  const VARectangle *dst_rect);
-    void (*render_terminate)(VADriverContextP ctx);
+	void (*render_put_surface)(VADriverContextP ctx, struct object_surface *,
+							   const VARectangle *src_rec,
+							   const VARectangle *dst_rect,
+							   unsigned int flags);
+	void (*render_put_subpicture)(VADriverContextP ctx, struct object_surface *,
+								  const VARectangle *src_rec,
+								  const VARectangle *dst_rect);
+	void (*render_terminate)(VADriverContextP ctx);
 };
 
 bool i965_render_init(VADriverContextP ctx);
@@ -127,19 +127,19 @@ void i965_render_terminate(VADriverContextP ctx);
 
 void
 intel_render_put_surface(
-    VADriverContextP   ctx,
-    struct object_surface *obj_surface,
-    const VARectangle *src_rect,
-    const VARectangle *dst_rect,
-    unsigned int       flags
+	VADriverContextP   ctx,
+	struct object_surface *obj_surface,
+	const VARectangle *src_rect,
+	const VARectangle *dst_rect,
+	unsigned int       flags
 );
 
 void
 intel_render_put_subpicture(
-    VADriverContextP   ctx,
-    struct object_surface *obj_surface,
-    const VARectangle *src_rect,
-    const VARectangle *dst_rect
+	VADriverContextP   ctx,
+	struct object_surface *obj_surface,
+	const VARectangle *src_rect,
+	const VARectangle *dst_rect
 );
 
 struct gen7_surface_state;

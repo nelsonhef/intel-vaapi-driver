@@ -1,5 +1,5 @@
 /*
- * Copyright © 2010 Intel Corporation
+ * Copyright (C) 2010 Intel Corporation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the
@@ -41,50 +41,50 @@
 #define EDGE_CONTROL_DATA_IN_BTYES      64
 
 struct i965_avc_ildb_context {
-    struct {
-        dri_bo *bo;
-    } curbe;
+	struct {
+		dri_bo *bo;
+	} curbe;
 
-    struct {
-        dri_bo *ss_bo;
-        dri_bo *s_bo;
-        unsigned long offset;
-        int surface_type;
-        int width;
-        int height;
-        int depth;
-        int pitch;
-        int format;
-        int vert_line_stride;
-        int vert_line_stride_ofs;
-        int is_target;
-    } surface[NUM_AVC_ILDB_SURFACES];
+	struct {
+		dri_bo *ss_bo;
+		dri_bo *s_bo;
+		unsigned long offset;
+		int surface_type;
+		int width;
+		int height;
+		int depth;
+		int pitch;
+		int format;
+		int vert_line_stride;
+		int vert_line_stride_ofs;
+		int is_target;
+	} surface[NUM_AVC_ILDB_SURFACES];
 
-    struct {
-        dri_bo *bo;
-    } binding_table;
+	struct {
+		dri_bo *bo;
+	} binding_table;
 
-    struct {
-        dri_bo *bo;
-    } idrt;
+	struct {
+		dri_bo *bo;
+	} idrt;
 
-    struct {
-        dri_bo *bo;
-    } vfe_state;
+	struct {
+		dri_bo *bo;
+	} vfe_state;
 
-    struct {
-        unsigned int vfe_start;
-        unsigned int cs_start;
+	struct {
+		unsigned int vfe_start;
+		unsigned int cs_start;
 
-        unsigned int num_vfe_entries;
-        unsigned int num_cs_entries;
+		unsigned int num_vfe_entries;
+		unsigned int num_cs_entries;
 
-        unsigned int size_vfe_entry;
-        unsigned int size_cs_entry;
-    } urb;
+		unsigned int size_vfe_entry;
+		unsigned int size_cs_entry;
+	} urb;
 
-    int picture_type;
-    int mbs_per_picture;
+	int picture_type;
+	int mbs_per_picture;
 };
 
 void i965_avc_ildb(VADriverContextP, struct decode_state *, void *h264_context);

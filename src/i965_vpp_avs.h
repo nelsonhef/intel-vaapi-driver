@@ -47,52 +47,52 @@ typedef struct avs_state                AVSState;
 
 /** AVS coefficients for one phase */
 struct avs_coeffs {
-    /** Coefficients for luma samples on the X-axis (horizontal) */
-    float y_k_h[AVS_MAX_LUMA_COEFFS];
-    /** Coefficients for luma samples on the Y-axis (vertical) */
-    float y_k_v[AVS_MAX_LUMA_COEFFS];
-    /** Coefficients for chroma samples on the X-axis (horizontal) */
-    float uv_k_h[AVS_MAX_CHROMA_COEFFS];
-    /** Coefficients for chroma samples on the Y-axis (vertical) */
-    float uv_k_v[AVS_MAX_CHROMA_COEFFS];
+	/** Coefficients for luma samples on the X-axis (horizontal) */
+	float y_k_h[AVS_MAX_LUMA_COEFFS];
+	/** Coefficients for luma samples on the Y-axis (vertical) */
+	float y_k_v[AVS_MAX_LUMA_COEFFS];
+	/** Coefficients for chroma samples on the X-axis (horizontal) */
+	float uv_k_h[AVS_MAX_CHROMA_COEFFS];
+	/** Coefficients for chroma samples on the Y-axis (vertical) */
+	float uv_k_v[AVS_MAX_CHROMA_COEFFS];
 };
 
 /** AVS coefficients range used for validation */
 struct avs_coeffs_range {
-    /** Lower bound for all coefficients */
-    AVSCoeffs lower_bound;
-    /** Upper bound for all coefficients */
-    AVSCoeffs upper_bound;
+	/** Lower bound for all coefficients */
+	AVSCoeffs lower_bound;
+	/** Upper bound for all coefficients */
+	AVSCoeffs upper_bound;
 };
 
 /** Static configuration (per-generation) */
 struct avs_config {
-    /** Number of bits used for the fractional part of a coefficient */
-    int coeff_frac_bits;
-    /** The smallest float that could be represented as a coefficient */
-    float coeff_epsilon;
-    /** Coefficients range */
-    AVSCoeffsRange coeff_range;
-    /** Number of phases for the sharp filter */
-    int num_phases;
-    /** Number of coefficients for luma samples */
-    int num_luma_coeffs;
-    /** Number of coefficients for chroma samples */
-    int num_chroma_coeffs;
+	/** Number of bits used for the fractional part of a coefficient */
+	int coeff_frac_bits;
+	/** The smallest float that could be represented as a coefficient */
+	float coeff_epsilon;
+	/** Coefficients range */
+	AVSCoeffsRange coeff_range;
+	/** Number of phases for the sharp filter */
+	int num_phases;
+	/** Number of coefficients for luma samples */
+	int num_luma_coeffs;
+	/** Number of coefficients for chroma samples */
+	int num_chroma_coeffs;
 };
 
 /** AVS block state */
 struct avs_state {
-    /** Per-generation configuration parameters */
-    const AVSConfig *config;
-    /** Scaling flags */
-    uint32_t flags;
-    /** Scaling factor on the X-axis (horizontal) */
-    float scale_x;
-    /** Scaling factor on the Y-axis (vertical) */
-    float scale_y;
-    /** Coefficients for the polyphase scaler */
-    AVSCoeffs coeffs[AVS_MAX_PHASES + 1];
+	/** Per-generation configuration parameters */
+	const AVSConfig *config;
+	/** Scaling flags */
+	uint32_t flags;
+	/** Scaling factor on the X-axis (horizontal) */
+	float scale_x;
+	/** Scaling factor on the Y-axis (vertical) */
+	float scale_y;
+	/** Coefficients for the polyphase scaler */
+	AVSCoeffs coeffs[AVS_MAX_PHASES + 1];
 };
 
 /** Initializes AVS state with the supplied configuration */
@@ -107,7 +107,7 @@ avs_update_coefficients(AVSState *avs, float sx, float sy, uint32_t flags);
 static inline bool
 avs_is_needed(uint32_t flags)
 {
-    return ((flags & VA_FILTER_SCALING_MASK) >= VA_FILTER_SCALING_HQ);
+	return ((flags & VA_FILTER_SCALING_MASK) >= VA_FILTER_SCALING_HQ);
 }
 
 #endif /* I965_VPP_AVS_H */

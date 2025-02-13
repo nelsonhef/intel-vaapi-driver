@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007 Intel Corporation. All Rights Reserved.
+ * Copyright (C) 2007 Intel Corporation. All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the
@@ -34,19 +34,19 @@ typedef struct object_base *object_base_p;
 typedef struct object_heap *object_heap_p;
 
 struct object_base {
-    int id;
-    int next_free;
+	int id;
+	int next_free;
 };
 
 struct object_heap {
-    int object_size;
-    int id_offset;
-    int next_free;
-    int heap_size;
-    int heap_increment;
-    _I965Mutex mutex;
-    void **bucket;
-    int num_buckets;
+	int object_size;
+	int id_offset;
+	int next_free;
+	int heap_size;
+	int heap_increment;
+	_I965Mutex mutex;
+	void **bucket;
+	int num_buckets;
 };
 
 typedef int object_heap_iterator;

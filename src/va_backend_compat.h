@@ -31,13 +31,13 @@
 # include <va/va_drmcommon.h>
 
 # define VA_CHECK_DRM_AUTH_TYPE(ctx, type) \
-    (((struct drm_state *)(ctx)->drm_state)->auth_type == (type))
+	(((struct drm_state *)(ctx)->drm_state)->auth_type == (type))
 
 #else
 # include <va/va_dricommon.h>
 
 # define VA_CHECK_DRM_AUTH_TYPE(ctx, type) \
-    (((struct dri_state *)(ctx)->dri_state)->driConnectedFlag == (type))
+	(((struct dri_state *)(ctx)->dri_state)->driConnectedFlag == (type))
 
 # define drm_state              dri_state
 # define VA_DRM_AUTH_DRI1       VA_DRI1

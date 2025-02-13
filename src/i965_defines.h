@@ -2,9 +2,9 @@
 #define _I965_DEFINES_H_
 
 #define CMD(pipeline,op,sub_op)     ((3 << 29) | \
-                                            ((pipeline) << 27) | \
-                                            ((op) << 24) | \
-                                            ((sub_op) << 16))
+											((pipeline) << 27) | \
+											((op) << 24) | \
+											((sub_op) << 16))
 
 #define CMD_URB_FENCE                           CMD(0, 0, 0)
 #define CMD_CS_URB_STATE                        CMD(0, 0, 1)
@@ -334,11 +334,11 @@
 #define GEN8_3DSTATE_VF_INSTANCING                      CMD(3, 0, 0x49)
 
 #define MFX(pipeline, op, sub_opa, sub_opb)     \
-    (3 << 29 |                                  \
-     (pipeline) << 27 |                         \
-     (op) << 24 |                               \
-     (sub_opa) << 21 |                          \
-     (sub_opb) << 16)
+	(3 << 29 |                                  \
+	 (pipeline) << 27 |                         \
+	 (op) << 24 |                               \
+	 (sub_opa) << 21 |                          \
+	 (sub_opb) << 16)
 
 #define MFX_PIPE_MODE_SELECT                    MFX(2, 0, 0, 0)
 #define MFX_SURFACE_STATE                       MFX(2, 0, 0, 1)
@@ -406,21 +406,21 @@
 #define MFX_VP8_PAK_OBJECT                      MFX(2, 4, 2, 9)
 
 #define VEB(pipeline, op, sub_opa, sub_opb)     \
-     (3 << 29 |                                 \
-     (pipeline) << 27 |                         \
-     (op) << 24 |                               \
-     (sub_opa) << 21 |                          \
-     (sub_opb) << 16)
+	 (3 << 29 |                                 \
+	 (pipeline) << 27 |                         \
+	 (op) << 24 |                               \
+	 (sub_opa) << 21 |                          \
+	 (sub_opb) << 16)
 
 #define VEB_SURFACE_STATE                       VEB(2, 4, 0, 0)
 #define VEB_STATE                               VEB(2, 4, 0, 2)
 #define VEB_DNDI_IECP_STATE                     VEB(2, 4, 0, 3)
 
 #define HCP(command)                            \
-    (3 << 29 |                                  \
-     2 << 27 |                                  \
-     7 << 23 |                                  \
-     (command << 16))
+	(3 << 29 |                                  \
+	 2 << 27 |                                  \
+	 7 << 23 |                                  \
+	 (command << 16))
 
 #define HCP_PIPE_MODE_SELECT                    HCP(0x00)
 #define HCP_SURFACE_STATE                       HCP(0x01)
@@ -924,10 +924,10 @@
 /* VDEnc/HuC */
 /* HuC commands */
 #define HUC(command)                            \
-    (3 << 29 |                                  \
-     2 << 27 |                                  \
-     11 << 23 |                                 \
-     (command << 16))
+	(3 << 29 |                                  \
+	 2 << 27 |                                  \
+	 11 << 23 |                                 \
+	 (command << 16))
 
 #define HUC_PIPE_MODE_SELECT            HUC(0)
 #define HUC_IMEM_STATE                  HUC(1)
@@ -944,11 +944,11 @@
 
 /* VDEnc commands */
 #define VDENC(opcode, sub_opcode_a, sub_opcode_b)       \
-    (3 << 29 |                                          \
-     2 << 27 |                                          \
-     opcode << 23 |                                     \
-     sub_opcode_a << 21 |                               \
-     sub_opcode_b << 16)
+	(3 << 29 |                                          \
+	 2 << 27 |                                          \
+	 opcode << 23 |                                     \
+	 sub_opcode_a << 21 |                               \
+	 sub_opcode_b << 16)
 
 #define VD_PIPELINE_FLUSH               VDENC(15, 0, 0)
 

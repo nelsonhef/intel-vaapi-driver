@@ -36,14 +36,14 @@ i965_output_dri_terminate(VADriverContextP ctx);
 
 VAStatus
 i965_put_surface_dri(
-    VADriverContextP    ctx,
-    VASurfaceID         surface,
-    void               *draw,
-    const VARectangle  *src_rect,
-    const VARectangle  *dst_rect,
-    const VARectangle  *cliprects,
-    unsigned int        num_cliprects,
-    unsigned int        flags
+	VADriverContextP    ctx,
+	VASurfaceID         surface,
+	void               *draw,
+	const VARectangle  *src_rect,
+	const VARectangle  *dst_rect,
+	const VARectangle  *cliprects,
+	unsigned int        num_cliprects,
+	unsigned int        flags
 );
 
 #endif /* I965_OUTPUT_DRI_H */

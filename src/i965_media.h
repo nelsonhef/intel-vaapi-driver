@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009 Intel Corporation
+ * Copyright (C) 2009 Intel Corporation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the
@@ -43,53 +43,53 @@
 struct decode_state;
 
 struct i965_media_context {
-    struct hw_context base;
+	struct hw_context base;
 
-    struct {
-        dri_bo *bo;
-    } surface_state[MAX_MEDIA_SURFACES];
+	struct {
+		dri_bo *bo;
+	} surface_state[MAX_MEDIA_SURFACES];
 
-    struct {
-        dri_bo *bo;
-    } binding_table;
+	struct {
+		dri_bo *bo;
+	} binding_table;
 
-    struct {
-        dri_bo *bo;
-    } idrt;  /* interface descriptor remap table */
+	struct {
+		dri_bo *bo;
+	} idrt;  /* interface descriptor remap table */
 
-    struct {
-        dri_bo *bo;
-        int enabled;
-    } extended_state;
+	struct {
+		dri_bo *bo;
+		int enabled;
+	} extended_state;
 
-    struct {
-        dri_bo *bo;
-    } vfe_state;
+	struct {
+		dri_bo *bo;
+	} vfe_state;
 
-    struct {
-        dri_bo *bo;
-    } curbe;
+	struct {
+		dri_bo *bo;
+	} curbe;
 
-    struct {
-        dri_bo *bo;
-        unsigned long offset;
-    } indirect_object;
+	struct {
+		dri_bo *bo;
+		unsigned long offset;
+	} indirect_object;
 
-    struct {
-        unsigned int vfe_start;
-        unsigned int cs_start;
+	struct {
+		unsigned int vfe_start;
+		unsigned int cs_start;
 
-        unsigned int num_vfe_entries;
-        unsigned int num_cs_entries;
+		unsigned int num_vfe_entries;
+		unsigned int num_cs_entries;
 
-        unsigned int size_vfe_entry;
-        unsigned int size_cs_entry;
-    } urb;
+		unsigned int size_vfe_entry;
+		unsigned int size_cs_entry;
+	} urb;
 
-    void *private_context;
-    void (*media_states_setup)(VADriverContextP ctx, struct decode_state *decode_state, struct i965_media_context *media_context);
-    void (*media_objects)(VADriverContextP ctx, struct decode_state *decode_state, struct i965_media_context *media_context);
-    void (*free_private_context)(void **data);
+	void *private_context;
+	void (*media_states_setup)(VADriverContextP ctx, struct decode_state *decode_state, struct i965_media_context *media_context);
+	void (*media_objects)(VADriverContextP ctx, struct decode_state *decode_state, struct i965_media_context *media_context);
+	void (*free_private_context)(void **data);
 };
 
 #endif /* _I965_MEDIA_H_ */

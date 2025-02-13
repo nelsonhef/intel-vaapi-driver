@@ -1,5 +1,5 @@
 /*
- * Copyright © 2010 Intel Corporation
+ * Copyright (C) 2010 Intel Corporation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the
@@ -62,116 +62,116 @@
 #define POST_COPY_CONVERT       0x08
 
 enum {
-    FRAME_IN_CURRENT = 0,
-    FRAME_IN_PREVIOUS,
-    FRAME_IN_STMM,
-    FRAME_OUT_STMM,
-    FRAME_OUT_CURRENT_DN,
-    FRAME_OUT_CURRENT,
-    FRAME_OUT_PREVIOUS,
-    FRAME_OUT_STATISTIC,
-    FRAME_STORE_COUNT,
+	FRAME_IN_CURRENT = 0,
+	FRAME_IN_PREVIOUS,
+	FRAME_IN_STMM,
+	FRAME_OUT_STMM,
+	FRAME_OUT_CURRENT_DN,
+	FRAME_OUT_CURRENT,
+	FRAME_OUT_PREVIOUS,
+	FRAME_OUT_STATISTIC,
+	FRAME_STORE_COUNT,
 };
 
 enum SURFACE_FORMAT {
-    YCRCB_NORMAL = 0,
-    YCRCB_SWAPUVY,
-    YCRCB_SWAPUV,
-    YCRCB_SWAPY,
-    PLANAR_420_8,  //NV12
-    PACKED_444A_8,
-    PACKED_422_16,
-    R10G10B10A2_UNORM_SRGB,
-    R8G8B8A8_UNORM_SRGB,
-    PACKED_444_16,
-    PLANAR_422_16,
-    Y8_UNORM,
-    PLANAR_420_16,
-    R16G16B16A16,
-    SURFACE_FORMAT_SUM
+	YCRCB_NORMAL = 0,
+	YCRCB_SWAPUVY,
+	YCRCB_SWAPUV,
+	YCRCB_SWAPY,
+	PLANAR_420_8,  //NV12
+	PACKED_444A_8,
+	PACKED_422_16,
+	R10G10B10A2_UNORM_SRGB,
+	R8G8B8A8_UNORM_SRGB,
+	PACKED_444_16,
+	PLANAR_422_16,
+	Y8_UNORM,
+	PLANAR_420_16,
+	R16G16B16A16,
+	SURFACE_FORMAT_SUM
 };
 
 typedef struct veb_frame_store {
-    struct object_surface *obj_surface;
-    VASurfaceID surface_id; /* always relative to the input surface */
-    unsigned int is_internal_surface : 1;
-    unsigned int is_scratch_surface : 1;
+	struct object_surface *obj_surface;
+	VASurfaceID surface_id; /* always relative to the input surface */
+	unsigned int is_internal_surface : 1;
+	unsigned int is_scratch_surface : 1;
 } VEBFrameStore;
 
 typedef struct veb_buffer {
-    dri_bo  *bo;
-    char *  ptr;
-    unsigned char  valid;
+	dri_bo  *bo;
+	char *  ptr;
+	unsigned char  valid;
 } VEBBuffer;
 
 struct intel_vebox_context {
-    struct intel_batchbuffer *batch;
+	struct intel_batchbuffer *batch;
 
-    struct object_surface *surface_input_object;
-    struct object_surface *surface_output_object;
-    VASurfaceID surface_input_vebox;
-    struct object_surface *surface_input_vebox_object;
-    VASurfaceID surface_output_vebox;
-    struct object_surface *surface_output_vebox_object;
-    VASurfaceID surface_output_scaled;
-    struct object_surface *surface_output_scaled_object;
+	struct object_surface *surface_input_object;
+	struct object_surface *surface_output_object;
+	VASurfaceID surface_input_vebox;
+	struct object_surface *surface_input_vebox_object;
+	VASurfaceID surface_output_vebox;
+	struct object_surface *surface_output_vebox_object;
+	VASurfaceID surface_output_scaled;
+	struct object_surface *surface_output_scaled_object;
 
-    unsigned int fourcc_input;
-    unsigned int fourcc_output;
+	unsigned int fourcc_input;
+	unsigned int fourcc_output;
 
-    int width_input;
-    int height_input;
-    int width_output;
-    int height_output;
+	int width_input;
+	int height_input;
+	int width_output;
+	int height_output;
 
-    VEBFrameStore frame_store[FRAME_STORE_COUNT];
+	VEBFrameStore frame_store[FRAME_STORE_COUNT];
 
-    VEBBuffer dndi_state_table;
-    VEBBuffer iecp_state_table;
-    VEBBuffer gamut_state_table;
-    VEBBuffer vertex_state_table;
+	VEBBuffer dndi_state_table;
+	VEBBuffer iecp_state_table;
+	VEBBuffer gamut_state_table;
+	VEBBuffer vertex_state_table;
 
-    unsigned int  filters_mask;
-    int current_output;
-    int current_output_type; /* 0:Both, 1:Previous, 2:Current */
+	unsigned int  filters_mask;
+	int current_output;
+	int current_output_type; /* 0:Both, 1:Previous, 2:Current */
 
-    VAProcPipelineParameterBuffer * pipeline_param;
-    void * filter_dn;
-    void * filter_di;
-    void * filter_iecp_std;
-    void * filter_iecp_ace;
-    void * filter_iecp_tcc;
-    void * filter_iecp_amp;
+	VAProcPipelineParameterBuffer * pipeline_param;
+	void * filter_dn;
+	void * filter_di;
+	void * filter_iecp_std;
+	void * filter_iecp_ace;
+	void * filter_iecp_tcc;
+	void * filter_iecp_amp;
 
-    unsigned int  filter_iecp_amp_num_elements;
-    unsigned char format_convert_flags;
+	unsigned int  filter_iecp_amp_num_elements;
+	unsigned char format_convert_flags;
 
-    /* Temporary flags live until the current picture is processed */
-    unsigned int is_iecp_enabled        : 1;
-    unsigned int is_dn_enabled          : 1;
-    unsigned int is_di_enabled          : 1;
-    unsigned int is_di_adv_enabled      : 1;
-    unsigned int is_first_frame         : 1;
-    unsigned int is_second_field        : 1;
+	/* Temporary flags live until the current picture is processed */
+	unsigned int is_iecp_enabled        : 1;
+	unsigned int is_dn_enabled          : 1;
+	unsigned int is_di_enabled          : 1;
+	unsigned int is_di_adv_enabled      : 1;
+	unsigned int is_first_frame         : 1;
+	unsigned int is_second_field        : 1;
 
-    struct vpp_gpe_context     *vpp_gpe_ctx;
+	struct vpp_gpe_context     *vpp_gpe_ctx;
 };
 
 VAStatus gen75_vebox_process_picture(VADriverContextP ctx,
-                                     struct intel_vebox_context *proc_ctx);
+									 struct intel_vebox_context *proc_ctx);
 
 void gen75_vebox_context_destroy(VADriverContextP ctx,
-                                 struct intel_vebox_context *proc_ctx);
+								 struct intel_vebox_context *proc_ctx);
 
 struct intel_vebox_context * gen75_vebox_context_init(VADriverContextP ctx);
 
 VAStatus gen8_vebox_process_picture(VADriverContextP ctx,
-                                    struct intel_vebox_context *proc_ctx);
+									struct intel_vebox_context *proc_ctx);
 
 VAStatus gen9_vebox_process_picture(VADriverContextP ctx,
-                                    struct intel_vebox_context *proc_ctx);
+									struct intel_vebox_context *proc_ctx);
 
 VAStatus gen10_vebox_process_picture(VADriverContextP ctx,
-                                     struct intel_vebox_context *proc_ctx);
+									 struct intel_vebox_context *proc_ctx);
 
 #endif

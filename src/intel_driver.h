@@ -112,89 +112,89 @@ extern uint32_t g_intel_debug_option_flags;
 #define VA_INTEL_DEBUG_OPTION_DUMP_AUB  (1 << 2)
 
 #define ASSERT_RET(value, fail_ret) do {    \
-        if (!(value)) {                     \
-            if (g_intel_debug_option_flags & VA_INTEL_DEBUG_OPTION_ASSERT)       \
-                assert(value);              \
-            return fail_ret;                \
-        }                                   \
-    } while (0)
+		if (!(value)) {                     \
+			if (g_intel_debug_option_flags & VA_INTEL_DEBUG_OPTION_ASSERT)       \
+				assert(value);              \
+			return fail_ret;                \
+		}                                   \
+	} while (0)
 
 #define SET_BLOCKED_SIGSET()   do {     \
-        sigset_t bl_mask;               \
-        sigfillset(&bl_mask);           \
-        sigdelset(&bl_mask, SIGFPE);    \
-        sigdelset(&bl_mask, SIGILL);    \
-        sigdelset(&bl_mask, SIGSEGV);   \
-        sigdelset(&bl_mask, SIGBUS);    \
-        sigdelset(&bl_mask, SIGKILL);   \
-        pthread_sigmask(SIG_SETMASK, &bl_mask, &intel->sa_mask); \
-    } while (0)
+		sigset_t bl_mask;               \
+		sigfillset(&bl_mask);           \
+		sigdelset(&bl_mask, SIGFPE);    \
+		sigdelset(&bl_mask, SIGILL);    \
+		sigdelset(&bl_mask, SIGSEGV);   \
+		sigdelset(&bl_mask, SIGBUS);    \
+		sigdelset(&bl_mask, SIGKILL);   \
+		pthread_sigmask(SIG_SETMASK, &bl_mask, &intel->sa_mask); \
+	} while (0)
 
 #define RESTORE_BLOCKED_SIGSET() do {    \
-        pthread_sigmask(SIG_SETMASK, &intel->sa_mask, NULL); \
-    } while (0)
+		pthread_sigmask(SIG_SETMASK, &intel->sa_mask, NULL); \
+	} while (0)
 
 #define PPTHREAD_MUTEX_LOCK() do {             \
-        SET_BLOCKED_SIGSET();                  \
-        pthread_mutex_lock(&intel->ctxmutex);       \
-    } while (0)
+		SET_BLOCKED_SIGSET();                  \
+		pthread_mutex_lock(&intel->ctxmutex);       \
+	} while (0)
 
 #define PPTHREAD_MUTEX_UNLOCK() do {           \
-        pthread_mutex_unlock(&intel->ctxmutex);     \
-        RESTORE_BLOCKED_SIGSET();              \
-    } while (0)
+		pthread_mutex_unlock(&intel->ctxmutex);     \
+		RESTORE_BLOCKED_SIGSET();              \
+	} while (0)
 
 #define WARN_ONCE(...) do {                     \
-        static int g_once = 1;                  \
-        if (g_once) {                           \
-            g_once = 0;                         \
-            fprintf(stderr, "WARNING: " __VA_ARGS__);    \
-        }                                       \
-    } while (0)
+		static int g_once = 1;                  \
+		if (g_once) {                           \
+			g_once = 0;                         \
+			fprintf(stderr, "WARNING: " __VA_ARGS__);    \
+		}                                       \
+	} while (0)
 
 struct intel_device_info {
-    int gen;
-    int gt;
+	int gen;
+	int gt;
 
-    unsigned int urb_size;
-    unsigned int max_wm_threads;
+	unsigned int urb_size;
+	unsigned int max_wm_threads;
 
-    unsigned int is_g4x         : 1; /* gen4 */
-    unsigned int is_ivybridge   : 1; /* gen7 */
-    unsigned int is_baytrail    : 1; /* gen7 */
-    unsigned int is_haswell     : 1; /* gen7 */
-    unsigned int is_cherryview  : 1; /* gen8 */
-    unsigned int is_skylake     : 1; /* gen9 */
-    unsigned int is_broxton     : 1; /* gen9 */
-    unsigned int is_kabylake    : 1; /* gen9p5 */
-    unsigned int is_glklake     : 1; /* gen9p5 lp*/
-    unsigned int is_cfllake     : 1;
+	unsigned int is_g4x         : 1; /* gen4 */
+	unsigned int is_ivybridge   : 1; /* gen7 */
+	unsigned int is_baytrail    : 1; /* gen7 */
+	unsigned int is_haswell     : 1; /* gen7 */
+	unsigned int is_cherryview  : 1; /* gen8 */
+	unsigned int is_skylake     : 1; /* gen9 */
+	unsigned int is_broxton     : 1; /* gen9 */
+	unsigned int is_kabylake    : 1; /* gen9p5 */
+	unsigned int is_glklake     : 1; /* gen9p5 lp*/
+	unsigned int is_cfllake     : 1;
 };
 
 struct intel_driver_data {
-    int fd;
-    int device_id;
-    int revision;
+	int fd;
+	int device_id;
+	int revision;
 
-    int dri2Enabled;
+	int dri2Enabled;
 
-    sigset_t sa_mask;
-    pthread_mutex_t ctxmutex;
-    int locked;
+	sigset_t sa_mask;
+	pthread_mutex_t ctxmutex;
+	int locked;
 
-    dri_bufmgr *bufmgr;
+	dri_bufmgr *bufmgr;
 
-    unsigned int has_exec2  : 1; /* Flag: has execbuffer2? */
-    unsigned int has_bsd    : 1; /* Flag: has bitstream decoder for H.264? */
-    unsigned int has_blt    : 1; /* Flag: has BLT unit? */
-    unsigned int has_vebox  : 1; /* Flag: has VEBOX unit */
-    unsigned int has_bsd2   : 1; /* Flag: has the second BSD video ring unit */
-    unsigned int has_huc    : 1; /* Flag: has a fully loaded HuC firmware? */
+	unsigned int has_exec2  : 1; /* Flag: has execbuffer2? */
+	unsigned int has_bsd    : 1; /* Flag: has bitstream decoder for H.264? */
+	unsigned int has_blt    : 1; /* Flag: has BLT unit? */
+	unsigned int has_vebox  : 1; /* Flag: has VEBOX unit */
+	unsigned int has_bsd2   : 1; /* Flag: has the second BSD video ring unit */
+	unsigned int has_huc    : 1; /* Flag: has a fully loaded HuC firmware? */
 
-    int eu_total;
+	int eu_total;
 
-    const struct intel_device_info *device_info;
-    unsigned int mocs_state;
+	const struct intel_device_info *device_info;
+	unsigned int mocs_state;
 };
 
 bool intel_driver_init(VADriverContextP ctx);
@@ -203,19 +203,19 @@ void intel_driver_terminate(VADriverContextP ctx);
 static INLINE struct intel_driver_data *
 intel_driver_data(VADriverContextP ctx)
 {
-    return (struct intel_driver_data *)ctx->pDriverData;
+	return (struct intel_driver_data *)ctx->pDriverData;
 }
 
 struct intel_region {
-    int x;
-    int y;
-    unsigned int width;
-    unsigned int height;
-    unsigned int cpp;
-    unsigned int pitch;
-    unsigned int tiling;
-    unsigned int swizzle;
-    dri_bo *bo;
+	int x;
+	int y;
+	unsigned int width;
+	unsigned int height;
+	unsigned int cpp;
+	unsigned int pitch;
+	unsigned int tiling;
+	unsigned int swizzle;
+	dri_bo *bo;
 };
 
 #define IS_G4X(device_info)             (device_info->is_g4x)
@@ -237,7 +237,7 @@ struct intel_region {
 #define IS_BXT(device_info)             (device_info->is_broxton)
 
 #define IS_KBL(device_info)             (device_info->is_kabylake ||\
-                                         device_info->is_cfllake)
+										 device_info->is_cfllake)
 
 #define IS_GLK(device_info)             (device_info->is_glklake)
 

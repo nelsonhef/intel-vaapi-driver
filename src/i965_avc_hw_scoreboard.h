@@ -1,5 +1,5 @@
 /*
- * Copyright © 2010 Intel Corporation
+ * Copyright (C) 2010 Intel Corporation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the
@@ -30,50 +30,50 @@
 #define __I965_AVC_HW_SCOREBOARD_H__
 
 struct i965_avc_hw_scoreboard_context {
-    struct {
-        unsigned int num_mb_cmds;
-        unsigned int starting_mb_number;
-        unsigned int pic_width_in_mbs;
-    } inline_data;
+	struct {
+		unsigned int num_mb_cmds;
+		unsigned int starting_mb_number;
+		unsigned int pic_width_in_mbs;
+	} inline_data;
 
-    struct {
-        dri_bo *ss_bo;
-        dri_bo *s_bo;
-        unsigned int total_mbs;
-    } surface;
+	struct {
+		dri_bo *ss_bo;
+		dri_bo *s_bo;
+		unsigned int total_mbs;
+	} surface;
 
-    struct {
-        dri_bo *bo;
-    } binding_table;
+	struct {
+		dri_bo *bo;
+	} binding_table;
 
-    struct {
-        dri_bo *bo;
-    } idrt;
+	struct {
+		dri_bo *bo;
+	} idrt;
 
-    struct {
-        dri_bo *bo;
-    } vfe_state;
+	struct {
+		dri_bo *bo;
+	} vfe_state;
 
-    struct {
-        dri_bo *bo;
-        int upload;
-    } curbe;
+	struct {
+		dri_bo *bo;
+		int upload;
+	} curbe;
 
-    struct {
-        dri_bo *bo;
-        unsigned long offset;
-    } hw_kernel;
+	struct {
+		dri_bo *bo;
+		unsigned long offset;
+	} hw_kernel;
 
-    struct {
-        unsigned int vfe_start;
-        unsigned int cs_start;
+	struct {
+		unsigned int vfe_start;
+		unsigned int cs_start;
 
-        unsigned int num_vfe_entries;
-        unsigned int num_cs_entries;
+		unsigned int num_vfe_entries;
+		unsigned int num_cs_entries;
 
-        unsigned int size_vfe_entry;
-        unsigned int size_cs_entry;
-    } urb;
+		unsigned int size_vfe_entry;
+		unsigned int size_cs_entry;
+	} urb;
 };
 
 void i965_avc_hw_scoreboard(VADriverContextP, struct decode_state *, void *h264_context);

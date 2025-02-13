@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 Intel Corporation
+ * Copyright (C) 2014 Intel Corporation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the
@@ -49,38 +49,38 @@ extern Bool gen10_vdenc_vp9_context_init(VADriverContextP ctx, struct intel_enco
 
 Bool gen9_mfc_context_init(VADriverContextP ctx, struct intel_encoder_context *encoder_context)
 {
-    struct i965_driver_data *i965 = i965_driver_data(ctx);
+	struct i965_driver_data *i965 = i965_driver_data(ctx);
 
-    switch (encoder_context->codec) {
-    case CODEC_VP8:
-        return i965_encoder_vp8_pak_context_init(ctx, encoder_context);
+	switch (encoder_context->codec) {
+	case CODEC_VP8:
+		return i965_encoder_vp8_pak_context_init(ctx, encoder_context);
 
-    case CODEC_MPEG2:
-    case CODEC_JPEG:
-        return gen8_mfc_context_init(ctx, encoder_context);
+	case CODEC_MPEG2:
+	case CODEC_JPEG:
+		return gen8_mfc_context_init(ctx, encoder_context);
 
-    case CODEC_H264:
-    case CODEC_H264_MVC:
-        if (encoder_context->low_power_mode)
-            return gen9_vdenc_context_init(ctx, encoder_context);
-        else
-            return gen9_avc_pak_context_init(ctx, encoder_context);
+	case CODEC_H264:
+	case CODEC_H264_MVC:
+		if (encoder_context->low_power_mode)
+			return gen9_vdenc_context_init(ctx, encoder_context);
+		else
+			return gen9_avc_pak_context_init(ctx, encoder_context);
 
-    case CODEC_HEVC:
-        if (IS_GEN10(i965->intel.device_info))
-            return gen10_hevc_pak_context_init(ctx, encoder_context);
-        else
-            return gen9_hevc_pak_context_init(ctx, encoder_context);
+	case CODEC_HEVC:
+		if (IS_GEN10(i965->intel.device_info))
+			return gen10_hevc_pak_context_init(ctx, encoder_context);
+		else
+			return gen9_hevc_pak_context_init(ctx, encoder_context);
 
-    case CODEC_VP9:
-        if (encoder_context->low_power_mode) {
-            assert(IS_GEN10(i965->intel.device_info));
-            return gen10_vdenc_vp9_context_init(ctx, encoder_context);
-        } else
-            return gen9_vp9_pak_context_init(ctx, encoder_context);
-    }
+	case CODEC_VP9:
+		if (encoder_context->low_power_mode) {
+			assert(IS_GEN10(i965->intel.device_info));
+			return gen10_vdenc_vp9_context_init(ctx, encoder_context);
+		} else
+			return gen9_vp9_pak_context_init(ctx, encoder_context);
+	}
 
-    /* Other profile/entrypoint pairs never get here, see gen9_enc_hw_context_init() */
-    assert(0);
-    return False;
+	/* Other profile/entrypoint pairs never get here, see gen9_enc_hw_context_init() */
+	assert(0);
+	return False;
 }

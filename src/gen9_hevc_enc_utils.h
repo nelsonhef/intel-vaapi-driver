@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017 Intel Corporation
+ * Copyright (C) 2017 Intel Corporation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the
@@ -37,7 +37,7 @@
 
 extern unsigned int
 gen9_hevc_get_profile_level_max_frame(VAEncSequenceParameterBufferHEVC *seq_param,
-                                      unsigned int user_max_frame_size,
-                                      unsigned int frame_rate);
+									  unsigned int user_max_frame_size,
+									  unsigned int frame_rate);
 
 #endif

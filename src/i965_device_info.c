@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 Intel Corporation
+ * Copyright (C) 2014 Intel Corporation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the
@@ -34,29 +34,29 @@
 
 /* Extra set of chroma formats supported for H.264 decoding (beyond YUV 4:2:0) */
 #define EXTRA_H264_DEC_CHROMA_FORMATS \
-    (VA_RT_FORMAT_YUV400)
+	(VA_RT_FORMAT_YUV400)
 
 /* Extra set of chroma formats supported for JPEG decoding (beyond YUV 4:2:0) */
 #define EXTRA_JPEG_DEC_CHROMA_FORMATS \
-    (VA_RT_FORMAT_YUV400 | VA_RT_FORMAT_YUV411 | VA_RT_FORMAT_YUV422 | \
-     VA_RT_FORMAT_YUV444)
+	(VA_RT_FORMAT_YUV400 | VA_RT_FORMAT_YUV411 | VA_RT_FORMAT_YUV422 | \
+	 VA_RT_FORMAT_YUV444)
 
 /* Extra set of chroma formats supported for JPEG encoding (beyond YUV 4:2:0) */
 #define EXTRA_JPEG_ENC_CHROMA_FORMATS \
-    (VA_RT_FORMAT_YUV400| VA_RT_FORMAT_YUV422 | VA_RT_FORMAT_YUV444 | VA_RT_FORMAT_RGB32)
+	(VA_RT_FORMAT_YUV400| VA_RT_FORMAT_YUV422 | VA_RT_FORMAT_YUV444 | VA_RT_FORMAT_RGB32)
 
 #define EXTRA_HEVC_DEC_CHROMA_FORMATS \
-    (VA_RT_FORMAT_YUV420_10BPP)
+	(VA_RT_FORMAT_YUV420_10BPP)
 
 #define EXTRA_VP9_DEC_CHROMA_FORMATS \
-    (VA_RT_FORMAT_YUV420_10BPP)
+	(VA_RT_FORMAT_YUV420_10BPP)
 
 /* Defines VA profile as a 32-bit unsigned integer mask */
 #define VA_PROFILE_MASK(PROFILE) \
-    (1U << VAProfile##PROFILE)
+	(1U << VAProfile##PROFILE)
 
 #define VP9_PROFILE_MASK(PROFILE) \
-    (1U << PROFILE)
+	(1U << PROFILE)
 
 extern struct hw_context *i965_proc_context_init(VADriverContextP, struct object_config *);
 extern struct hw_context *g4x_dec_hw_context_init(VADriverContextP, struct object_config *);
@@ -808,192 +808,192 @@ static struct hw_codec_info cnl_hw_codec_info = {
 struct hw_codec_info *
 i965_get_codec_info(int devid)
 {
-    switch (devid) {
+	switch (devid) {
 #undef CHIPSET
 #define CHIPSET(id, family, dev, str) case id: return &family##_hw_codec_info;
 #include "i965_pciids.h"
-    default:
-        return NULL;
-    }
+	default:
+		return NULL;
+	}
 }
 
 static const struct intel_device_info g4x_device_info = {
-    .gen = 4,
+	.gen = 4,
 
-    .urb_size = 384,
-    .max_wm_threads = 50,       /* 10 * 5 */
+	.urb_size = 384,
+	.max_wm_threads = 50,       /* 10 * 5 */
 
-    .is_g4x = 1,
+	.is_g4x = 1,
 };
 
 static const struct intel_device_info ilk_device_info = {
-    .gen = 5,
+	.gen = 5,
 
-    .urb_size = 1024,
-    .max_wm_threads = 72,       /* 12 * 6 */
+	.urb_size = 1024,
+	.max_wm_threads = 72,       /* 12 * 6 */
 };
 
 static const struct intel_device_info snb_gt1_device_info = {
-    .gen = 6,
-    .gt = 1,
+	.gen = 6,
+	.gt = 1,
 
-    .urb_size = 1024,
-    .max_wm_threads = 40,
+	.urb_size = 1024,
+	.max_wm_threads = 40,
 };
 
 static const struct intel_device_info snb_gt2_device_info = {
-    .gen = 6,
-    .gt = 2,
+	.gen = 6,
+	.gt = 2,
 
-    .urb_size = 1024,
-    .max_wm_threads = 80,
+	.urb_size = 1024,
+	.max_wm_threads = 80,
 };
 
 static const struct intel_device_info ivb_gt1_device_info = {
-    .gen = 7,
-    .gt = 1,
+	.gen = 7,
+	.gt = 1,
 
-    .urb_size = 4096,
-    .max_wm_threads = 48,
+	.urb_size = 4096,
+	.max_wm_threads = 48,
 
-    .is_ivybridge = 1,
+	.is_ivybridge = 1,
 };
 
 static const struct intel_device_info ivb_gt2_device_info = {
-    .gen = 7,
-    .gt = 2,
+	.gen = 7,
+	.gt = 2,
 
-    .urb_size = 4096,
-    .max_wm_threads = 172,
+	.urb_size = 4096,
+	.max_wm_threads = 172,
 
-    .is_ivybridge = 1,
+	.is_ivybridge = 1,
 };
 
 static const struct intel_device_info byt_device_info = {
-    .gen = 7,
-    .gt = 1,
+	.gen = 7,
+	.gt = 1,
 
-    .urb_size = 4096,
-    .max_wm_threads = 48,
+	.urb_size = 4096,
+	.max_wm_threads = 48,
 
-    .is_ivybridge = 1,
-    .is_baytrail = 1,
+	.is_ivybridge = 1,
+	.is_baytrail = 1,
 };
 
 static const struct intel_device_info hsw_gt1_device_info = {
-    .gen = 7,
-    .gt = 1,
+	.gen = 7,
+	.gt = 1,
 
-    .urb_size = 4096,
-    .max_wm_threads = 102,
+	.urb_size = 4096,
+	.max_wm_threads = 102,
 
-    .is_haswell = 1,
+	.is_haswell = 1,
 };
 
 static const struct intel_device_info hsw_gt2_device_info = {
-    .gen = 7,
-    .gt = 2,
+	.gen = 7,
+	.gt = 2,
 
-    .urb_size = 4096,
-    .max_wm_threads = 204,
+	.urb_size = 4096,
+	.max_wm_threads = 204,
 
-    .is_haswell = 1,
+	.is_haswell = 1,
 };
 
 static const struct intel_device_info hsw_gt3_device_info = {
-    .gen = 7,
-    .gt = 3,
+	.gen = 7,
+	.gt = 3,
 
-    .urb_size = 4096,
-    .max_wm_threads = 408,
+	.urb_size = 4096,
+	.max_wm_threads = 408,
 
-    .is_haswell = 1,
+	.is_haswell = 1,
 };
 
 static const struct intel_device_info bdw_device_info = {
-    .gen = 8,
+	.gen = 8,
 
-    .urb_size = 4096,
-    .max_wm_threads = 64,       /* per PSD */
+	.urb_size = 4096,
+	.max_wm_threads = 64,       /* per PSD */
 };
 
 static const struct intel_device_info chv_device_info = {
-    .gen = 8,
+	.gen = 8,
 
-    .urb_size = 4096,
-    .max_wm_threads = 64,       /* per PSD */
+	.urb_size = 4096,
+	.max_wm_threads = 64,       /* per PSD */
 
-    .is_cherryview = 1,
+	.is_cherryview = 1,
 };
 
 static const struct intel_device_info skl_device_info = {
-    .gen = 9,
+	.gen = 9,
 
-    .urb_size = 4096,
-    .max_wm_threads = 64,       /* per PSD */
+	.urb_size = 4096,
+	.max_wm_threads = 64,       /* per PSD */
 
-    .is_skylake = 1,
+	.is_skylake = 1,
 };
 
 static const struct intel_device_info bxt_device_info = {
-    .gen = 9,
+	.gen = 9,
 
-    .urb_size = 4096,
-    .max_wm_threads = 64,       /* per PSD */
-    .is_broxton = 1,
+	.urb_size = 4096,
+	.max_wm_threads = 64,       /* per PSD */
+	.is_broxton = 1,
 };
 
 static const struct intel_device_info kbl_device_info = {
-    .gen = 9,
+	.gen = 9,
 
-    .urb_size = 4096,
-    .max_wm_threads = 64,       /* per PSD */
+	.urb_size = 4096,
+	.max_wm_threads = 64,       /* per PSD */
 
-    .is_kabylake = 1,
+	.is_kabylake = 1,
 };
 
 static const struct intel_device_info glk_device_info = {
-    .gen = 9,
+	.gen = 9,
 
-    .urb_size = 4096,
-    .max_wm_threads = 64,       /* per PSD */
+	.urb_size = 4096,
+	.max_wm_threads = 64,       /* per PSD */
 
-    .is_glklake = 1,
+	.is_glklake = 1,
 };
 
 static const struct intel_device_info cfl_device_info = {
-    .gen = 9,
+	.gen = 9,
 
-    .urb_size = 4096,
-    .max_wm_threads = 64,       /* per PSD */
+	.urb_size = 4096,
+	.max_wm_threads = 64,       /* per PSD */
 
-    .is_cfllake = 1,
+	.is_cfllake = 1,
 };
 
 static const struct intel_device_info cnl_device_info = {
-    .gen = 10,
+	.gen = 10,
 
-    .urb_size = 4096,
-    .max_wm_threads = 64,       /* per PSD */
+	.urb_size = 4096,
+	.max_wm_threads = 64,       /* per PSD */
 };
 
 const struct intel_device_info *
 i965_get_device_info(int devid)
 {
-    switch (devid) {
+	switch (devid) {
 #undef CHIPSET
 #define CHIPSET(id, family, dev, str) case id: return &dev##_device_info;
 #include "i965_pciids.h"
-    default:
-        return NULL;
-    }
+	default:
+		return NULL;
+	}
 }
 
 static void cpuid(unsigned int op,
-                  uint32_t *eax, uint32_t *ebx,
-                  uint32_t *ecx, uint32_t *edx)
+				  uint32_t *eax, uint32_t *ebx,
+				  uint32_t *ecx, uint32_t *edx)
 {
-    __cpuid_count(op, 0, *eax, *ebx, *ecx, *edx);
+	__cpuid_count(op, 0, *eax, *ebx, *ecx, *edx);
 }
 
 /*
@@ -1002,27 +1002,27 @@ static void cpuid(unsigned int op,
  */
 static int intel_driver_detect_cpustring(char *model_id)
 {
-    uint32_t *rdata;
+	uint32_t *rdata;
 
-    if (model_id == NULL)
-        return -EINVAL;
+	if (model_id == NULL)
+		return -EINVAL;
 
-    rdata = (uint32_t *)model_id;
+	rdata = (uint32_t *)model_id;
 
-    /* obtain the max supported extended CPUID info */
-    cpuid(0x80000000, &rdata[0], &rdata[1], &rdata[2], &rdata[3]);
+	/* obtain the max supported extended CPUID info */
+	cpuid(0x80000000, &rdata[0], &rdata[1], &rdata[2], &rdata[3]);
 
-    /* If the max extended CPUID info is less than 0x80000004, fail */
-    if (rdata[0] < 0x80000004)
-        return -EINVAL;
+	/* If the max extended CPUID info is less than 0x80000004, fail */
+	if (rdata[0] < 0x80000004)
+		return -EINVAL;
 
-    /* obtain the CPUID string */
-    cpuid(0x80000002, &rdata[0], &rdata[1], &rdata[2], &rdata[3]);
-    cpuid(0x80000003, &rdata[4], &rdata[5], &rdata[6], &rdata[7]);
-    cpuid(0x80000004, &rdata[8], &rdata[9], &rdata[10], &rdata[11]);
+	/* obtain the CPUID string */
+	cpuid(0x80000002, &rdata[0], &rdata[1], &rdata[2], &rdata[3]);
+	cpuid(0x80000003, &rdata[4], &rdata[5], &rdata[6], &rdata[7]);
+	cpuid(0x80000004, &rdata[8], &rdata[9], &rdata[10], &rdata[11]);
 
-    *(model_id + 48) = '\0';
-    return 0;
+	*(model_id + 48) = '\0';
+	return 0;
 }
 
 /*
@@ -1030,66 +1030,66 @@ static int intel_driver_detect_cpustring(char *model_id)
  * It is captured by /proc/cpuinfo and the space character is stripped.
  */
 const static char *hsw_cpu_hook_list[] =  {
-    "Intel(R)Pentium(R)3556U",
-    "Intel(R)Pentium(R)3560Y",
-    "Intel(R)Pentium(R)3550M",
-    "Intel(R)Celeron(R)2980U",
-    "Intel(R)Celeron(R)2955U",
-    "Intel(R)Celeron(R)2950M",
+	"Intel(R)Pentium(R)3556U",
+	"Intel(R)Pentium(R)3560Y",
+	"Intel(R)Pentium(R)3550M",
+	"Intel(R)Celeron(R)2980U",
+	"Intel(R)Celeron(R)2955U",
+	"Intel(R)Celeron(R)2950M",
 };
 
 static void hsw_hw_codec_preinit(VADriverContextP ctx, struct hw_codec_info *codec_info)
 {
-    char model_string[64];
-    char *model_ptr, *tmp_ptr;
-    int i, model_len, list_len;
-    bool found;
+	char model_string[64];
+	char *model_ptr, *tmp_ptr;
+	int i, model_len, list_len;
+	bool found;
 
-    memset(model_string, 0, sizeof(model_string));
+	memset(model_string, 0, sizeof(model_string));
 
-    /* If it can't detect cpu model_string, leave it alone */
-    if (intel_driver_detect_cpustring(model_string))
-        return;
+	/* If it can't detect cpu model_string, leave it alone */
+	if (intel_driver_detect_cpustring(model_string))
+		return;
 
-    /* strip the cpufreq info */
-    model_ptr = model_string;
-    tmp_ptr = strstr(model_ptr, "@");
+	/* strip the cpufreq info */
+	model_ptr = model_string;
+	tmp_ptr = strstr(model_ptr, "@");
 
-    if (tmp_ptr)
-        *tmp_ptr = '\0';
+	if (tmp_ptr)
+		*tmp_ptr = '\0';
 
-    /* strip the space character and convert to the lower case */
-    model_ptr = model_string;
-    model_len = strlen(model_string);
-    for (i = 0; i < model_len; i++) {
-        if (model_string[i] != ' ') {
-            *model_ptr = model_string[i];
-            model_ptr++;
-        }
-    }
-    *model_ptr = '\0';
+	/* strip the space character and convert to the lower case */
+	model_ptr = model_string;
+	model_len = strlen(model_string);
+	for (i = 0; i < model_len; i++) {
+		if (model_string[i] != ' ') {
+			*model_ptr = model_string[i];
+			model_ptr++;
+		}
+	}
+	*model_ptr = '\0';
 
-    found = false;
-    list_len = sizeof(hsw_cpu_hook_list) / sizeof(char *);
-    model_len = strlen(model_string);
-    for (i = 0; i < list_len; i++) {
-        model_ptr = (char *)hsw_cpu_hook_list[i];
+	found = false;
+	list_len = sizeof(hsw_cpu_hook_list) / sizeof(char *);
+	model_len = strlen(model_string);
+	for (i = 0; i < list_len; i++) {
+		model_ptr = (char *)hsw_cpu_hook_list[i];
 
-        if (strlen(model_ptr) != model_len)
-            continue;
+		if (strlen(model_ptr) != model_len)
+			continue;
 
-        if (strncasecmp(model_string, model_ptr, model_len) == 0) {
-            found = true;
-            break;
-        }
-    }
+		if (strncasecmp(model_string, model_ptr, model_len) == 0) {
+			found = true;
+			break;
+		}
+	}
 
-    if (found) {
-        codec_info->has_h264_encoding = 0;
-        codec_info->has_h264_mvc_encoding = 0;
-        codec_info->has_mpeg2_encoding = 0;
-    }
-    return;
+	if (found) {
+		codec_info->has_h264_encoding = 0;
+		codec_info->has_h264_mvc_encoding = 0;
+		codec_info->has_mpeg2_encoding = 0;
+	}
+	return;
 }
 
 /*
@@ -1097,60 +1097,60 @@ static void hsw_hw_codec_preinit(VADriverContextP ctx, struct hw_codec_info *cod
  * It is captured by /proc/cpuinfo and the space character is stripped.
  */
 const static char *gen6_cpu_hook_list[] =  {
-    "Intel(R)Celeron(R)CPU847",
-    "Intel(R)Celeron(R)CPU867",
+	"Intel(R)Celeron(R)CPU847",
+	"Intel(R)Celeron(R)CPU867",
 };
 
 static void gen6_hw_codec_preinit(VADriverContextP ctx, struct hw_codec_info *codec_info)
 {
-    char model_string[64];
-    char *model_ptr, *tmp_ptr;
-    int i, model_len, list_len;
-    bool found;
+	char model_string[64];
+	char *model_ptr, *tmp_ptr;
+	int i, model_len, list_len;
+	bool found;
 
-    memset(model_string, 0, sizeof(model_string));
+	memset(model_string, 0, sizeof(model_string));
 
-    /* If it can't detect cpu model_string, leave it alone */
-    if (intel_driver_detect_cpustring(model_string))
-        return;
+	/* If it can't detect cpu model_string, leave it alone */
+	if (intel_driver_detect_cpustring(model_string))
+		return;
 
-    /* strip the cpufreq info */
-    model_ptr = model_string;
-    tmp_ptr = strstr(model_ptr, "@");
+	/* strip the cpufreq info */
+	model_ptr = model_string;
+	tmp_ptr = strstr(model_ptr, "@");
 
-    if (tmp_ptr)
-        *tmp_ptr = '\0';
+	if (tmp_ptr)
+		*tmp_ptr = '\0';
 
-    /* strip the space character and convert to the lower case */
-    model_ptr = model_string;
-    model_len = strlen(model_string);
-    for (i = 0; i < model_len; i++) {
-        if (model_string[i] != ' ') {
-            *model_ptr = model_string[i];
-            model_ptr++;
-        }
-    }
-    *model_ptr = '\0';
+	/* strip the space character and convert to the lower case */
+	model_ptr = model_string;
+	model_len = strlen(model_string);
+	for (i = 0; i < model_len; i++) {
+		if (model_string[i] != ' ') {
+			*model_ptr = model_string[i];
+			model_ptr++;
+		}
+	}
+	*model_ptr = '\0';
 
-    found = false;
-    list_len = sizeof(gen6_cpu_hook_list) / sizeof(char *);
-    model_len = strlen(model_string);
-    for (i = 0; i < list_len; i++) {
-        model_ptr = (char *)gen6_cpu_hook_list[i];
+	found = false;
+	list_len = sizeof(gen6_cpu_hook_list) / sizeof(char *);
+	model_len = strlen(model_string);
+	for (i = 0; i < list_len; i++) {
+		model_ptr = (char *)gen6_cpu_hook_list[i];
 
-        if (strlen(model_ptr) != model_len)
-            continue;
+		if (strlen(model_ptr) != model_len)
+			continue;
 
-        if (strncasecmp(model_string, model_ptr, model_len) == 0) {
-            found = true;
-            break;
-        }
-    }
+		if (strncasecmp(model_string, model_ptr, model_len) == 0) {
+			found = true;
+			break;
+		}
+	}
 
-    if (found) {
-        codec_info->has_h264_encoding = 0;
-    }
-    return;
+	if (found) {
+		codec_info->has_h264_encoding = 0;
+	}
+	return;
 }
 
 /*
@@ -1158,99 +1158,99 @@ static void gen6_hw_codec_preinit(VADriverContextP ctx, struct hw_codec_info *co
  * It is captured by /proc/cpuinfo and the space character is stripped.
  */
 const static char *gen7_cpu_hook_list[] =  {
-    "Intel(R)Celeron(R)CPUG1620T",
-    "Intel(R)Celeron(R)CPUG1630",
-    "Intel(R)Celeron(R)CPU1005M",
-    "Intel(R)Celeron(R)CPU1017U",
-    "Intel(R)Celeron(R)CPU1019Y",
-    "Intel(R)Celeron(R)CPU1000M",
-    "Intel(R)Celeron(R)CPU1007U",
-    "Intel(R)Celeron(R)CPU1020E",
-    "Intel(R)Celeron(R)CPU1020M",
-    "Intel(R)Celeron(R)CPU1037U",
-    "Intel(R)Celeron(R)CPU1047UE",
-    "Intel(R)Celeron(R)CPU927UE",
-    "Intel(R)Celeron(R)CPUG1610",
-    "Intel(R)Celeron(R)CPUG1610T",
-    "Intel(R)Celeron(R)CPUG1620",
-    "Intel(R)Pentium(R)CPU2020M",
-    "Intel(R)Pentium(R)CPU2030M",
-    "Intel(R)Pentium(R)CPU2117U",
-    "Intel(R)Pentium(R)CPU2127U",
-    "Intel(R)Pentium(R)CPU2129Y",
-    "Intel(R)Pentium(R)CPUA1018",
-    "Intel(R)Pentium(R)CPUG2010",
-    "Intel(R)Pentium(R)CPUG2020",
-    "Intel(R)Pentium(R)CPUG2020T",
-    "Intel(R)Pentium(R)CPUG2030",
-    "Intel(R)Pentium(R)CPUG2030T",
-    "Intel(R)Pentium(R)CPUG2100T",
-    "Intel(R)Pentium(R)CPUG2120",
-    "Intel(R)Pentium(R)CPUG2120T",
-    "Intel(R)Pentium(R)CPUG2130",
-    "Intel(R)Pentium(R)CPUG2140",
+	"Intel(R)Celeron(R)CPUG1620T",
+	"Intel(R)Celeron(R)CPUG1630",
+	"Intel(R)Celeron(R)CPU1005M",
+	"Intel(R)Celeron(R)CPU1017U",
+	"Intel(R)Celeron(R)CPU1019Y",
+	"Intel(R)Celeron(R)CPU1000M",
+	"Intel(R)Celeron(R)CPU1007U",
+	"Intel(R)Celeron(R)CPU1020E",
+	"Intel(R)Celeron(R)CPU1020M",
+	"Intel(R)Celeron(R)CPU1037U",
+	"Intel(R)Celeron(R)CPU1047UE",
+	"Intel(R)Celeron(R)CPU927UE",
+	"Intel(R)Celeron(R)CPUG1610",
+	"Intel(R)Celeron(R)CPUG1610T",
+	"Intel(R)Celeron(R)CPUG1620",
+	"Intel(R)Pentium(R)CPU2020M",
+	"Intel(R)Pentium(R)CPU2030M",
+	"Intel(R)Pentium(R)CPU2117U",
+	"Intel(R)Pentium(R)CPU2127U",
+	"Intel(R)Pentium(R)CPU2129Y",
+	"Intel(R)Pentium(R)CPUA1018",
+	"Intel(R)Pentium(R)CPUG2010",
+	"Intel(R)Pentium(R)CPUG2020",
+	"Intel(R)Pentium(R)CPUG2020T",
+	"Intel(R)Pentium(R)CPUG2030",
+	"Intel(R)Pentium(R)CPUG2030T",
+	"Intel(R)Pentium(R)CPUG2100T",
+	"Intel(R)Pentium(R)CPUG2120",
+	"Intel(R)Pentium(R)CPUG2120T",
+	"Intel(R)Pentium(R)CPUG2130",
+	"Intel(R)Pentium(R)CPUG2140",
 };
 
 static void gen7_hw_codec_preinit(VADriverContextP ctx, struct hw_codec_info *codec_info)
 {
-    char model_string[64];
-    char *model_ptr, *tmp_ptr;
-    int i, model_len, list_len;
-    bool found;
+	char model_string[64];
+	char *model_ptr, *tmp_ptr;
+	int i, model_len, list_len;
+	bool found;
 
-    memset(model_string, 0, sizeof(model_string));
+	memset(model_string, 0, sizeof(model_string));
 
-    /* If it can't detect cpu model_string, leave it alone */
-    if (intel_driver_detect_cpustring(model_string))
-        return;
+	/* If it can't detect cpu model_string, leave it alone */
+	if (intel_driver_detect_cpustring(model_string))
+		return;
 
-    /* strip the cpufreq info */
-    model_ptr = model_string;
-    tmp_ptr = strstr(model_ptr, "@");
+	/* strip the cpufreq info */
+	model_ptr = model_string;
+	tmp_ptr = strstr(model_ptr, "@");
 
-    if (tmp_ptr)
-        *tmp_ptr = '\0';
+	if (tmp_ptr)
+		*tmp_ptr = '\0';
 
-    /* strip the space character and convert to the lower case */
-    model_ptr = model_string;
-    model_len = strlen(model_string);
-    for (i = 0; i < model_len; i++) {
-        if (model_string[i] != ' ') {
-            *model_ptr = model_string[i];
-            model_ptr++;
-        }
-    }
-    *model_ptr = '\0';
+	/* strip the space character and convert to the lower case */
+	model_ptr = model_string;
+	model_len = strlen(model_string);
+	for (i = 0; i < model_len; i++) {
+		if (model_string[i] != ' ') {
+			*model_ptr = model_string[i];
+			model_ptr++;
+		}
+	}
+	*model_ptr = '\0';
 
-    found = false;
-    list_len = sizeof(gen7_cpu_hook_list) / sizeof(char *);
-    model_len = strlen(model_string);
-    for (i = 0; i < list_len; i++) {
-        model_ptr = (char *)gen7_cpu_hook_list[i];
+	found = false;
+	list_len = sizeof(gen7_cpu_hook_list) / sizeof(char *);
+	model_len = strlen(model_string);
+	for (i = 0; i < list_len; i++) {
+		model_ptr = (char *)gen7_cpu_hook_list[i];
 
-        if (strlen(model_ptr) != model_len)
-            continue;
+		if (strlen(model_ptr) != model_len)
+			continue;
 
-        if (strncasecmp(model_string, model_ptr, model_len) == 0) {
-            found = true;
-            break;
-        }
-    }
+		if (strncasecmp(model_string, model_ptr, model_len) == 0) {
+			found = true;
+			break;
+		}
+	}
 
-    if (found) {
-        codec_info->has_h264_encoding = 0;
-        codec_info->has_mpeg2_encoding = 0;
-    }
-    return;
+	if (found) {
+		codec_info->has_h264_encoding = 0;
+		codec_info->has_mpeg2_encoding = 0;
+	}
+	return;
 }
 
 static void gen9_hw_codec_preinit(VADriverContextP ctx, struct hw_codec_info *codec_info)
 {
-    struct i965_driver_data *i965 = i965_driver_data(ctx);
+	struct i965_driver_data *i965 = i965_driver_data(ctx);
 
-    if (i965->intel.has_huc && codec_info->has_lp_h264_encoding)
-        codec_info->lp_h264_brc_mode |= (VA_RC_CBR | VA_RC_VBR);
+	if (i965->intel.has_huc && codec_info->has_lp_h264_encoding)
+		codec_info->lp_h264_brc_mode |= (VA_RC_CBR | VA_RC_VBR);
 
-    if (i965->intel.has_huc && codec_info->has_lp_vp9_encoding)
-        codec_info->lp_vp9_brc_mode |= (VA_RC_CQP | VA_RC_CBR | VA_RC_VBR);
+	if (i965->intel.has_huc && codec_info->has_lp_vp9_encoding)
+		codec_info->lp_vp9_brc_mode |= (VA_RC_CQP | VA_RC_CBR | VA_RC_VBR);
 }

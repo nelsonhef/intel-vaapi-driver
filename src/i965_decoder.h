@@ -37,47 +37,47 @@
 #define MAX_GEN_HCP_REFERENCE_FRAMES    8
 
 #define ALLOC_GEN_BUFFER(gen_buffer, string, size) do {         \
-        dri_bo_unreference(gen_buffer->bo);                     \
-        gen_buffer->bo = dri_bo_alloc(i965->intel.bufmgr,       \
-                                      string,                   \
-                                      size,                     \
-                                      0x1000);                  \
-        assert(gen_buffer->bo);                                 \
-        gen_buffer->valid = 1;                                  \
-    } while (0);
+		dri_bo_unreference(gen_buffer->bo);                     \
+		gen_buffer->bo = dri_bo_alloc(i965->intel.bufmgr,       \
+									  string,                   \
+									  size,                     \
+									  0x1000);                  \
+		assert(gen_buffer->bo);                                 \
+		gen_buffer->valid = 1;                                  \
+	} while (0);
 
 #define FREE_GEN_BUFFER(gen_buffer) do {        \
-        dri_bo_unreference(gen_buffer->bo);     \
-        gen_buffer->bo = NULL;                  \
-        gen_buffer->valid = 0;                  \
-    } while (0)
+		dri_bo_unreference(gen_buffer->bo);     \
+		gen_buffer->bo = NULL;                  \
+		gen_buffer->valid = 0;                  \
+	} while (0)
 
 typedef struct gen_frame_store GenFrameStore;
 struct gen_frame_store {
-    VASurfaceID surface_id;
-    int         frame_store_id;
-    struct      object_surface *obj_surface;
+	VASurfaceID surface_id;
+	int         frame_store_id;
+	struct      object_surface *obj_surface;
 
-    /* This represents the time when this frame store was last used to
-       hold a reference frame. This is not connected to a presentation
-       timestamp (PTS), and this is not a common decoding time stamp
-       (DTS) either. It serves the purpose of tracking retired
-       reference frame candidates.
+	/* This represents the time when this frame store was last used to
+	   hold a reference frame. This is not connected to a presentation
+	   timestamp (PTS), and this is not a common decoding time stamp
+	   (DTS) either. It serves the purpose of tracking retired
+	   reference frame candidates.
 
-       This is only used for H.264 decoding on platforms before Haswell */
-    uint64_t    ref_age;
+	   This is only used for H.264 decoding on platforms before Haswell */
+	uint64_t    ref_age;
 };
 
 typedef struct gen_frame_store_context GenFrameStoreContext;
 struct gen_frame_store_context {
-    uint64_t    age;
-    int         prev_poc;
+	uint64_t    age;
+	int         prev_poc;
 };
 
 typedef struct gen_buffer GenBuffer;
 struct gen_buffer {
-    dri_bo     *bo;
-    int         valid;
+	dri_bo     *bo;
+	int         valid;
 };
 
 struct hw_context *

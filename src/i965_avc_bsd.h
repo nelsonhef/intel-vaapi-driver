@@ -1,5 +1,5 @@
 /*
- * Copyright © 2010 Intel Corporation
+ * Copyright (C) 2010 Intel Corporation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the
@@ -32,13 +32,13 @@
 #define DMV_SIZE        0x88000 /* 557056 bytes for a frame */
 
 struct i965_avc_bsd_context {
-    struct {
-        dri_bo *bo;
-    } bsd_raw_store;
+	struct {
+		dri_bo *bo;
+	} bsd_raw_store;
 
-    struct {
-        dri_bo *bo;
-    } mpr_row_store;
+	struct {
+		dri_bo *bo;
+	} mpr_row_store;
 };
 
 void i965_avc_bsd_pipeline(VADriverContextP, struct decode_state *, void *h264_context);

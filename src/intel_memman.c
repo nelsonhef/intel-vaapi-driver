@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009 Intel Corporation
+ * Copyright (C) 2009 Intel Corporation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the
@@ -34,26 +34,26 @@
 Bool
 intel_memman_init(struct intel_driver_data *intel)
 {
-    intel->bufmgr = intel_bufmgr_gem_init(intel->fd, BATCH_SIZE);
+	intel->bufmgr = intel_bufmgr_gem_init(intel->fd, BATCH_SIZE);
 
-    if (!intel->bufmgr)
-        return False;
+	if (!intel->bufmgr)
+		return False;
 
-    intel_bufmgr_gem_enable_reuse(intel->bufmgr);
+	intel_bufmgr_gem_enable_reuse(intel->bufmgr);
 
-    if (g_intel_debug_option_flags & VA_INTEL_DEBUG_OPTION_DUMP_AUB) {
-        drm_intel_bufmgr_gem_set_aub_filename(intel->bufmgr,
-                                              "va.aub");
-        drm_intel_bufmgr_gem_set_aub_dump(intel->bufmgr, 1);
-    }
+	if (g_intel_debug_option_flags & VA_INTEL_DEBUG_OPTION_DUMP_AUB) {
+		drm_intel_bufmgr_gem_set_aub_filename(intel->bufmgr,
+											  "va.aub");
+		drm_intel_bufmgr_gem_set_aub_dump(intel->bufmgr, 1);
+	}
 
-    return True;
+	return True;
 }
 
 Bool
 intel_memman_terminate(struct intel_driver_data *intel)
 {
-    if (intel->bufmgr)
-        drm_intel_bufmgr_destroy(intel->bufmgr);
-    return True;
+	if (intel->bufmgr)
+		drm_intel_bufmgr_destroy(intel->bufmgr);
+	return True;
 }

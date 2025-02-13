@@ -34,15 +34,15 @@
 typedef struct gen_codec_surface GenCodecSurface;
 
 struct gen_codec_surface {
-    int frame_store_id;
+	int frame_store_id;
 };
 
 typedef struct gen_avc_surface GenAvcSurface;
 struct gen_avc_surface {
-    GenCodecSurface base;
-    dri_bo *dmv_top;
-    dri_bo *dmv_bottom;
-    int dmv_bottom_flag;
+	GenCodecSurface base;
+	dri_bo *dmv_top;
+	dri_bo *dmv_bottom;
+	int dmv_bottom_flag;
 };
 
 extern void gen_free_avc_surface(void **data);
@@ -52,54 +52,54 @@ extern int intel_format_convert(float src, int out_int_bits, int out_frac_bits, 
 
 typedef struct gen_hevc_surface GenHevcSurface;
 struct gen_hevc_surface {
-    GenCodecSurface base;
-    dri_bo *motion_vector_temporal_bo;
-    //Encoding HEVC10:internal surface keep for P010->NV12 , this is only for hevc10 to save the P010->NV12
-    struct object_surface *nv12_surface_obj;
-    VASurfaceID nv12_surface_id;
-    VADriverContextP ctx;
-    int has_p010_to_nv12_done;
+	GenCodecSurface base;
+	dri_bo *motion_vector_temporal_bo;
+	//Encoding HEVC10:internal surface keep for P010->NV12 , this is only for hevc10 to save the P010->NV12
+	struct object_surface *nv12_surface_obj;
+	VASurfaceID nv12_surface_id;
+	VADriverContextP ctx;
+	int has_p010_to_nv12_done;
 };
 
 typedef struct gen_vp9_surface GenVP9Surface;
 struct gen_vp9_surface {
-    GenCodecSurface base;
-    uint16_t frame_width;
-    uint16_t frame_height;
-    dri_bo *motion_vector_temporal_bo;
+	GenCodecSurface base;
+	uint16_t frame_width;
+	uint16_t frame_height;
+	dri_bo *motion_vector_temporal_bo;
 };
 
 typedef struct vdenc_avc_surface VDEncAvcSurface;
 struct vdenc_avc_surface {
-    VADriverContextP ctx;
-    VASurfaceID scaled_4x_surface_id;
-    struct object_surface *scaled_4x_surface_obj;
+	VADriverContextP ctx;
+	VASurfaceID scaled_4x_surface_id;
+	struct object_surface *scaled_4x_surface_obj;
 };
 
 typedef struct vdenc_vp9_surface VDEncVP9Surface;
 struct vdenc_vp9_surface {
-    VADriverContextP ctx;
-    VASurfaceID scaled_4x_surface_id;
-    struct object_surface *scaled_4x_surface_obj;
-    VASurfaceID scaled_8x_surface_id;
-    struct object_surface *scaled_8x_surface_obj;
-    VASurfaceID scaled_16x_surface_id;
-    struct object_surface *scaled_16x_surface_obj;
+	VADriverContextP ctx;
+	VASurfaceID scaled_4x_surface_id;
+	struct object_surface *scaled_4x_surface_obj;
+	VASurfaceID scaled_8x_surface_id;
+	struct object_surface *scaled_8x_surface_obj;
+	VASurfaceID scaled_16x_surface_id;
+	struct object_surface *scaled_16x_surface_obj;
 
-    VASurfaceID dys_surface_id;
-    struct object_surface *dys_surface_obj;
-    VASurfaceID dys_4x_surface_id;
-    struct object_surface *dys_4x_surface_obj;
-    VASurfaceID dys_8x_surface_id;
-    struct object_surface *dys_8x_surface_obj;
-    VASurfaceID dys_16x_surface_id;
-    struct object_surface *dys_16x_surface_obj;
-    int dys_frame_width;
-    int dys_frame_height;
-    int frame_width;
-    int frame_height;
-    unsigned int qp_value;
-    uint8_t dys_hme_flag;
+	VASurfaceID dys_surface_id;
+	struct object_surface *dys_surface_obj;
+	VASurfaceID dys_4x_surface_id;
+	struct object_surface *dys_4x_surface_obj;
+	VASurfaceID dys_8x_surface_id;
+	struct object_surface *dys_8x_surface_obj;
+	VASurfaceID dys_16x_surface_id;
+	struct object_surface *dys_16x_surface_obj;
+	int dys_frame_width;
+	int dys_frame_height;
+	int frame_width;
+	int frame_height;
+	unsigned int qp_value;
+	uint8_t dys_hme_flag;
 };
 
 extern void gen_free_hevc_surface(void **data);

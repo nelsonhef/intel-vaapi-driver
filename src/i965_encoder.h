@@ -1,5 +1,5 @@
 /*
- * Copyright © 2010 Intel Corporation
+ * Copyright (C) 2010 Intel Corporation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the
@@ -46,94 +46,94 @@
 #define MAX_TEMPORAL_LAYERS         4
 
 struct intel_roi {
-    short left;
-    short right;
-    short top;
-    short bottom;
+	short left;
+	short right;
+	short top;
+	short bottom;
 
-    char  value;
+	char  value;
 };
 
 struct intel_fraction {
-    unsigned int num;
-    unsigned int den;
+	unsigned int num;
+	unsigned int den;
 };
 
 struct intel_encoder_context {
-    struct hw_context base;
-    VADriverContextP ctx;
-    int codec;
-    VASurfaceID input_yuv_surface;
-    unsigned int rate_control_mode;
-    unsigned int quality_level;
-    unsigned int quality_range;
-    unsigned int num_frames_in_sequence;
-    unsigned int frame_width_in_pixel;
-    unsigned int frame_height_in_pixel;
-    unsigned int max_slice_or_seg_num;
-    unsigned int codec_level;
+	struct hw_context base;
+	VADriverContextP ctx;
+	int codec;
+	VASurfaceID input_yuv_surface;
+	unsigned int rate_control_mode;
+	unsigned int quality_level;
+	unsigned int quality_range;
+	unsigned int num_frames_in_sequence;
+	unsigned int frame_width_in_pixel;
+	unsigned int frame_height_in_pixel;
+	unsigned int max_slice_or_seg_num;
+	unsigned int codec_level;
 
-    struct {
-        unsigned int num_layers;
-        unsigned int size_frame_layer_ids;
-        unsigned int frame_layer_ids[32];
-        unsigned int curr_frame_layer_id;
-    } layer;
+	struct {
+		unsigned int num_layers;
+		unsigned int size_frame_layer_ids;
+		unsigned int frame_layer_ids[32];
+		unsigned int curr_frame_layer_id;
+	} layer;
 
-    struct {
-        unsigned short gop_size;
-        unsigned short num_iframes_in_gop;
-        unsigned short num_pframes_in_gop;
-        unsigned short num_bframes_in_gop;
-        unsigned int bits_per_second[MAX_TEMPORAL_LAYERS];
-        struct intel_fraction framerate[MAX_TEMPORAL_LAYERS];
-        unsigned int mb_rate_control[MAX_TEMPORAL_LAYERS];
-        unsigned int target_percentage[MAX_TEMPORAL_LAYERS];
-        unsigned int hrd_buffer_size;
-        unsigned int hrd_initial_buffer_fullness;
-        unsigned int window_size;
-        unsigned int initial_qp;
-        unsigned int min_qp;
-        unsigned int need_reset;
+	struct {
+		unsigned short gop_size;
+		unsigned short num_iframes_in_gop;
+		unsigned short num_pframes_in_gop;
+		unsigned short num_bframes_in_gop;
+		unsigned int bits_per_second[MAX_TEMPORAL_LAYERS];
+		struct intel_fraction framerate[MAX_TEMPORAL_LAYERS];
+		unsigned int mb_rate_control[MAX_TEMPORAL_LAYERS];
+		unsigned int target_percentage[MAX_TEMPORAL_LAYERS];
+		unsigned int hrd_buffer_size;
+		unsigned int hrd_initial_buffer_fullness;
+		unsigned int window_size;
+		unsigned int initial_qp;
+		unsigned int min_qp;
+		unsigned int need_reset;
 
-        unsigned int num_roi;
-        unsigned int roi_max_delta_qp;
-        unsigned int roi_min_delta_qp;
-        unsigned int roi_value_is_qp_delta;
-        struct intel_roi roi[I965_MAX_NUM_ROI_REGIONS];
-    } brc;
+		unsigned int num_roi;
+		unsigned int roi_max_delta_qp;
+		unsigned int roi_min_delta_qp;
+		unsigned int roi_value_is_qp_delta;
+		struct intel_roi roi[I965_MAX_NUM_ROI_REGIONS];
+	} brc;
 
-    void *vme_context;
-    void *mfc_context;
-    void *enc_priv_state;
+	void *vme_context;
+	void *mfc_context;
+	void *enc_priv_state;
 
-    unsigned int is_tmp_id: 1;
-    unsigned int low_power_mode: 1;
-    unsigned int soft_batch_force: 1;
-    unsigned int context_roi: 1;
-    unsigned int is_new_sequence: 1; /* Currently only valid for H.264, TODO for other codecs */
+	unsigned int is_tmp_id: 1;
+	unsigned int low_power_mode: 1;
+	unsigned int soft_batch_force: 1;
+	unsigned int context_roi: 1;
+	unsigned int is_new_sequence: 1; /* Currently only valid for H.264, TODO for other codecs */
 
-    unsigned int fei_enabled: 1;
-    unsigned int fei_function_mode; /* configured VA_FEI_FUNCTION_XXX */
+	unsigned int fei_enabled: 1;
+	unsigned int fei_function_mode; /* configured VA_FEI_FUNCTION_XXX */
 
-    unsigned int preenc_enabled: 1;
+	unsigned int preenc_enabled: 1;
 
-    void (*vme_context_destroy)(void *vme_context);
-    VAStatus(*vme_pipeline)(VADriverContextP ctx,
-                            VAProfile profile,
-                            struct encode_state *encode_state,
-                            struct intel_encoder_context *encoder_context);
-    void (*mfc_context_destroy)(void *mfc_context);
-    VAStatus(*mfc_pipeline)(VADriverContextP ctx,
-                            VAProfile profile,
-                            struct encode_state *encode_state,
-                            struct intel_encoder_context *encoder_context);
-    void (*mfc_brc_prepare)(struct encode_state *encode_state,
-                            struct intel_encoder_context *encoder_context);
+	void (*vme_context_destroy)(void *vme_context);
+	VAStatus(*vme_pipeline)(VADriverContextP ctx,
+							VAProfile profile,
+							struct encode_state *encode_state,
+							struct intel_encoder_context *encoder_context);
+	void (*mfc_context_destroy)(void *mfc_context);
+	VAStatus(*mfc_pipeline)(VADriverContextP ctx,
+							VAProfile profile,
+							struct encode_state *encode_state,
+							struct intel_encoder_context *encoder_context);
+	void (*mfc_brc_prepare)(struct encode_state *encode_state,
+							struct intel_encoder_context *encoder_context);
 
-    VAStatus(*get_status)(VADriverContextP ctx,
-                          struct intel_encoder_context *encoder_context,
-                          struct i965_coded_buffer_segment *coded_buffer_segment);
+	VAStatus(*get_status)(VADriverContextP ctx,
+						  struct intel_encoder_context *encoder_context,
+						  struct i965_coded_buffer_segment *coded_buffer_segment);
 };
 
 extern struct hw_context *

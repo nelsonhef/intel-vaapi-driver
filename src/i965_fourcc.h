@@ -45,26 +45,26 @@
 #define I965_COLOR_INDEX        2
 
 typedef struct {
-    uint8_t plane;                      /* the plane which the pixel belongs to */
-    uint8_t offset;                     /* bits offset within a macro-pixel for packed YUV formats or pixel for other formats in the plane */
+	uint8_t plane;                      /* the plane which the pixel belongs to */
+	uint8_t offset;                     /* bits offset within a macro-pixel for packed YUV formats or pixel for other formats in the plane */
 } i965_component_info;
 
 typedef struct {
-    uint32_t fourcc;                    /* fourcc */
-    uint32_t format;                    /* 0: YUV, 1: RGB, 2: Indexed format */
-    uint32_t subsampling;               /* Sub sampling */
-    uint8_t flag;                       /* 1: only supported by vaCreateSurfaces(), 2: only supported by vaCreateImage(), 3: both */
-    uint8_t hfactor;                    /* horizontal sampling factor */
-    uint8_t vfactor;                    /* vertical sampling factor */
-    uint8_t num_planes;                 /* number of planes */
-    uint8_t bpp[I965_MAX_PLANES];       /* bits per pixel within a plane */
-    uint8_t num_components;             /* number of components */
-    /*
-     * Components in the array are ordered in Y, U, V, A (up to 4 components)
-     * for YUV formats, R, G, B, A (up to 4 components) for RGB formats and
-     * I, A (2 components) for indexed formats
-     */
-    i965_component_info components[I965_MAX_COMONENTS];
+	uint32_t fourcc;                    /* fourcc */
+	uint32_t format;                    /* 0: YUV, 1: RGB, 2: Indexed format */
+	uint32_t subsampling;               /* Sub sampling */
+	uint8_t flag;                       /* 1: only supported by vaCreateSurfaces(), 2: only supported by vaCreateImage(), 3: both */
+	uint8_t hfactor;                    /* horizontal sampling factor */
+	uint8_t vfactor;                    /* vertical sampling factor */
+	uint8_t num_planes;                 /* number of planes */
+	uint8_t bpp[I965_MAX_PLANES];       /* bits per pixel within a plane */
+	uint8_t num_components;             /* number of components */
+	/*
+	 * Components in the array are ordered in Y, U, V, A (up to 4 components)
+	 * for YUV formats, R, G, B, A (up to 4 components) for RGB formats and
+	 * I, A (2 components) for indexed formats
+	 */
+	i965_component_info components[I965_MAX_COMONENTS];
 } i965_fourcc_info;
 
 extern const i965_fourcc_info *get_fourcc_info(unsigned int);

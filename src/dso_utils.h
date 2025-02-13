@@ -35,10 +35,10 @@ struct dso_handle;
 
 /** Symbol lookup table. */
 struct dso_symbol {
-    /** Symbol name */
-    const char  *name;
-    /** Offset into the supplied vtable where symbol is to be loaded. */
-    unsigned int offset;
+	/** Symbol name */
+	const char *name;
+	/** Offset into the supplied vtable where symbol is to be loaded. */
+	unsigned int offset;
 };
 
 /**
@@ -65,10 +65,10 @@ dso_close(struct dso_handle *h);
  **/
 bool
 dso_get_symbols(
-    struct dso_handle          *h,
-    void                       *vtable,
-    unsigned int                vtable_length,
-    const struct dso_symbol    *symbols
+	struct dso_handle          *h,
+	void                       *vtable,
+	unsigned int                vtable_length,
+	const struct dso_symbol    *symbols
 );
 
 #endif /* DSO_UTILS_H */

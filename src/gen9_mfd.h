@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 Intel Corporation
+ * Copyright (C) 2014 Intel Corporation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the
@@ -39,66 +39,66 @@
 struct hw_context;
 
 typedef struct vp9_frame_status {
-    uint16_t frame_width;
-    uint16_t frame_height;
-    uint8_t frame_type;
-    uint8_t show_frame;
-    uint8_t refresh_frame_context;
-    uint8_t frame_context_idx;
-    uint8_t intra_only;
-    uint8_t prob_buffer_saved_flag;
-    uint8_t prob_buffer_restored_flag;
-    dri_bo *prob_buffer_bo;
+	uint16_t frame_width;
+	uint16_t frame_height;
+	uint8_t frame_type;
+	uint8_t show_frame;
+	uint8_t refresh_frame_context;
+	uint8_t frame_context_idx;
+	uint8_t intra_only;
+	uint8_t prob_buffer_saved_flag;
+	uint8_t prob_buffer_restored_flag;
+	dri_bo *prob_buffer_bo;
 } vp9_last_frame_status;
 
 typedef struct vp9_mv_temporal_buffer {
-    dri_bo *bo;
-    uint16_t frame_width;
-    uint16_t frame_height;
+	dri_bo *bo;
+	uint16_t frame_width;
+	uint16_t frame_height;
 } VP9_MV_BUFFER;
 
 struct gen9_hcpd_context {
-    struct hw_context base;
+	struct hw_context base;
 
-    GenFrameStoreContext fs_ctx;
+	GenFrameStoreContext fs_ctx;
 
-    GenFrameStore reference_surfaces[MAX_GEN_HCP_REFERENCE_FRAMES];
+	GenFrameStore reference_surfaces[MAX_GEN_HCP_REFERENCE_FRAMES];
 
-    VAIQMatrixBufferHEVC  iq_matrix_hevc;
+	VAIQMatrixBufferHEVC  iq_matrix_hevc;
 
-    uint16_t picture_width_in_pixels;
-    uint16_t picture_height_in_pixels;
-    uint16_t picture_width_in_ctbs;
-    uint16_t picture_height_in_ctbs;
-    uint16_t picture_width_in_min_cb_minus1;
-    uint16_t picture_height_in_min_cb_minus1;
-    uint8_t ctb_size;
-    uint8_t min_cb_size;
+	uint16_t picture_width_in_pixels;
+	uint16_t picture_height_in_pixels;
+	uint16_t picture_width_in_ctbs;
+	uint16_t picture_height_in_ctbs;
+	uint16_t picture_width_in_min_cb_minus1;
+	uint16_t picture_height_in_min_cb_minus1;
+	uint8_t ctb_size;
+	uint8_t min_cb_size;
 
-    GenBuffer deblocking_filter_line_buffer;
-    GenBuffer deblocking_filter_tile_line_buffer;
-    GenBuffer deblocking_filter_tile_column_buffer;
-    GenBuffer metadata_line_buffer;
-    GenBuffer metadata_tile_line_buffer;
-    GenBuffer metadata_tile_column_buffer;
-    GenBuffer sao_line_buffer;
-    GenBuffer sao_tile_line_buffer;
-    GenBuffer sao_tile_column_buffer;
-    GenBuffer hvd_line_rowstore_buffer;
-    GenBuffer hvd_tile_rowstore_buffer;
-    GenBuffer vp9_probability_buffer;
-    GenBuffer vp9_segment_id_buffer;
-    VP9_MV_BUFFER vp9_mv_temporal_buffer_curr;
-    VP9_MV_BUFFER vp9_mv_temporal_buffer_last;
+	GenBuffer deblocking_filter_line_buffer;
+	GenBuffer deblocking_filter_tile_line_buffer;
+	GenBuffer deblocking_filter_tile_column_buffer;
+	GenBuffer metadata_line_buffer;
+	GenBuffer metadata_tile_line_buffer;
+	GenBuffer metadata_tile_column_buffer;
+	GenBuffer sao_line_buffer;
+	GenBuffer sao_tile_line_buffer;
+	GenBuffer sao_tile_column_buffer;
+	GenBuffer hvd_line_rowstore_buffer;
+	GenBuffer hvd_tile_rowstore_buffer;
+	GenBuffer vp9_probability_buffer;
+	GenBuffer vp9_segment_id_buffer;
+	VP9_MV_BUFFER vp9_mv_temporal_buffer_curr;
+	VP9_MV_BUFFER vp9_mv_temporal_buffer_last;
 
-    unsigned short first_inter_slice_collocated_ref_idx;
-    unsigned short first_inter_slice_collocated_from_l0_flag;
-    int first_inter_slice_valid;
+	unsigned short first_inter_slice_collocated_ref_idx;
+	unsigned short first_inter_slice_collocated_from_l0_flag;
+	int first_inter_slice_valid;
 
-    vp9_last_frame_status last_frame;
-    FRAME_CONTEXT vp9_frame_ctx[FRAME_CONTEXTS];
-    FRAME_CONTEXT vp9_fc_inter_default;
-    FRAME_CONTEXT vp9_fc_key_default;
+	vp9_last_frame_status last_frame;
+	FRAME_CONTEXT vp9_frame_ctx[FRAME_CONTEXTS];
+	FRAME_CONTEXT vp9_fc_inter_default;
+	FRAME_CONTEXT vp9_fc_key_default;
 };
 
 #endif /* GEN9_MFD_H */

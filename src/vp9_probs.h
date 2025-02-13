@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 Intel Corporation
+ * Copyright (C) 2015 Intel Corporation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the
@@ -92,68 +92,68 @@ typedef uint8_t vp9_prob;
 #define vp9_zero(dest) memset(&dest, 0, sizeof(dest))
 
 #define vp9_copy(dest, src) {            \
-    assert(sizeof(dest) == sizeof(src)); \
-    vpx_memcpy(dest, src, sizeof(src));  \
+	assert(sizeof(dest) == sizeof(src)); \
+	vpx_memcpy(dest, src, sizeof(src));  \
 }
 
 struct tx_probs {
-    vp9_prob p8x8[TX_SIZE_CONTEXTS][TX_SIZES - 3];
-    vp9_prob p16x16[TX_SIZE_CONTEXTS][TX_SIZES - 2];
-    vp9_prob p32x32[TX_SIZE_CONTEXTS][TX_SIZES - 1];
+	vp9_prob p8x8[TX_SIZE_CONTEXTS][TX_SIZES - 3];
+	vp9_prob p16x16[TX_SIZE_CONTEXTS][TX_SIZES - 2];
+	vp9_prob p32x32[TX_SIZE_CONTEXTS][TX_SIZES - 1];
 };
 
 struct tx_counts {
-    unsigned int p32x32[TX_SIZE_CONTEXTS][TX_SIZES];
-    unsigned int p16x16[TX_SIZE_CONTEXTS][TX_SIZES - 1];
-    unsigned int p8x8[TX_SIZE_CONTEXTS][TX_SIZES - 2];
-    unsigned int tx_totals[TX_SIZES];
+	unsigned int p32x32[TX_SIZE_CONTEXTS][TX_SIZES];
+	unsigned int p16x16[TX_SIZE_CONTEXTS][TX_SIZES - 1];
+	unsigned int p8x8[TX_SIZE_CONTEXTS][TX_SIZES - 2];
+	unsigned int tx_totals[TX_SIZES];
 };
 
 typedef struct {
-    vp9_prob sign;
-    vp9_prob classes[MV_CLASSES - 1];
-    vp9_prob class0[CLASS0_SIZE - 1];
-    vp9_prob bits[MV_OFFSET_BITS];
+	vp9_prob sign;
+	vp9_prob classes[MV_CLASSES - 1];
+	vp9_prob class0[CLASS0_SIZE - 1];
+	vp9_prob bits[MV_OFFSET_BITS];
 } nmv_component;
 
 //Modified the nmv_context from libvpx to suit our HW needs
 typedef struct {
-    vp9_prob joints[MV_JOINTS - 1];
-    nmv_component comps[2];
-    vp9_prob class0_fp0[CLASS0_SIZE][MV_FP_SIZE - 1];
-    vp9_prob fp0[MV_FP_SIZE - 1];
-    vp9_prob class0_fp1[CLASS0_SIZE][MV_FP_SIZE - 1];
-    vp9_prob fp1[MV_FP_SIZE - 1];
-    vp9_prob class0_hp[2];
-    vp9_prob hp[2];
+	vp9_prob joints[MV_JOINTS - 1];
+	nmv_component comps[2];
+	vp9_prob class0_fp0[CLASS0_SIZE][MV_FP_SIZE - 1];
+	vp9_prob fp0[MV_FP_SIZE - 1];
+	vp9_prob class0_fp1[CLASS0_SIZE][MV_FP_SIZE - 1];
+	vp9_prob fp1[MV_FP_SIZE - 1];
+	vp9_prob class0_hp[2];
+	vp9_prob hp[2];
 } nmv_context;
 
 //Modified the FRAME_CONTEXT from libvpx to suit our HW needs
 typedef struct frame_contexts {
-    struct tx_probs tx_probs;
-    vp9_prob dummy1[52];
-    vp9_prob coeff_probs4x4[COEFF_PROB_SIZE][COEFF_PROB_NUM];
-    vp9_prob coeff_probs8x8[COEFF_PROB_SIZE][COEFF_PROB_NUM];
-    vp9_prob coeff_probs16x16[COEFF_PROB_SIZE][COEFF_PROB_NUM];
-    vp9_prob coeff_probs32x32[COEFF_PROB_SIZE][COEFF_PROB_NUM];
-    vp9_prob dummy2[16];
-    vp9_prob skip_probs[SKIP_CONTEXTS];
-    vp9_prob inter_mode_probs[INTER_MODE_CONTEXTS][INTER_MODES - 1];
-    vp9_prob switchable_interp_prob[SWITCHABLE_FILTER_CONTEXTS]
-    [SWITCHABLE_FILTERS - 1];
-    vp9_prob intra_inter_prob[INTRA_INTER_CONTEXTS];
-    vp9_prob comp_inter_prob[COMP_INTER_CONTEXTS];
-    vp9_prob single_ref_prob[REF_CONTEXTS][2];
-    vp9_prob comp_ref_prob[REF_CONTEXTS];
-    vp9_prob y_mode_prob[BLOCK_SIZE_GROUPS][INTRA_MODES - 1];
-    vp9_prob partition_prob[PARTITION_CONTEXTS][PARTITION_TYPES - 1];
-    nmv_context nmvc;
-    vp9_prob dummy3[47];
-    vp9_prob uv_mode_prob[INTRA_MODES][INTRA_MODES - 1];
-    vp9_prob seg_tree_probs[SEG_TREE_PROBS];
-    vp9_prob seg_pred_probs[PREDICTION_PROBS];
-    vp9_prob dummy4[28];
-    int initialized;
+	struct tx_probs tx_probs;
+	vp9_prob dummy1[52];
+	vp9_prob coeff_probs4x4[COEFF_PROB_SIZE][COEFF_PROB_NUM];
+	vp9_prob coeff_probs8x8[COEFF_PROB_SIZE][COEFF_PROB_NUM];
+	vp9_prob coeff_probs16x16[COEFF_PROB_SIZE][COEFF_PROB_NUM];
+	vp9_prob coeff_probs32x32[COEFF_PROB_SIZE][COEFF_PROB_NUM];
+	vp9_prob dummy2[16];
+	vp9_prob skip_probs[SKIP_CONTEXTS];
+	vp9_prob inter_mode_probs[INTER_MODE_CONTEXTS][INTER_MODES - 1];
+	vp9_prob switchable_interp_prob[SWITCHABLE_FILTER_CONTEXTS]
+	[SWITCHABLE_FILTERS - 1];
+	vp9_prob intra_inter_prob[INTRA_INTER_CONTEXTS];
+	vp9_prob comp_inter_prob[COMP_INTER_CONTEXTS];
+	vp9_prob single_ref_prob[REF_CONTEXTS][2];
+	vp9_prob comp_ref_prob[REF_CONTEXTS];
+	vp9_prob y_mode_prob[BLOCK_SIZE_GROUPS][INTRA_MODES - 1];
+	vp9_prob partition_prob[PARTITION_CONTEXTS][PARTITION_TYPES - 1];
+	nmv_context nmvc;
+	vp9_prob dummy3[47];
+	vp9_prob uv_mode_prob[INTRA_MODES][INTRA_MODES - 1];
+	vp9_prob seg_tree_probs[SEG_TREE_PROBS];
+	vp9_prob seg_pred_probs[PREDICTION_PROBS];
+	vp9_prob dummy4[28];
+	int initialized;
 } FRAME_CONTEXT;
 
 
@@ -204,43 +204,43 @@ extern vp9_prob default_coef_probs_32x32[COEFF_PROB_SIZE][COEFF_PROB_NUM];
 extern void intel_init_default_vp9_probs(FRAME_CONTEXT *frame_context);
 
 extern void intel_vp9_copy_frame_context(FRAME_CONTEXT *dst,
-                                         FRAME_CONTEXT *src,
-                                         bool inter_flag);
+										 FRAME_CONTEXT *src,
+										 bool inter_flag);
 
 extern void intel_update_intra_frame_context(FRAME_CONTEXT *frame_context);
 
 
 typedef struct _vp9_header_bitoffset_ {
-    unsigned int    bit_offset_ref_lf_delta;
-    unsigned int    bit_offset_mode_lf_delta;
-    unsigned int    bit_offset_lf_level;
-    unsigned int    bit_offset_qindex;
-    unsigned int    bit_offset_first_partition_size;
-    unsigned int    bit_offset_segmentation;
-    unsigned int    bit_size_segmentation;
+	unsigned int    bit_offset_ref_lf_delta;
+	unsigned int    bit_offset_mode_lf_delta;
+	unsigned int    bit_offset_lf_level;
+	unsigned int    bit_offset_qindex;
+	unsigned int    bit_offset_first_partition_size;
+	unsigned int    bit_offset_segmentation;
+	unsigned int    bit_size_segmentation;
 } vp9_header_bitoffset;
 
 struct encode_state;
 extern bool intel_write_uncompressed_header(struct encode_state *encode_state,
-                                            int codec_profile,
-                                            char *header_data,
-                                            int *header_length,
-                                            vp9_header_bitoffset *header_bitoffset);
+											int codec_profile,
+											char *header_data,
+											int *header_length,
+											vp9_header_bitoffset *header_bitoffset);
 
 typedef enum {
-    ONLY_4X4            = 0,        // only 4x4 transform used
-    ALLOW_8X8           = 1,        // allow block transform size up to 8x8
-    ALLOW_16X16         = 2,        // allow block transform size up to 16x16
-    ALLOW_32X32         = 3,        // allow block transform size up to 32x32
-    TX_MODE_SELECT      = 4,        // transform specified for each block
-    TX_MODES            = 5,
+	ONLY_4X4            = 0,        // only 4x4 transform used
+	ALLOW_8X8           = 1,        // allow block transform size up to 8x8
+	ALLOW_16X16         = 2,        // allow block transform size up to 16x16
+	ALLOW_32X32         = 3,        // allow block transform size up to 32x32
+	TX_MODE_SELECT      = 4,        // transform specified for each block
+	TX_MODES            = 5,
 } TX_MODE;
 
 typedef enum {
-    SINGLE_REFERENCE      = 0,
-    COMPOUND_REFERENCE    = 1,
-    REFERENCE_MODE_SELECT = 2,
-    REFERENCE_MODES       = 3,
+	SINGLE_REFERENCE      = 0,
+	COMPOUND_REFERENCE    = 1,
+	REFERENCE_MODE_SELECT = 2,
+	REFERENCE_MODES       = 3,
 } REFERENCE_MODE;
 
 extern const unsigned short vp9_quant_dc[256];

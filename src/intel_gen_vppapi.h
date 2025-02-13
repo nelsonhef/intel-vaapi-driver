@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 Intel Corporation
+ * Copyright (C) 2016 Intel Corporation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the
@@ -39,10 +39,10 @@ struct i965_post_processing_context;
 
 VAStatus
 intel_common_scaling_post_processing(VADriverContextP ctx,
-                                     struct i965_post_processing_context *pp_context,
-                                     const struct i965_surface *src_surface,
-                                     const VARectangle *src_rect,
-                                     struct i965_surface *dst_surface,
-                                     const VARectangle *dst_rect);
+									 struct i965_post_processing_context *pp_context,
+									 const struct i965_surface *src_surface,
+									 const VARectangle *src_rect,
+									 struct i965_surface *dst_surface,
+									 const VARectangle *dst_rect);
 
 #endif  // _INTE_GEN_VPPAPI_H_

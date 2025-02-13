@@ -1,5 +1,5 @@
 /*
- * Copyright © 2010 Intel Corporation
+ * Copyright (C) 2010 Intel Corporation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the
@@ -47,33 +47,33 @@
 #define GEN6_VC1_RESERVED_PROFILE       3
 
 struct gen6_vc1_surface {
-    dri_bo *dmv;
-    int picture_type;
-    int intensity_compensation;
-    int luma_scale;
-    int luma_shift;
+	dri_bo *dmv;
+	int picture_type;
+	int intensity_compensation;
+	int luma_scale;
+	int luma_shift;
 };
 
 struct hw_context;
 
 struct gen6_mfd_context {
-    struct hw_context base;
+	struct hw_context base;
 
-    union {
-        VAIQMatrixBufferMPEG2 mpeg2;
-    } iq_matrix;
+	union {
+		VAIQMatrixBufferMPEG2 mpeg2;
+	} iq_matrix;
 
-    GenFrameStoreContext fs_ctx;
-    GenFrameStore       reference_surface[MAX_GEN_REFERENCE_FRAMES];
-    GenBuffer           post_deblocking_output;
-    GenBuffer           pre_deblocking_output;
-    GenBuffer           intra_row_store_scratch_buffer;
-    GenBuffer           deblocking_filter_row_store_scratch_buffer;
-    GenBuffer           bsd_mpc_row_store_scratch_buffer;
-    GenBuffer           mpr_row_store_scratch_buffer;
-    GenBuffer           bitplane_read_buffer;
+	GenFrameStoreContext fs_ctx;
+	GenFrameStore		reference_surface[MAX_GEN_REFERENCE_FRAMES];
+	GenBuffer			post_deblocking_output;
+	GenBuffer			pre_deblocking_output;
+	GenBuffer			intra_row_store_scratch_buffer;
+	GenBuffer			deblocking_filter_row_store_scratch_buffer;
+	GenBuffer			bsd_mpc_row_store_scratch_buffer;
+	GenBuffer			mpr_row_store_scratch_buffer;
+	GenBuffer			bitplane_read_buffer;
 
-    int                 wa_mpeg2_slice_vertical_position;
+	int					wa_mpeg2_slice_vertical_position;
 };
 
 #endif /* _GEN6_MFD_H_ */

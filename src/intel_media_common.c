@@ -36,27 +36,27 @@ static pthread_mutex_t free_avc_surface_lock = PTHREAD_MUTEX_INITIALIZER;
 void
 gen_free_avc_surface(void **data)
 {
-    GenAvcSurface *avc_surface;
+	GenAvcSurface *avc_surface;
 
-    pthread_mutex_lock(&free_avc_surface_lock);
+	pthread_mutex_lock(&free_avc_surface_lock);
 
-    avc_surface = *data;
+	avc_surface = *data;
 
-    if (!avc_surface) {
-        pthread_mutex_unlock(&free_avc_surface_lock);
-        return;
-    }
+	if (!avc_surface) {
+		pthread_mutex_unlock(&free_avc_surface_lock);
+		return;
+	}
 
 
-    dri_bo_unreference(avc_surface->dmv_top);
-    avc_surface->dmv_top = NULL;
-    dri_bo_unreference(avc_surface->dmv_bottom);
-    avc_surface->dmv_bottom = NULL;
+	dri_bo_unreference(avc_surface->dmv_top);
+	avc_surface->dmv_top = NULL;
+	dri_bo_unreference(avc_surface->dmv_bottom);
+	avc_surface->dmv_bottom = NULL;
 
-    free(avc_surface);
-    *data = NULL;
+	free(avc_surface);
+	*data = NULL;
 
-    pthread_mutex_unlock(&free_avc_surface_lock);
+	pthread_mutex_unlock(&free_avc_surface_lock);
 }
 
 /* This is to convert one float to the given format interger.
@@ -64,23 +64,23 @@ gen_free_avc_surface(void **data)
  */
 int intel_format_convert(float src, int out_int_bits, int out_frac_bits, int out_sign_flag)
 {
-    unsigned char negative_flag = (src < 0.0) ? 1 : 0;
-    float src_1 = (!negative_flag) ? src : -src ;
-    unsigned int factor = 1 << out_frac_bits;
-    int output_value = 0;
+	unsigned char negative_flag = (src < 0.0) ? 1 : 0;
+	float src_1 = (!negative_flag) ? src : -src ;
+	unsigned int factor = 1 << out_frac_bits;
+	int output_value = 0;
 
-    unsigned int integer_part  = floorf(src_1);
-    unsigned int fraction_part = ((int)((src_1 - integer_part) * factor)) & (factor - 1) ;
+	unsigned int integer_part  = floorf(src_1);
+	unsigned int fraction_part = ((int)((src_1 - integer_part) * factor)) & (factor - 1) ;
 
-    output_value = (integer_part << out_frac_bits) | fraction_part;
+	output_value = (integer_part << out_frac_bits) | fraction_part;
 
-    if (negative_flag)
-        output_value = (~output_value + 1) & ((1 << (out_int_bits + out_frac_bits)) - 1);
+	if (negative_flag)
+		output_value = (~output_value + 1) & ((1 << (out_int_bits + out_frac_bits)) - 1);
 
-    if (output_value != 0 && out_sign_flag == 1 && negative_flag) {
-        output_value |= negative_flag << (out_int_bits + out_frac_bits);
-    }
-    return output_value;
+	if (output_value != 0 && out_sign_flag == 1 && negative_flag) {
+		output_value |= negative_flag << (out_int_bits + out_frac_bits);
+	}
+	return output_value;
 }
 
 static pthread_mutex_t free_hevc_surface_lock = PTHREAD_MUTEX_INITIALIZER;
@@ -88,84 +88,84 @@ static pthread_mutex_t free_hevc_surface_lock = PTHREAD_MUTEX_INITIALIZER;
 void
 gen_free_hevc_surface(void **data)
 {
-    GenHevcSurface *hevc_surface;
+	GenHevcSurface *hevc_surface;
 
-    pthread_mutex_lock(&free_hevc_surface_lock);
+	pthread_mutex_lock(&free_hevc_surface_lock);
 
-    hevc_surface = *data;
+	hevc_surface = *data;
 
-    if (!hevc_surface) {
-        pthread_mutex_unlock(&free_hevc_surface_lock);
-        return;
-    }
+	if (!hevc_surface) {
+		pthread_mutex_unlock(&free_hevc_surface_lock);
+		return;
+	}
 
-    dri_bo_unreference(hevc_surface->motion_vector_temporal_bo);
-    hevc_surface->motion_vector_temporal_bo = NULL;
+	dri_bo_unreference(hevc_surface->motion_vector_temporal_bo);
+	hevc_surface->motion_vector_temporal_bo = NULL;
 
-    if (hevc_surface->nv12_surface_obj) {
-        i965_DestroySurfaces(hevc_surface->ctx, &hevc_surface->nv12_surface_id, 1);
-        hevc_surface->nv12_surface_id = VA_INVALID_SURFACE;
-        hevc_surface->nv12_surface_obj = NULL;
-    }
+	if (hevc_surface->nv12_surface_obj) {
+		i965_DestroySurfaces(hevc_surface->ctx, &hevc_surface->nv12_surface_id, 1);
+		hevc_surface->nv12_surface_id = VA_INVALID_SURFACE;
+		hevc_surface->nv12_surface_obj = NULL;
+	}
 
-    free(hevc_surface);
-    *data = NULL;
+	free(hevc_surface);
+	*data = NULL;
 
-    pthread_mutex_unlock(&free_hevc_surface_lock);
+	pthread_mutex_unlock(&free_hevc_surface_lock);
 }
 
 static pthread_mutex_t free_vp9_surface_lock = PTHREAD_MUTEX_INITIALIZER;
 
 void gen_free_vp9_surface(void **data)
 {
-    GenVP9Surface *vp9_surface;
+	GenVP9Surface *vp9_surface;
 
-    pthread_mutex_lock(&free_vp9_surface_lock);
+	pthread_mutex_lock(&free_vp9_surface_lock);
 
-    vp9_surface = *data;
+	vp9_surface = *data;
 
-    if (!vp9_surface) {
-        pthread_mutex_unlock(&free_vp9_surface_lock);
-        return;
-    }
+	if (!vp9_surface) {
+		pthread_mutex_unlock(&free_vp9_surface_lock);
+		return;
+	}
 
-    free(vp9_surface);
-    *data = NULL;
+	free(vp9_surface);
+	*data = NULL;
 
-    pthread_mutex_unlock(&free_vp9_surface_lock);
+	pthread_mutex_unlock(&free_vp9_surface_lock);
 }
 
 extern VAStatus
 i965_DestroySurfaces(VADriverContextP ctx,
-                     VASurfaceID *surface_list,
-                     int num_surfaces);
+					 VASurfaceID *surface_list,
+					 int num_surfaces);
 
 static pthread_mutex_t free_vdenc_avc_surface_lock = PTHREAD_MUTEX_INITIALIZER;
 
 void
 vdenc_free_avc_surface(void **data)
 {
-    VDEncAvcSurface *avc_surface;
+	VDEncAvcSurface *avc_surface;
 
-    pthread_mutex_lock(&free_vdenc_avc_surface_lock);
+	pthread_mutex_lock(&free_vdenc_avc_surface_lock);
 
-    avc_surface = *data;
+	avc_surface = *data;
 
-    if (!avc_surface) {
-        pthread_mutex_unlock(&free_vdenc_avc_surface_lock);
-        return;
-    }
+	if (!avc_surface) {
+		pthread_mutex_unlock(&free_vdenc_avc_surface_lock);
+		return;
+	}
 
-    if (avc_surface->scaled_4x_surface_obj) {
-        i965_DestroySurfaces(avc_surface->ctx, &avc_surface->scaled_4x_surface_id, 1);
-        avc_surface->scaled_4x_surface_id = VA_INVALID_SURFACE;
-        avc_surface->scaled_4x_surface_obj = NULL;
-    }
+	if (avc_surface->scaled_4x_surface_obj) {
+		i965_DestroySurfaces(avc_surface->ctx, &avc_surface->scaled_4x_surface_id, 1);
+		avc_surface->scaled_4x_surface_id = VA_INVALID_SURFACE;
+		avc_surface->scaled_4x_surface_obj = NULL;
+	}
 
-    free(avc_surface);
-    *data = NULL;
+	free(avc_surface);
+	*data = NULL;
 
-    pthread_mutex_unlock(&free_vdenc_avc_surface_lock);
+	pthread_mutex_unlock(&free_vdenc_avc_surface_lock);
 }
 
 static pthread_mutex_t free_vdenc_vp9_surface_lock = PTHREAD_MUTEX_INITIALIZER;
@@ -173,31 +173,31 @@ static pthread_mutex_t free_vdenc_vp9_surface_lock = PTHREAD_MUTEX_INITIALIZER;
 void
 vdenc_free_vp9_surface(void **data)
 {
-    VDEncVP9Surface *vp9_surface;
+	VDEncVP9Surface *vp9_surface;
 
-    pthread_mutex_lock(&free_vdenc_vp9_surface_lock);
+	pthread_mutex_lock(&free_vdenc_vp9_surface_lock);
 
-    vp9_surface = *data;
+	vp9_surface = *data;
 
-    if (!vp9_surface) {
-        pthread_mutex_unlock(&free_vdenc_vp9_surface_lock);
-        return;
-    }
+	if (!vp9_surface) {
+		pthread_mutex_unlock(&free_vdenc_vp9_surface_lock);
+		return;
+	}
 
-    if (vp9_surface->scaled_4x_surface_obj) {
-        i965_DestroySurfaces(vp9_surface->ctx, &vp9_surface->scaled_4x_surface_id, 1);
-        vp9_surface->scaled_4x_surface_id = VA_INVALID_SURFACE;
-        vp9_surface->scaled_4x_surface_obj = NULL;
-    }
+	if (vp9_surface->scaled_4x_surface_obj) {
+		i965_DestroySurfaces(vp9_surface->ctx, &vp9_surface->scaled_4x_surface_id, 1);
+		vp9_surface->scaled_4x_surface_id = VA_INVALID_SURFACE;
+		vp9_surface->scaled_4x_surface_obj = NULL;
+	}
 
-    if (vp9_surface->scaled_8x_surface_obj) {
-        i965_DestroySurfaces(vp9_surface->ctx, &vp9_surface->scaled_8x_surface_id, 1);
-        vp9_surface->scaled_8x_surface_id = VA_INVALID_SURFACE;
-        vp9_surface->scaled_8x_surface_obj = NULL;
-    }
+	if (vp9_surface->scaled_8x_surface_obj) {
+		i965_DestroySurfaces(vp9_surface->ctx, &vp9_surface->scaled_8x_surface_id, 1);
+		vp9_surface->scaled_8x_surface_id = VA_INVALID_SURFACE;
+		vp9_surface->scaled_8x_surface_obj = NULL;
+	}
 
-    free(vp9_surface);
-    *data = NULL;
+	free(vp9_surface);
+	*data = NULL;
 
-    pthread_mutex_unlock(&free_vdenc_vp9_surface_lock);
+	pthread_mutex_unlock(&free_vdenc_vp9_surface_lock);
 }
