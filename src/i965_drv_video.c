@@ -626,6 +626,9 @@ i965_QueryConfigEntrypoints(VADriverContextP ctx,
 							VAEntrypoint *entrypoint_list,      /* out */
 							int *num_entrypoints)               /* out */
 {
+	if (!ctx)
+		return VA_STATUS_ERROR_INVALID_CONTEXT;
+
 	struct i965_driver_data * const i965 = i965_driver_data(ctx);
 	int n = 0;
 
@@ -765,7 +768,15 @@ i965_QueryConfigEntrypoints(VADriverContextP ctx,
 	/* If the assert fails then I965_MAX_ENTRYPOINTS needs to be bigger */
 	ASSERT_RET(n <= I965_MAX_ENTRYPOINTS, VA_STATUS_ERROR_OPERATION_FAILED);
 	*num_entrypoints = n;
+	/**
+	 * While this is technically correct, most VAAPI drivers will just return
+	 * VA_STATUS_SUCCESS even if no profiles are available.
+	 */
+#if defined(I965_USE_LEGACY_QUERY_LOGIC)
 	return n > 0 ? VA_STATUS_SUCCESS : VA_STATUS_ERROR_UNSUPPORTED_PROFILE;
+#else
+	return VA_STATUS_SUCCESS;
+#endif
 }
 
 static VAStatus
