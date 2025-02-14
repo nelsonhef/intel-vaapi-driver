@@ -120,7 +120,7 @@ struct i965_render_state {
 								  const VARectangle *src_rec,
 								  const VARectangle *dst_rect);
 	void (*render_terminate)(VADriverContextP ctx);
-};
+} __attribute__((packed));
 
 bool i965_render_init(VADriverContextP ctx);
 void i965_render_terminate(VADriverContextP ctx);

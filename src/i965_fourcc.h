@@ -47,7 +47,7 @@
 typedef struct {
 	uint8_t plane;                      /* the plane which the pixel belongs to */
 	uint8_t offset;                     /* bits offset within a macro-pixel for packed YUV formats or pixel for other formats in the plane */
-} i965_component_info;
+} __attribute__((packed)) i965_component_info;
 
 typedef struct {
 	uint32_t fourcc;                    /* fourcc */
@@ -65,7 +65,7 @@ typedef struct {
 	 * I, A (2 components) for indexed formats
 	 */
 	i965_component_info components[I965_MAX_COMONENTS];
-} i965_fourcc_info;
+} __attribute__((packed)) i965_fourcc_info;
 
 extern const i965_fourcc_info *get_fourcc_info(unsigned int);
 

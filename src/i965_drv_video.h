@@ -394,7 +394,7 @@ struct object_surface {
 	VAGenericID wrapper_surface;
 
 	int exported_primefd;
-};
+} __attribute__((packed));
 
 struct object_buffer {
 	struct object_base base;
@@ -410,7 +410,7 @@ struct object_buffer {
 
 	VAGenericID wrapper_buffer;
 	VAContextID context_id;
-};
+} __attribute__((packed));
 
 struct object_image {
 	struct object_base base;
@@ -418,7 +418,7 @@ struct object_image {
 	dri_bo *bo;
 	unsigned int *palette;
 	VASurfaceID derived_surface;
-};
+} __attribute__((packed));
 
 struct object_subpic {
 	struct object_base base;
@@ -433,7 +433,7 @@ struct object_subpic {
 	float global_alpha;
 	dri_bo *bo;
 	unsigned int flags;
-};
+} __attribute__((packed));
 
 #define I965_RING_NULL  0
 #define I965_RING_BSD   1
@@ -443,7 +443,7 @@ struct object_subpic {
 struct i965_filter {
 	VAProcFilterType type;
 	int ring;
-};
+} __attribute__((packed));
 
 struct i965_driver_data;
 

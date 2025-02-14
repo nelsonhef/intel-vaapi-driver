@@ -90,6 +90,6 @@ struct i965_media_context {
 	void (*media_states_setup)(VADriverContextP ctx, struct decode_state *decode_state, struct i965_media_context *media_context);
 	void (*media_objects)(VADriverContextP ctx, struct decode_state *decode_state, struct i965_media_context *media_context);
 	void (*free_private_context)(void **data);
-};
+} __attribute__((packed));
 
 #endif /* _I965_MEDIA_H_ */
