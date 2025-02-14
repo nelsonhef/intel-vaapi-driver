@@ -94,7 +94,7 @@ struct vpp_gpe_context {
 
 	unsigned int in_frame_w;
 	unsigned int in_frame_h;
-	unsigned int is_first_frame;
+	unsigned int is_first_frame : 1;
 
 	void (*gpe_context_init)(VADriverContextP ctx,
 							 struct i965_gpe_context *gpe_context);

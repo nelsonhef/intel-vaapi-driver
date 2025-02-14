@@ -54,9 +54,9 @@
 
 typedef struct gen_frame_store GenFrameStore;
 struct gen_frame_store {
-	VASurfaceID surface_id;
-	int         frame_store_id;
-	struct      object_surface *obj_surface;
+	VASurfaceID		surface_id;
+	int				frame_store_id;
+	struct object_surface *obj_surface;
 
 	/* This represents the time when this frame store was last used to
 	   hold a reference frame. This is not connected to a presentation
@@ -65,7 +65,7 @@ struct gen_frame_store {
 	   reference frame candidates.
 
 	   This is only used for H.264 decoding on platforms before Haswell */
-	uint64_t    ref_age;
+	uint64_t		ref_age;
 } __attribute__((packed));
 
 typedef struct gen_frame_store_context GenFrameStoreContext;
@@ -76,8 +76,8 @@ struct gen_frame_store_context {
 
 typedef struct gen_buffer GenBuffer;
 struct gen_buffer {
-	dri_bo     *bo;
-	int         valid;
+	dri_bo *bo;
+	unsigned int valid : 1;
 };
 
 struct hw_context *

@@ -49,7 +49,7 @@ struct gen10_huc_virtual_addr_parameter {
 	struct {
 		struct i965_gpe_resource *huc_surface_res;
 		uint32_t offset;
-		uint32_t is_target;
+		unsigned int is_target : 1;
 	} regions[16];
 };
 

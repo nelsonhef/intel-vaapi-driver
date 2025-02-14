@@ -235,7 +235,7 @@ struct gen6_mfc_context {
 		double target_buffer_fullness[MAX_TEMPORAL_LAYERS];
 		double buffer_capacity[MAX_TEMPORAL_LAYERS];
 		unsigned int buffer_size[MAX_TEMPORAL_LAYERS];
-		unsigned int violation_noted;
+		unsigned int violation_noted : 1;
 	} hrd;
 
 	//HRD control context

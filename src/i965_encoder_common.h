@@ -172,12 +172,11 @@ struct encoder_kernel_parameter {
 };
 
 struct encoder_scoreboard_parameter {
-	unsigned int mask;
-	unsigned int type;
-	unsigned int enable;
-	unsigned int walkpat_flag;
+	unsigned int mask : 8;
+	unsigned int type : 1;
+	unsigned int enable : 1;
+	unsigned int walkpat_flag : 1;
 };
-
 
 /*
 ME related defines
@@ -226,8 +225,8 @@ struct generic_encoder_context {
 	void * enc_kernel_ptr;
 	uint32_t enc_kernel_size;
 	//scoreboard
-	uint32_t use_hw_scoreboard;
-	uint32_t use_hw_non_stalling_scoreboard;
+	unsigned int use_hw_scoreboard : 1;
+	unsigned int use_hw_non_stalling_scoreboard : 1;
 	//input surface
 	struct i965_gpe_resource res_uncompressed_input_surface;
 	//reconstructed surface
