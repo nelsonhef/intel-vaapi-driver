@@ -1590,6 +1590,8 @@ intel_enc_hw_context_init(VADriverContextP ctx,
 	case VAProfileH264Main:
 	case VAProfileH264High:
 		encoder_context->codec = CODEC_H264;
+		/* Only supported for MPEG-2 and AVC, only support AVC. */
+		encoder_context->hw_rate_control = intel->rc_hw_mode;
 
 		if (obj_config->entrypoint == VAEntrypointEncSliceLP)
 			encoder_context->quality_range = ENCODER_LP_QUALITY_RANGE;

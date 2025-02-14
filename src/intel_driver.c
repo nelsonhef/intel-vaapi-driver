@@ -90,6 +90,15 @@ static void intel_driver_get_revid(struct intel_driver_data *intel, int *value)
 
 extern const struct intel_device_info *i965_get_device_info(int devid);
 
+bool should_enable_int(const char* str)
+{
+	char *env_str = NULL;
+	if (!(env_str = getenv(str)))
+		return false;
+
+	return atoi(env_str);
+}
+
 bool
 intel_driver_init(VADriverContextP ctx)
 {
@@ -97,7 +106,6 @@ intel_driver_init(VADriverContextP ctx)
 	struct drm_state * const drm_state = (struct drm_state *)ctx->drm_state;
 	int has_exec2 = 0, has_bsd = 0, has_blt = 0, has_vebox = 0;
 	char *env_str = NULL;
-	char *env_str2 = NULL;
 	int ret_value = 0;
 
 	g_intel_debug_option_flags = 0;
@@ -158,10 +166,8 @@ intel_driver_init(VADriverContextP ctx)
 	}
 
 	intel->mocs_state = 0;
-	intel->hybrid_vp8 = 0;
-
-	if ((env_str2 = getenv("I965_VP8_ENCODE")))
-		intel->hybrid_vp8 = atoi(env_str2);
+	intel->hybrid_vp8 = should_enable_int("I965_VP8_ENCODE");
+	intel->rc_hw_mode = should_enable_int("I965_RC_COUNTER");
 
 #define GEN9_PTE_CACHE    2
 

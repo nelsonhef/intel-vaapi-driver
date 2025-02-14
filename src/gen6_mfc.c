@@ -431,11 +431,11 @@ gen6_mfc_avc_slice_state(VADriverContextP ctx,
 				  slice_param->macroblock_address);
 	OUT_BCS_BATCH(batch, (nexty << 16) | nextx);                       /*Next slice first MB X&Y*/
 	OUT_BCS_BATCH(batch,
-				  (0/*rate_control_enable*/ << 31) |        /*in CBR mode RateControlCounterEnable = enable*/
+				  (rate_control_enable << 31) |        /*in CBR mode RateControlCounterEnable = enable*/
 				  (1 << 30) |       /*ResetRateControlCounter*/
 				  (0 << 28) |       /*RC Triggle Mode = Always Rate Control*/
 				  (4 << 24) |     /*RC Stable Tolerance, middle level*/
-				  (0/*rate_control_enable*/ << 23) |     /*RC Panic Enable*/
+				  (rate_control_enable << 23) |     /*RC Panic Enable*/
 				  (0 << 22) |     /*QP mode, don't modfiy CBP*/
 				  (0 << 21) |     /*MB Type Direct Conversion Enabled*/
 				  (0 << 20) |     /*MB Type Skip Conversion Enabled*/
@@ -791,6 +791,7 @@ gen6_mfc_avc_pipeline_slice_programing(VADriverContextP ctx,
 	int i, x, y;
 	int qp = pPicParameter->pic_init_qp + pSliceParameter->slice_qp_delta;
 	unsigned int rate_control_mode = encoder_context->rate_control_mode;
+	bool rate_control_enable = encoder_context->hw_rate_control && (rate_control_mode != VA_RC_CQP);
 	unsigned int tail_data[] = { 0x0, 0x0 };
 	int slice_type = intel_avc_enc_slice_type_fixup(pSliceParameter->slice_type);
 	int is_intra = slice_type == SLICE_TYPE_I;
@@ -816,7 +817,7 @@ gen6_mfc_avc_pipeline_slice_programing(VADriverContextP ctx,
 							 pPicParameter,
 							 pSliceParameter,
 							 encode_state, encoder_context,
-							 (rate_control_mode != VA_RC_CQP), qp_slice, slice_batch);
+							 rate_control_enable, qp_slice, slice_batch);
 
 	if (slice_index == 0)
 		intel_mfc_avc_pipeline_header_programing(ctx, encode_state, encoder_context, slice_batch);
@@ -1180,6 +1181,7 @@ gen6_mfc_avc_batchbuffer_slice(VADriverContextP ctx,
 	int last_slice = (pSliceParameter->macroblock_address + pSliceParameter->num_macroblocks) == (width_in_mbs * height_in_mbs);
 	int qp = pPicParameter->pic_init_qp + pSliceParameter->slice_qp_delta;
 	unsigned int rate_control_mode = encoder_context->rate_control_mode;
+	bool rate_control_enable = encoder_context->hw_rate_control && (rate_control_mode != VA_RC_CQP);
 	unsigned int tail_data[] = { 0x0, 0x0 };
 	long head_offset;
 	int old_used = intel_batchbuffer_used_size(slice_batch), used;
@@ -1209,7 +1211,7 @@ gen6_mfc_avc_batchbuffer_slice(VADriverContextP ctx,
 							 pSliceParameter,
 							 encode_state,
 							 encoder_context,
-							 (rate_control_mode != VA_RC_CQP),
+							 rate_control_enable,
 							 qp_slice,
 							 slice_batch);
 

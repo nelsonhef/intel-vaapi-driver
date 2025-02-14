@@ -107,16 +107,18 @@ struct intel_encoder_context {
 	void *mfc_context;
 	void *enc_priv_state;
 
-	unsigned int is_tmp_id: 1;
-	unsigned int low_power_mode: 1;
-	unsigned int soft_batch_force: 1;
-	unsigned int context_roi: 1;
-	unsigned int is_new_sequence: 1; /* Currently only valid for H.264, TODO for other codecs */
+	unsigned int is_tmp_id : 1;
+	unsigned int low_power_mode : 1;
+	unsigned int soft_batch_force : 1;
+	unsigned int context_roi : 1;
+	unsigned int is_new_sequence : 1; /* Currently only valid for H.264, TODO for other codecs */
 
-	unsigned int fei_enabled: 1;
+	unsigned int fei_enabled : 1;
 	unsigned int fei_function_mode; /* configured VA_FEI_FUNCTION_XXX */
 
-	unsigned int preenc_enabled: 1;
+	unsigned int preenc_enabled : 1;
+
+	unsigned int hw_rate_control : 1; /* "MbRateCtrlFlag- RateControlCounterEnable" */
 
 	void (*vme_context_destroy)(void *vme_context);
 	VAStatus(*vme_pipeline)(VADriverContextP ctx,
