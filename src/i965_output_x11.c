@@ -27,7 +27,7 @@
 #include <va/va_dricommon.h>
 
 #include "i965_drv_video.h"
-#include "i965_output_dri.h"
+#include "i965_output_x11.h"
 #include "dso_utils.h"
 
 #define LIBVA_X11_NAME "libva-x11.so.2"
@@ -48,7 +48,7 @@ struct va_dri_output {
 };
 
 bool
-i965_output_dri_init(VADriverContextP ctx)
+i965_output_x11_init(VADriverContextP ctx)
 {
 	struct i965_driver_data * const i965 = i965_driver_data(ctx);
 	struct dso_handle *dso_handle;
@@ -85,12 +85,12 @@ i965_output_dri_init(VADriverContextP ctx)
 	return true;
 
 error:
-	i965_output_dri_terminate(ctx);
+	i965_output_x11_terminate(ctx);
 	return false;
 }
 
 void
-i965_output_dri_terminate(VADriverContextP ctx)
+i965_output_x11_terminate(VADriverContextP ctx)
 {
 	struct i965_driver_data * const i965 = i965_driver_data(ctx);
 	struct va_dri_output * const dri_output = i965->dri_output;
@@ -108,7 +108,7 @@ i965_output_dri_terminate(VADriverContextP ctx)
 }
 
 VAStatus
-i965_put_surface_dri(
+i965_put_surface_x11(
 	VADriverContextP    ctx,
 	VASurfaceID         surface,
 	void               *draw,

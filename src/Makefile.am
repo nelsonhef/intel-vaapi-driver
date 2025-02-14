@@ -72,8 +72,8 @@ i965_drv_video_la_SOURCES	=
 noinst_HEADERS			= $(source_h)
 
 if USE_X11
-source_c			+= i965_output_dri.c
-source_h			+= i965_output_dri.h
+source_c			+= i965_output_x11.c
+source_h			+= i965_output_x11.h
 endif
 
 if USE_WAYLAND

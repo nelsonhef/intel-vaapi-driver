@@ -189,8 +189,8 @@ headers = [
 ]
 
 if WITH_X11
-  sources += 'i965_output_dri.c'
-  headers += 'i965_output_dri.h'
+  sources += 'i965_output_x11.c'
+  headers += 'i965_output_x11.h'
 endif
 
 if WITH_WAYLAND

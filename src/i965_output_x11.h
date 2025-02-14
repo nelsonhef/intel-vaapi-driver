@@ -22,20 +22,20 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef I965_OUTPUT_DRI_H
-#define I965_OUTPUT_DRI_H
+#ifndef I965_OUTPUT_X11_H
+#define I965_OUTPUT_X11_H
 
 #include <stdbool.h>
 #include <va/va_backend.h>
 
 bool
-i965_output_dri_init(VADriverContextP ctx);
+i965_output_x11_init(VADriverContextP ctx);
 
 void
-i965_output_dri_terminate(VADriverContextP ctx);
+i965_output_x11_terminate(VADriverContextP ctx);
 
 VAStatus
-i965_put_surface_dri(
+i965_put_surface_x11(
 	VADriverContextP    ctx,
 	VASurfaceID         surface,
 	void               *draw,
@@ -46,4 +46,4 @@ i965_put_surface_dri(
 	unsigned int        flags
 );
 
-#endif /* I965_OUTPUT_DRI_H */
+#endif /* I965_OUTPUT_X11_H */

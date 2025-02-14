@@ -33,7 +33,7 @@
 #include <drm_fourcc.h>
 
 #ifdef HAVE_VA_X11
-# include "i965_output_dri.h"
+# include "i965_output_x11.h"
 #endif
 
 #ifdef HAVE_VA_WAYLAND
@@ -5847,7 +5847,7 @@ i965_PutSurface(VADriverContextP ctx,
 		dst_rect.width  = destw;
 		dst_rect.height = desth;
 
-		return i965_put_surface_dri(ctx, surface, draw, &src_rect, &dst_rect,
+		return i965_put_surface_x11(ctx, surface, draw, &src_rect, &dst_rect,
 									cliprects, number_cliprects, flags);
 	}
 #endif
@@ -7631,8 +7631,8 @@ struct {
 
 #ifdef HAVE_VA_X11
 	{
-		i965_output_dri_init,
-		i965_output_dri_terminate,
+		i965_output_x11_init,
+		i965_output_x11_terminate,
 		VA_DISPLAY_X11,
 	},
 #endif
