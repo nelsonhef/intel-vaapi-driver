@@ -98,9 +98,22 @@ struct gen7_mfd_context {
 	struct object_surface *jpeg_wa_surface_object;
 	dri_bo *jpeg_wa_slice_data_bo;
 
-	int                 wa_mpeg2_slice_vertical_position;
+	unsigned int decoder_format_mode : 1;
+	int wa_mpeg2_slice_vertical_position;
 
 	void *driver_context;
-};
+} __attribute__((packed));
+
+static VAConfigAttrib *gen7_lookup_config_attribute(struct object_config *obj_config, VAConfigAttribType type)
+{
+	int i;
+
+	for (i = 0; i < obj_config->num_attribs; i++) {
+		VAConfigAttrib * const attrib = &obj_config->attrib_list[i];
+		if (attrib->type == type)
+			return attrib;
+	}
+	return NULL;
+}
 
 #endif /* _GEN7_MFD_H_ */

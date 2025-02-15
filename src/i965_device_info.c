@@ -206,6 +206,8 @@ static struct hw_codec_info ivb_hw_codec_info = {
 	.has_di_motion_adptive = 1,
 	.has_di_motion_compensated = 1,
 
+	.supports_short_slice_dec = 1,
+
 	.h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR,
 
 	.num_filters = 2,
@@ -258,6 +260,8 @@ static struct hw_codec_info hsw_hw_codec_info = {
 	.has_di_motion_adptive = 1,
 	.has_di_motion_compensated = 1,
 	.has_h264_mvc_encoding = 1,
+
+	.supports_short_slice_dec = 1,
 
 	.h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR,
 
@@ -312,6 +316,8 @@ static struct hw_codec_info bdw_hw_codec_info = {
 	.has_di_motion_compensated = 1,
 	.has_vp8_decoding = 1,
 	.has_h264_mvc_encoding = 1,
+
+	.supports_short_slice_dec = 1,
 
 	.h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR,
 
@@ -368,6 +374,8 @@ static struct hw_codec_info chv_hw_codec_info = {
 	.has_vp8_encoding = 1,
 	.has_h264_mvc_encoding = 1,
 	.has_hevc_decoding = 1,
+
+	.supports_short_slice_dec = 1,
 
 	.h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR,
 
@@ -435,6 +443,8 @@ static struct hw_codec_info skl_hw_codec_info = {
 	.has_fei_h264_encoding = 1,
 	.has_h264_preenc = 1,
 
+	.supports_short_slice_dec = 1,
+
 	.lp_h264_brc_mode = VA_RC_CQP,
 	.h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR | VA_RC_MB,
 
@@ -499,6 +509,8 @@ static struct hw_codec_info bxt_hw_codec_info = {
 	.has_vp9_decoding = 1,
 	.has_vpp_p010 = 1,
 	.has_lp_h264_encoding = 1,
+
+	.supports_short_slice_dec = 1,
 
 	.lp_h264_brc_mode = VA_RC_CQP,
 	.h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR | VA_RC_MB,
@@ -570,6 +582,8 @@ static struct hw_codec_info kbl_hw_codec_info = {
 	.has_vpp_p010 = 1,
 	.has_vp9_encoding = 1,
 	.has_lp_h264_encoding = 1,
+
+	.supports_short_slice_dec = 1,
 
 	.lp_h264_brc_mode = VA_RC_CQP,
 	.h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR | VA_RC_MB,
@@ -645,6 +659,8 @@ static struct hw_codec_info glk_hw_codec_info = {
 	.has_vp9_encoding = 1,
 	.has_lp_h264_encoding = 1,
 
+	.supports_short_slice_dec = 1,
+
 	.lp_h264_brc_mode = VA_RC_CQP,
 	.h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR | VA_RC_MB,
 
@@ -717,6 +733,8 @@ static struct hw_codec_info cfl_hw_codec_info = {
 	.has_vpp_p010 = 1,
 	.has_vp9_encoding = 1,
 	.has_lp_h264_encoding = 1,
+
+	.supports_short_slice_dec = 1,
 
 	.lp_h264_brc_mode = VA_RC_CQP,
 	.h264_brc_mode = VA_RC_CQP | VA_RC_CBR | VA_RC_VBR | VA_RC_MB,

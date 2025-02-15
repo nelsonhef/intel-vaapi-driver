@@ -511,6 +511,7 @@ struct hw_codec_info {
 	unsigned int has_fei_h264_encoding: 1;
 	unsigned int has_h264_preenc: 1;
 	unsigned int has_lp_vp9_encoding: 1;
+	unsigned int supports_short_slice_dec : 1;
 
 	unsigned int lp_h264_brc_mode;
 	unsigned int lp_vp9_brc_mode;

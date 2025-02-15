@@ -108,7 +108,7 @@ gen7_mfd_pipe_mode_select(VADriverContextP ctx,
 	BEGIN_BCS_BATCH(batch, 5);
 	OUT_BCS_BATCH(batch, MFX_PIPE_MODE_SELECT | (5 - 2));
 	OUT_BCS_BATCH(batch,
-				  (MFX_LONG_MODE << 17) | /* Currently only support long format */
+				  (gen7_mfd_context->decoder_format_mode << 17) | /* Currently only support long format */
 				  (MFD_MODE_VLD << 15) | /* VLD mode */
 				  (0 << 10) | /* disable Stream-Out */
 				  (gen7_mfd_context->post_deblocking_output.valid << 9)  | /* Post Deblocking Output */
@@ -725,11 +725,21 @@ gen7_mfd_avc_bsd_object(VADriverContextP ctx,
 static inline void
 gen7_mfd_avc_context_init(
 	VADriverContextP         ctx,
+	struct object_config *obj_config,
 	struct gen7_mfd_context *gen7_mfd_context
 )
 {
 	/* Initialize flat scaling lists */
 	avc_gen_default_iq_matrix(&gen7_mfd_context->iq_matrix.h264);
+
+	/* Setup up short format mode if requested. */
+	VAConfigAttrib *attrib_found;
+	attrib_found = gen7_lookup_config_attribute(obj_config, VAConfigAttribDecSliceMode);
+
+	if (attrib_found && attrib_found->value == VA_DEC_SLICE_MODE_BASE)
+	{
+		gen7_mfd_context->decoder_format_mode = MFX_SHORT_MODE;
+	}
 }
 
 static void
@@ -2652,7 +2662,7 @@ gen7_jpeg_wa_pipe_mode_select(VADriverContextP ctx,
 	BEGIN_BCS_BATCH(batch, 5);
 	OUT_BCS_BATCH(batch, MFX_PIPE_MODE_SELECT | (5 - 2));
 	OUT_BCS_BATCH(batch,
-				  (MFX_LONG_MODE << 17) | /* Currently only support long format */
+				  (gen7_mfd_context->decoder_format_mode << 17) | /* Currently only support long format */
 				  (MFD_MODE_VLD << 15) | /* VLD mode */
 				  (0 << 10) | /* disable Stream-Out */
 				  (0 << 9)  | /* Post Deblocking Output */
@@ -3197,6 +3207,9 @@ gen7_dec_hw_context_init(VADriverContextP ctx, struct object_config *obj_config)
 	gen7_mfd_context->jpeg_wa_surface_id = VA_INVALID_SURFACE;
 	gen7_mfd_context->jpeg_wa_surface_object = NULL;
 
+	/* Must be in LONG mode by default. */
+	gen7_mfd_context->decoder_format_mode = MFX_LONG_MODE;
+
 	switch (obj_config->profile) {
 	case VAProfileMPEG2Simple:
 	case VAProfileMPEG2Main:
@@ -3207,7 +3220,7 @@ gen7_dec_hw_context_init(VADriverContextP ctx, struct object_config *obj_config)
 	case VAProfileH264Main:
 	case VAProfileH264High:
 	case VAProfileH264StereoHigh:
-		gen7_mfd_avc_context_init(ctx, gen7_mfd_context);
+		gen7_mfd_avc_context_init(ctx, obj_config, gen7_mfd_context);
 		break;
 	default:
 		break;

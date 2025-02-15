@@ -1133,6 +1133,18 @@ i965_get_enc_packed_attributes(VADriverContextP ctx, VAProfile profile, VAEntryp
 	return enc_packed_attribs;
 }
 
+static inline bool expose_frame_level_decoding(struct i965_driver_data *const i965, VAProfile profile, VAEntrypoint entrypoint)
+{
+	if (entrypoint != VAEntrypointVLD)
+		return false;
+
+	if (!i965->codec_info->supports_short_slice_dec)
+		return false;
+
+	return profile == VAProfileH264Baseline || profile == VAProfileH264ConstrainedBaseline
+		|| profile == VAProfileH264Main || profile == VAProfileH264High;
+}
+
 VAStatus
 i965_GetConfigAttributes(VADriverContextP ctx,
 						 VAProfile profile,
@@ -1140,7 +1152,7 @@ i965_GetConfigAttributes(VADriverContextP ctx,
 						 VAConfigAttrib *attrib_list,  /* in/out */
 						 int num_attribs)
 {
-	struct i965_driver_data * const i965 = i965_driver_data(ctx);
+	struct i965_driver_data *const i965 = i965_driver_data(ctx);
 	VAStatus va_status;
 	int i;
 
@@ -1245,6 +1257,9 @@ i965_GetConfigAttributes(VADriverContextP ctx,
 		case VAConfigAttribDecSliceMode:
 			if (entrypoint == VAEntrypointVLD)
 				attrib_list[i].value = VA_DEC_SLICE_MODE_NORMAL;
+
+			if (expose_frame_level_decoding(i965, profile, entrypoint))
+				attrib_list[i].value |= VA_DEC_SLICE_MODE_BASE;
 			break;
 
 		case VAConfigAttribEncROI:
