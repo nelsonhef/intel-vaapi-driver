@@ -777,6 +777,16 @@ gen8_mfd_avc_bsd_object(VADriverContextP ctx,
 															slice_param,
 															pic_param->pic_fields.bits.entropy_coding_mode_flag);
 
+	unsigned int mb_byte_offset = slice_data_bit_offset;
+	if (gen7_mfd_context->decoder_format_mode == MFX_SHORT_MODE)
+	{
+		/**
+		 * IVB PRM, Vol 2, Part 3:
+		 * "Short Format: it should be programmed to be 0. HW will parse the Slice Header."
+		 */
+		mb_byte_offset = 0;
+	}							
+
 	/* the input bitsteam format on GEN7 differs from GEN6 */
 	BEGIN_BCS_BATCH(batch, 6);
 	OUT_BCS_BATCH(batch, MFD_AVC_BSD_OBJECT | (6 - 2));
@@ -790,7 +800,7 @@ gen8_mfd_avc_bsd_object(VADriverContextP ctx,
 				  (0 << 10) |
 				  (0 << 8));
 	OUT_BCS_BATCH(batch,
-				  ((slice_data_bit_offset >> 3) << 16) |
+				  ((mb_byte_offset >> 3) << 16) |
 				  (1 << 7)  |
 				  (0 << 5)  |
 				  (0 << 4)  |
