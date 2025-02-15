@@ -773,7 +773,7 @@ gen8_mfd_avc_bsd_object(VADriverContextP ctx,
 						struct gen7_mfd_context *gen7_mfd_context)
 {
 	struct intel_batchbuffer *batch = gen7_mfd_context->base.batch;
-	int slice_data_bit_offset = avc_get_first_mb_bit_offset(slice_data_bo,
+	unsigned int slice_data_bit_offset = avc_get_first_mb_bit_offset(slice_data_bo,
 															slice_param,
 															pic_param->pic_fields.bits.entropy_coding_mode_flag);
 
