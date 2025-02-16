@@ -252,6 +252,26 @@ typedef struct {
 static const i965_image_format_map_t
 i965_image_formats_map[I965_MAX_IMAGE_FORMATS + 1] = {
 	{
+		/* [31:0] A:R:G:B 8:8:8:8 little endian */
+		I965_SURFACETYPE_RGBA,
+		{ VA_FOURCC_BGRA, VA_LSB_FIRST, 32, 32, 0x00ff0000, 0x0000ff00, 0x000000ff,  0xff000000 }
+	},
+	{
+		/* [31:0] X:B:G:R 8:8:8:8 little endian */
+		I965_SURFACETYPE_RGBA,
+		{ VA_FOURCC_RGBX, VA_LSB_FIRST, 32, 24, 0x000000ff, 0x0000ff00, 0x00ff0000 }
+	},
+	{
+		/* [31:0] X:R:G:B 8:8:8:8 little endian */
+		I965_SURFACETYPE_RGBA,
+		{ VA_FOURCC_BGRX, VA_LSB_FIRST, 32, 24, 0x00ff0000, 0x0000ff00, 0x000000ff }
+	},
+	{
+		/* [31:0] A:B:G:R 8:8:8:8 little endian */
+		I965_SURFACETYPE_RGBA,
+		{ VA_FOURCC_RGBA, VA_LSB_FIRST, 32, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000 }
+	},
+	{
 		I965_SURFACETYPE_YUV,
 		{ VA_FOURCC_NV12, VA_LSB_FIRST, 12, }
 	},
@@ -264,20 +284,6 @@ i965_image_formats_map[I965_MAX_IMAGE_FORMATS + 1] = {
 		{ VA_FOURCC_YUY2, VA_LSB_FIRST, 16, }
 	},
 	{
-		I965_SURFACETYPE_RGBA,
-		{ VA_FOURCC_RGBX, VA_LSB_FIRST, 32, 24, 0x000000ff, 0x0000ff00, 0x00ff0000 }
-	},
-	{
-		I965_SURFACETYPE_RGBA,
-		{ VA_FOURCC_BGRX, VA_LSB_FIRST, 32, 24, 0x00ff0000, 0x0000ff00, 0x000000ff }
-	},
-	/* ARGB (https://github.com/intel/intel-vaapi-driver/issues/500) */
-	{I965_SURFACETYPE_RGBA, {VA_FOURCC_RGBA, VA_LSB_FIRST, 32, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000}},
-	{
-		I965_SURFACETYPE_YUV,
-		{ VA_FOURCC_I420, VA_LSB_FIRST, 12, }
-	},
-	{
 		I965_SURFACETYPE_YUV,
 		{ VA_FOURCC_UYVY, VA_LSB_FIRST, 16, }
 	},
@@ -287,8 +293,12 @@ i965_image_formats_map[I965_MAX_IMAGE_FORMATS + 1] = {
 	},
 	{
 		I965_SURFACETYPE_YUV,
-		{ VA_FOURCC_422H, VA_LSB_FIRST, 16, }
+		{ VA_FOURCC_I420, VA_LSB_FIRST, 12, }
 	},
+	{
+		I965_SURFACETYPE_YUV,
+		{ VA_FOURCC_422H, VA_LSB_FIRST, 16, }
+	}
 };
 
 /* List of supported subpicture formats */
