@@ -253,27 +253,15 @@ static const i965_image_format_map_t
 i965_image_formats_map[I965_MAX_IMAGE_FORMATS + 1] = {
 	{
 		I965_SURFACETYPE_YUV,
-		{ VA_FOURCC_YV12, VA_LSB_FIRST, 12, }
-	},
-	{
-		I965_SURFACETYPE_YUV,
-		{ VA_FOURCC_I420, VA_LSB_FIRST, 12, }
-	},
-	{
-		I965_SURFACETYPE_YUV,
 		{ VA_FOURCC_NV12, VA_LSB_FIRST, 12, }
 	},
 	{
 		I965_SURFACETYPE_YUV,
+		{ VA_FOURCC_P010, VA_LSB_FIRST, 24, }
+	},
+	{
+		I965_SURFACETYPE_YUV,
 		{ VA_FOURCC_YUY2, VA_LSB_FIRST, 16, }
-	},
-	{
-		I965_SURFACETYPE_YUV,
-		{ VA_FOURCC_UYVY, VA_LSB_FIRST, 16, }
-	},
-	{
-		I965_SURFACETYPE_YUV,
-		{ VA_FOURCC_422H, VA_LSB_FIRST, 16, }
 	},
 	{
 		I965_SURFACETYPE_RGBA,
@@ -283,12 +271,24 @@ i965_image_formats_map[I965_MAX_IMAGE_FORMATS + 1] = {
 		I965_SURFACETYPE_RGBA,
 		{ VA_FOURCC_BGRX, VA_LSB_FIRST, 32, 24, 0x00ff0000, 0x0000ff00, 0x000000ff }
 	},
-	{
-		I965_SURFACETYPE_YUV,
-		{ VA_FOURCC_P010, VA_LSB_FIRST, 24, }
-	},
 	/* ARGB (https://github.com/intel/intel-vaapi-driver/issues/500) */
 	{I965_SURFACETYPE_RGBA, {VA_FOURCC_RGBA, VA_LSB_FIRST, 32, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000}},
+	{
+		I965_SURFACETYPE_YUV,
+		{ VA_FOURCC_I420, VA_LSB_FIRST, 12, }
+	},
+	{
+		I965_SURFACETYPE_YUV,
+		{ VA_FOURCC_UYVY, VA_LSB_FIRST, 16, }
+	},
+	{
+		I965_SURFACETYPE_YUV,
+		{ VA_FOURCC_YV12, VA_LSB_FIRST, 12, }
+	},
+	{
+		I965_SURFACETYPE_YUV,
+		{ VA_FOURCC_422H, VA_LSB_FIRST, 16, }
+	},
 };
 
 /* List of supported subpicture formats */
@@ -2102,6 +2102,13 @@ i965_CreateSurfaces2(
 		return VA_STATUS_ERROR_UNSUPPORTED_RT_FORMAT;
 	}
 
+	/* Refuse 10bpp formats if we don't actually support them. */
+	if (VA_RT_FORMAT_YUV420_10BPP == format && !i965->codec_info->has_vpp_p010)
+	{
+		fprintf(stderr, "i965_CreateSurfaces2: Rejecting VA_RT_FORMAT_YUV420_10BPP on unsupported hardware, this is an application issue.\r\n");
+		return VA_STATUS_ERROR_UNSUPPORTED_RT_FORMAT;
+	}
+
 	for (i = 0; i < num_surfaces; i++) {
 		int surfaceID = NEW_SURFACE_ID();
 		struct object_surface *obj_surface = SURFACE(surfaceID);
@@ -2265,16 +2272,28 @@ i965_QueryImageFormats(VADriverContextP ctx,
 					   VAImageFormat *format_list,      /* out */
 					   int *num_formats)                /* out */
 {
-	int n;
+	if (!ctx)
+		return VA_STATUS_ERROR_INVALID_CONTEXT;
 
-	for (n = 0; i965_image_formats_map[n].va_format.fourcc != 0; n++) {
+	struct i965_driver_data *i965 = i965_driver_data(ctx);
+	int n, idx = 0;
+
+	for (n = 0; i965_image_formats_map[n].va_format.fourcc != 0; n++)
+	{
 		const i965_image_format_map_t * const m = &i965_image_formats_map[n];
+
+		/* Don't expose P010 if we don't support it. */
+		if (m->va_format.fourcc == VA_FOURCC_P010 && !i965->codec_info->has_vpp_p010)
+		{
+			continue;
+		}
+
 		if (format_list)
-			format_list[n] = m->va_format;
+			format_list[idx++] = m->va_format;
 	}
 
 	if (num_formats)
-		*num_formats = n;
+		*num_formats = idx;
 
 	return VA_STATUS_SUCCESS;
 }
