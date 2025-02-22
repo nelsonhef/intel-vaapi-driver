@@ -1145,6 +1145,9 @@ i965_get_enc_packed_attributes(VADriverContextP ctx, VAProfile profile, VAEntryp
 
 static inline bool expose_frame_level_decoding(struct i965_driver_data *const i965, VAProfile profile, VAEntrypoint entrypoint)
 {
+	if (!i965->intel.dec_base)
+		return false;
+
 	if (entrypoint != VAEntrypointVLD)
 		return false;
 

@@ -183,6 +183,12 @@ struct intel_driver_data {
 	int locked;
 
 	dri_bufmgr *bufmgr;
+	const struct intel_device_info *device_info;
+
+	/* We will always have a positive number of EUs. */
+	unsigned int eu_total;
+
+	unsigned int mocs_state;
 
 	unsigned int has_exec2  : 1; /* Flag: has execbuffer2? */
 	unsigned int has_bsd    : 1; /* Flag: has bitstream decoder for H.264? */
@@ -192,12 +198,7 @@ struct intel_driver_data {
 	unsigned int has_huc    : 1; /* Flag: has a fully loaded HuC firmware? */
 	unsigned int hybrid_vp8 : 1; /* Flag: User has enrolled in experimental VP8 encoding support. */
 	unsigned int rc_hw_mode : 1; /* Flag: User has enrolled in RateControlCounter */
-
-	/* We will always have a positive number of EUs. */
-	unsigned int eu_total;
-
-	const struct intel_device_info *device_info;
-	unsigned int mocs_state;
+	unsigned int dec_base	: 1; /* Flag: User has enrolled in experimental VA_DEC_SLICE_MODE_BASE support  */
 };
 
 bool intel_driver_init(VADriverContextP ctx);
