@@ -57,6 +57,9 @@
 #define I965_MAX_SUBPIC_SUM                     4
 #define I965_MAX_SURFACE_ATTRIBUTES             32
 
+#define I965_INFINITE_KERNEL_TIMEOUT			-1
+#define I965_MAXIMUM_KERNEL_TIMEOUT				0x8000000000000000
+
 #define INTEL_STR_DRIVER_VENDOR                 "Intel"
 #define INTEL_STR_DRIVER_NAME                   "i965"
 

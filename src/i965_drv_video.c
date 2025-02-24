@@ -4279,6 +4279,9 @@ VAStatus
 i965_SyncSurface(VADriverContextP ctx,
 				 VASurfaceID render_target)
 {
+	if (!ctx)
+		return VA_STATUS_ERROR_INVALID_CONTEXT;
+
 	struct i965_driver_data *i965 = i965_driver_data(ctx);
 	struct object_surface *obj_surface = SURFACE(render_target);
 
@@ -4295,22 +4298,62 @@ i965_SyncSurface2(VADriverContextP ctx,
 				VASurfaceID render_target,
 				uint64_t timeout_ns)
 {
+	if (!ctx)
+		return VA_STATUS_ERROR_INVALID_CONTEXT;
+
 	struct i965_driver_data *i965 = i965_driver_data(ctx);
 	struct object_surface *obj_surface = SURFACE(render_target);
 
 	ASSERT_RET(obj_surface, VA_STATUS_ERROR_INVALID_SURFACE);
 
+	/**
+	 * We need to workaround a kernel limitation for DRM_IOCTL_I915_GEM_WAIT.
+	 * Treat really large values as an infinite timeout.
+	 */
+	int64_t timeout = timeout_ns;
+	if (timeout_ns >= I965_MAXIMUM_KERNEL_TIMEOUT)
+	{
+		timeout = I965_INFINITE_KERNEL_TIMEOUT;
+	}
+
 	if (obj_surface->bo)
 	{
-		if (timeout_ns == VA_TIMEOUT_INFINITE)
-		{
-			drm_intel_bo_wait_rendering(obj_surface->bo);
-		}
-		else
-		{
-			if (drm_intel_gem_bo_wait(obj_surface->bo, timeout_ns) != 0)
-				return VA_STATUS_ERROR_TIMEDOUT;
-		}
+		if (drm_intel_gem_bo_wait(obj_surface->bo, timeout) != 0)
+			return VA_STATUS_ERROR_TIMEDOUT;
+	}
+
+	return VA_STATUS_SUCCESS;
+}
+
+VAStatus
+i965_SyncBuffer(VADriverContextP ctx,
+				VABufferID buf_id,
+				uint64_t timeout_ns)
+{
+	if (!ctx)
+		return VA_STATUS_ERROR_INVALID_CONTEXT;
+
+	struct i965_driver_data *i965 = i965_driver_data(ctx);
+	struct object_buffer *obj_buffer = BUFFER(buf_id);
+
+	ASSERT_RET(obj_buffer, VA_STATUS_ERROR_INVALID_BUFFER);
+
+	/**
+	 * The kernel expects zero as an infinite timeout, enforce that.
+	 * 
+	 * We also need to workaround a kernel limitation for DRM_IOCTL_I915_GEM_WAIT,
+	 * treat really large values as an infinite timeout.
+	 */
+	int64_t timeout = timeout_ns;
+	if (timeout_ns >= I965_MAXIMUM_KERNEL_TIMEOUT)
+	{
+		timeout = I965_INFINITE_KERNEL_TIMEOUT;
+	}
+
+	if (obj_buffer->buffer_store->bo)
+	{
+		if (drm_intel_gem_bo_wait(obj_buffer->buffer_store->bo, timeout) != 0)
+			return VA_STATUS_ERROR_TIMEDOUT;
 	}
 
 	return VA_STATUS_SUCCESS;
@@ -8046,6 +8089,7 @@ VA_DRIVER_INIT_FUNC(VADriverContextP ctx)
 
 	/* 2.9.0 */
 #if VA_CHECK_VERSION(1, 9, 0)
+	vtable->vaSyncBuffer = i965_SyncBuffer;
 	vtable->vaSyncSurface2 = i965_SyncSurface2;
 #endif
 
