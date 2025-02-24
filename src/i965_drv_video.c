@@ -4291,6 +4291,32 @@ i965_SyncSurface(VADriverContextP ctx,
 }
 
 VAStatus
+i965_SyncSurface2(VADriverContextP ctx,
+				VASurfaceID render_target,
+				uint64_t timeout_ns)
+{
+	struct i965_driver_data *i965 = i965_driver_data(ctx);
+	struct object_surface *obj_surface = SURFACE(render_target);
+
+	ASSERT_RET(obj_surface, VA_STATUS_ERROR_INVALID_SURFACE);
+
+	if (obj_surface->bo)
+	{
+		if (timeout_ns == VA_TIMEOUT_INFINITE)
+		{
+			drm_intel_bo_wait_rendering(obj_surface->bo);
+		}
+		else
+		{
+			if (drm_intel_gem_bo_wait(obj_surface->bo, timeout_ns) != 0)
+				return VA_STATUS_ERROR_TIMEDOUT;
+		}
+	}
+
+	return VA_STATUS_SUCCESS;
+}
+
+VAStatus
 i965_QuerySurfaceStatus(VADriverContextP ctx,
 						VASurfaceID render_target,
 						VASurfaceStatus *status)        /* out */
@@ -8008,11 +8034,20 @@ VA_DRIVER_INIT_FUNC(VADriverContextP ctx)
 	vtable->vaCreateSurfaces2 = i965_CreateSurfaces2;
 
 	/* 0.36.0 */
+#if VA_CHECK_VERSION(0, 36, 0)
 	vtable->vaAcquireBufferHandle = i965_AcquireBufferHandle;
 	vtable->vaReleaseBufferHandle = i965_ReleaseBufferHandle;
+#endif
 
 	/* 1.0.0 */
+#if VA_CHECK_VERSION(1, 0, 0)
 	vtable->vaExportSurfaceHandle = i965_ExportSurfaceHandle;
+#endif
+
+	/* 2.9.0 */
+#if VA_CHECK_VERSION(1, 9, 0)
+	vtable->vaSyncSurface2 = i965_SyncSurface2;
+#endif
 
 	vtable_vpp->vaQueryVideoProcFilters = i965_QueryVideoProcFilters;
 	vtable_vpp->vaQueryVideoProcFilterCaps = i965_QueryVideoProcFilterCaps;
