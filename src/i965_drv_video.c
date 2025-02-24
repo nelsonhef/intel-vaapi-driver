@@ -4339,7 +4339,7 @@ i965_SyncBuffer(VADriverContextP ctx,
 	ASSERT_RET(obj_buffer, VA_STATUS_ERROR_INVALID_BUFFER);
 
 	/**
-	 * The kernel expects zero as an infinite timeout, enforce that.
+	 * The kernel expects a negative value as an infinite timeout, enforce that.
 	 * 
 	 * We also need to workaround a kernel limitation for DRM_IOCTL_I915_GEM_WAIT,
 	 * treat really large values as an infinite timeout.
