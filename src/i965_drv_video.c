@@ -7019,9 +7019,16 @@ static uint32_t drm_format_of_separate_plane(uint32_t fourcc, int plane)
 			return DRM_FORMAT_BGRA8888;
 		case VA_FOURCC_ABGR:
 			return DRM_FORMAT_RGBA8888;
+
+		default:
+			{
+				fprintf(stderr, "drm_format_of_separate_plane: Unknown fourcc %#010x, returning zero. (plane=%u)\r\n", fourcc, plane);
+				return 0;
+			}
 		}
 	} else {
-		switch (fourcc) {
+		switch (fourcc)
+		{
 		case VA_FOURCC_NV12:
 			return DRM_FORMAT_GR88;
 		case VA_FOURCC_I420:
@@ -7033,9 +7040,14 @@ static uint32_t drm_format_of_separate_plane(uint32_t fourcc, int plane)
 			return DRM_FORMAT_GR1616;
 		case VA_FOURCC_I010:
 			return DRM_FORMAT_R16;
+
+		default:
+			{
+				fprintf(stderr, "drm_format_of_separate_plane: Unknown fourcc %#010x, returning zero. (plane=%u)\r\n", fourcc, plane);
+				return 0;
+			}
 		}
 	}
-	return 0;
 }
 
 static uint32_t drm_format_of_composite_object(uint32_t fourcc)
@@ -7074,8 +7086,13 @@ static uint32_t drm_format_of_composite_object(uint32_t fourcc)
 		return DRM_FORMAT_BGRA8888;
 	case VA_FOURCC_ABGR:
 		return DRM_FORMAT_RGBA8888;
+
+	default:
+		{
+			fprintf(stderr, "drm_format_of_composite_object: Unknown fourcc %#010x, returning zero.\r\n", fourcc);
+			return 0;
+		}
 	}
-	return 0;
 }
 
 static VAStatus
@@ -7097,7 +7114,12 @@ i965_ExportSurfaceHandle(VADriverContextP ctx, VASurfaceID surface_id,
 		return VA_STATUS_ERROR_INVALID_SURFACE;
 	}
 
-	if (mem_type != VA_SURFACE_ATTRIB_MEM_TYPE_DRM_PRIME_2 && mem_type != VA_SURFACE_ATTRIB_MEM_TYPE_DRM_PRIME_3) {
+	if (
+#if VA_CHECK_VERSION(1, 21, 0)
+		mem_type != VA_SURFACE_ATTRIB_MEM_TYPE_DRM_PRIME_3 &&
+#endif
+		mem_type != VA_SURFACE_ATTRIB_MEM_TYPE_DRM_PRIME_2)
+	{
 		i965_log_info(ctx, "vaExportSurfaceHandle: memory type %08x "
 					  "is not supported.\n", mem_type);
 		return VA_STATUS_ERROR_UNSUPPORTED_MEMORY_TYPE;
@@ -7105,7 +7127,11 @@ i965_ExportSurfaceHandle(VADriverContextP ctx, VASurfaceID surface_id,
 
 	info = get_fourcc_info(obj_surface->fourcc);
 	if (!info)
+	{
+		i965_log_info(ctx, "vaExportSurfaceHandle: get_fourcc_info(%08x) "
+			"failed to find a compatible format\n", obj_surface->fourcc);
 		return VA_STATUS_ERROR_UNSUPPORTED_RT_FORMAT;
+	}
 
 	if (composite_object) {
 		formats[0] =
@@ -7135,191 +7161,100 @@ i965_ExportSurfaceHandle(VADriverContextP ctx, VASurfaceID surface_id,
 	if (drm_intel_bo_get_tiling(obj_surface->bo, &tiling, &swizzle))
 		tiling = I915_TILING_NONE;
 
-	if (mem_type == VA_SURFACE_ATTRIB_MEM_TYPE_DRM_PRIME_2)
+	VADRMPRIMESurfaceDescriptor *desc = (VADRMPRIMESurfaceDescriptor *)descriptor;
+
+	/* Chromium doesn't seem to safely init the struct, this can cause memory corruption. */
+	memset(desc, 0, sizeof(VADRMPRIMESurfaceDescriptor));
+
+	desc->fourcc = obj_surface->fourcc;
+	desc->width = obj_surface->orig_width;
+	desc->height = obj_surface->orig_height;
+
+	desc->num_objects = 1;
+	desc->objects[0].fd = fd;
+	desc->objects[0].size = obj_surface->size;
+
+	switch (tiling)
 	{
-		VADRMPRIMESurfaceDescriptor *desc = (VADRMPRIMESurfaceDescriptor *)descriptor;
-
-		/* Chromium doesn't seem to safely init the struct, this can cause memory corruption. */
-		memset(desc, 0, sizeof(VADRMPRIMESurfaceDescriptor));
-
-		desc->fourcc = obj_surface->fourcc;
-		desc->width = obj_surface->orig_width;
-		desc->height = obj_surface->orig_height;
-
-		desc->num_objects = 1;
-		desc->objects[0].fd = fd;
-		desc->objects[0].size = obj_surface->size;
-		switch (tiling)
+	case I915_TILING_X:
+		desc->objects[0].drm_format_modifier = I915_FORMAT_MOD_X_TILED;
+		break;
+	case I915_TILING_Y:
+		desc->objects[0].drm_format_modifier = I915_FORMAT_MOD_Y_TILED;
+		break;
+	case I915_TILING_NONE:
+		desc->objects[0].drm_format_modifier = DRM_FORMAT_MOD_NONE;
+		break;
+	default:
 		{
-		case I915_TILING_X:
-			desc->objects[0].drm_format_modifier = I915_FORMAT_MOD_X_TILED;
-			break;
-		case I915_TILING_Y:
-			desc->objects[0].drm_format_modifier = I915_FORMAT_MOD_Y_TILED;
-			break;
-		case I915_TILING_NONE:
-		default:
-			desc->objects[0].drm_format_modifier = DRM_FORMAT_MOD_NONE;
+			i965_log_info(ctx, "vaExportSurfaceHandle: Unknown DRM format modifier %u.\n", tiling);
+			return VA_STATUS_ERROR_UNKNOWN;
 		}
+	}
 
-		if (composite_object)
+	if (composite_object)
+	{
+		desc->num_layers = 1;
+
+		desc->layers[0].drm_format = formats[0];
+		desc->layers[0].num_planes = info->num_planes;
+
+		offset = 0;
+		for (p = 0; p < info->num_planes; p++)
 		{
-			desc->num_layers = 1;
+			desc->layers[0].object_index[p] = 0;
 
-			desc->layers[0].drm_format = formats[0];
-			desc->layers[0].num_planes = info->num_planes;
-
-			offset = 0;
-			for (p = 0; p < info->num_planes; p++)
+			if (p == 0)
 			{
-				desc->layers[0].object_index[p] = 0;
-
-				if (p == 0)
-				{
-					pitch = obj_surface->width;
-					height = obj_surface->height;
-				}
-				else
-				{
-					pitch = obj_surface->cb_cr_pitch;
-					height = obj_surface->cb_cr_height;
-				}
-
-				desc->layers[0].offset[p] = offset;
-				desc->layers[0].pitch[p] = pitch;
-
-				offset += pitch * height;
+				pitch = obj_surface->width;
+				height = obj_surface->height;
 			}
-		}
-		else
-		{
-			desc->num_layers = info->num_planes;
-
-			offset = 0;
-			for (p = 0; p < info->num_planes; p++)
+			else
 			{
-				desc->layers[p].drm_format = formats[p];
-				desc->layers[p].num_planes = 1;
-
-				desc->layers[p].object_index[0] = 0;
-
-				if (p == 0)
-				{
-					pitch = obj_surface->width;
-					height = obj_surface->height;
-					if (obj_surface->y_cb_offset < obj_surface->y_cr_offset)
-						y_offset = obj_surface->y_cb_offset;
-					else
-						y_offset = obj_surface->y_cr_offset;
-				}
-				else
-				{
-					if (obj_surface->y_cb_offset < obj_surface->y_cr_offset)
-						y_offset = obj_surface->y_cr_offset;
-					else
-						y_offset = obj_surface->y_cb_offset;
-					pitch = obj_surface->cb_cr_pitch;
-					height = obj_surface->cb_cr_height;
-				}
-
-				desc->layers[p].offset[0] = offset;
-				desc->layers[p].pitch[0] = pitch;
-				offset = obj_surface->width * y_offset;
+				pitch = obj_surface->cb_cr_pitch;
+				height = obj_surface->cb_cr_height;
 			}
+
+			desc->layers[0].offset[p] = offset;
+			desc->layers[0].pitch[p] = pitch;
+
+			offset += pitch * height;
 		}
 	}
 	else
 	{
-		VADRMPRIME3SurfaceDescriptor *desc = (VADRMPRIME3SurfaceDescriptor *)descriptor;
+		desc->num_layers = info->num_planes;
 
-		/* Chromium doesn't seem to safely init the struct, this can cause memory corruption. */
-		memset(desc, 0, sizeof(VADRMPRIME3SurfaceDescriptor));
-
-		desc->fourcc = obj_surface->fourcc;
-		desc->width = obj_surface->orig_width;
-		desc->height = obj_surface->orig_height;
-		desc->flags = 0;
-
-		desc->num_objects = 1;
-		desc->objects[0].fd = fd;
-		desc->objects[0].size = obj_surface->size;
-		switch (tiling)
+		offset = 0;
+		for (p = 0; p < info->num_planes; p++)
 		{
-		case I915_TILING_X:
-			desc->objects[0].drm_format_modifier = I915_FORMAT_MOD_X_TILED;
-			break;
-		case I915_TILING_Y:
-			desc->objects[0].drm_format_modifier = I915_FORMAT_MOD_Y_TILED;
-			break;
-		case I915_TILING_NONE:
-		default:
-			desc->objects[0].drm_format_modifier = DRM_FORMAT_MOD_NONE;
-		}
+			desc->layers[p].drm_format = formats[p];
+			desc->layers[p].num_planes = 1;
 
-		if (composite_object)
-		{
-			desc->num_layers = 1;
+			desc->layers[p].object_index[0] = 0;
 
-			desc->layers[0].drm_format = formats[0];
-			desc->layers[0].num_planes = info->num_planes;
-
-			offset = 0;
-			for (p = 0; p < info->num_planes; p++)
+			if (p == 0)
 			{
-				desc->layers[0].object_index[p] = 0;
-
-				if (p == 0)
-				{
-					pitch = obj_surface->width;
-					height = obj_surface->height;
-				}
+				pitch = obj_surface->width;
+				height = obj_surface->height;
+				if (obj_surface->y_cb_offset < obj_surface->y_cr_offset)
+					y_offset = obj_surface->y_cb_offset;
 				else
-				{
-					pitch = obj_surface->cb_cr_pitch;
-					height = obj_surface->cb_cr_height;
-				}
-
-				desc->layers[0].offset[p] = offset;
-				desc->layers[0].pitch[p] = pitch;
-
-				offset += pitch * height;
+					y_offset = obj_surface->y_cr_offset;
 			}
-		}
-		else
-		{
-			desc->num_layers = info->num_planes;
-
-			offset = 0;
-			for (p = 0; p < info->num_planes; p++)
+			else
 			{
-				desc->layers[p].drm_format = formats[p];
-				desc->layers[p].num_planes = 1;
-
-				desc->layers[p].object_index[0] = 0;
-
-				if (p == 0)
-				{
-					pitch = obj_surface->width;
-					height = obj_surface->height;
-					if (obj_surface->y_cb_offset < obj_surface->y_cr_offset)
-						y_offset = obj_surface->y_cb_offset;
-					else
-						y_offset = obj_surface->y_cr_offset;
-				}
+				if (obj_surface->y_cb_offset < obj_surface->y_cr_offset)
+					y_offset = obj_surface->y_cr_offset;
 				else
-				{
-					if (obj_surface->y_cb_offset < obj_surface->y_cr_offset)
-						y_offset = obj_surface->y_cr_offset;
-					else
-						y_offset = obj_surface->y_cb_offset;
-					pitch = obj_surface->cb_cr_pitch;
-					height = obj_surface->cb_cr_height;
-				}
-
-				desc->layers[p].offset[0] = offset;
-				desc->layers[p].pitch[0] = pitch;
-				offset = obj_surface->width * y_offset;
+					y_offset = obj_surface->y_cb_offset;
+				pitch = obj_surface->cb_cr_pitch;
+				height = obj_surface->cb_cr_height;
 			}
+
+			desc->layers[p].offset[0] = offset;
+			desc->layers[p].pitch[0] = pitch;
+			offset = obj_surface->width * y_offset;
 		}
 	}
 
