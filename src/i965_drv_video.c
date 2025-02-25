@@ -6990,53 +6990,106 @@ i965_ReleaseBufferHandle(VADriverContextP ctx, VABufferID buf_id)
 static uint32_t drm_format_of_separate_plane(uint32_t fourcc, int plane)
 {
 	if (plane == 0) {
-		switch (fourcc) {
+		switch (fourcc)
+		{
+
 		case VA_FOURCC_NV12:
 		case VA_FOURCC_I420:
 		case VA_FOURCC_IMC3:
 		case VA_FOURCC_YV12:
 		case VA_FOURCC_YV16:
+		case VA_FOURCC_422H:
+		case VA_FOURCC_422V:
+		case VA_FOURCC_444P:
 		case VA_FOURCC_Y800:
+		case VA_FOURCC_RGBP:
+		case VA_FOURCC_BGRP:
 			return DRM_FORMAT_R8;
 		case VA_FOURCC_P010:
+		case VA_FOURCC_P012:
+		case VA_FOURCC_P016:
 		case VA_FOURCC_I010:
 			return DRM_FORMAT_R16;
 
 		case VA_FOURCC_YUY2:
+			return DRM_FORMAT_YUYV;
+		case VA_FOURCC_YVYU:
+			return DRM_FORMAT_YVYU;
+		case VA_FOURCC_VYUY:
+			return DRM_FORMAT_VYUY;
 		case VA_FOURCC_UYVY:
-			// These are not representable as separate planes.
-			return 0;
+			return DRM_FORMAT_UYVY;
+		case VA_FOURCC_AYUV:
+			return DRM_FORMAT_AYUV;
+#if VA_CHECK_VERSION(1, 13, 0)
+		case VA_FOURCC_XYUV:
+			return DRM_FORMAT_XYUV8888;
+#endif
+		case VA_FOURCC_Y210:
+			return DRM_FORMAT_Y210;
+		case VA_FOURCC_Y216:
+			return DRM_FORMAT_Y216;
+		case VA_FOURCC_Y410:
+			return DRM_FORMAT_Y410;
+		case VA_FOURCC_Y416:
+			return DRM_FORMAT_Y416;
+#if VA_CHECK_VERSION(1, 9, 0)
+		case VA_FOURCC_Y212:
+			return DRM_FORMAT_Y216;
+		case VA_FOURCC_Y412:
+			return DRM_FORMAT_Y416;
+#endif
 
-		case VA_FOURCC_RGBA:
-			return DRM_FORMAT_ABGR8888;
-		case VA_FOURCC_RGBX:
-			return DRM_FORMAT_XBGR8888;
-		case VA_FOURCC_BGRA:
-			return DRM_FORMAT_ARGB8888;
-		case VA_FOURCC_BGRX:
-			return DRM_FORMAT_XRGB8888;
 		case VA_FOURCC_ARGB:
-			return DRM_FORMAT_BGRA8888;
+			return DRM_FORMAT_ARGB8888;
 		case VA_FOURCC_ABGR:
+			return DRM_FORMAT_ABGR8888;
+		case VA_FOURCC_RGBA:
 			return DRM_FORMAT_RGBA8888;
+		case VA_FOURCC_BGRA:
+			return DRM_FORMAT_BGRA8888;
+		case VA_FOURCC_XRGB:
+			return DRM_FORMAT_XRGB8888;
+		case VA_FOURCC_XBGR:
+			return DRM_FORMAT_XBGR8888;
+		case VA_FOURCC_RGBX:
+			return DRM_FORMAT_RGBX8888;
+		case VA_FOURCC_BGRX:
+			return DRM_FORMAT_BGRX8888;
+		case VA_FOURCC_A2R10G10B10:
+			return DRM_FORMAT_ARGB2101010;
+		case VA_FOURCC_A2B10G10R10:
+			return DRM_FORMAT_ABGR2101010;
+		case VA_FOURCC_X2R10G10B10:
+			return DRM_FORMAT_XRGB2101010;
+		case VA_FOURCC_X2B10G10R10:
+			return DRM_FORMAT_XBGR2101010;
 
 		default:
-			{
-				fprintf(stderr, "drm_format_of_separate_plane: Unknown fourcc %#010x, returning zero. (plane=%u)\r\n", fourcc, plane);
-				return 0;
-			}
+		{
+			fprintf(stderr, "drm_format_of_separate_plane: Unknown fourcc %#010x, returning zero. (plane=%u)\r\n", fourcc, plane);
+			return 0;
+		}
 		}
 	} else {
 		switch (fourcc)
 		{
+
 		case VA_FOURCC_NV12:
 			return DRM_FORMAT_GR88;
 		case VA_FOURCC_I420:
-		case VA_FOURCC_IMC3:          
+		case VA_FOURCC_IMC3:
 		case VA_FOURCC_YV12:
 		case VA_FOURCC_YV16:
+		case VA_FOURCC_422H:
+		case VA_FOURCC_422V:
+		case VA_FOURCC_444P:
+		case VA_FOURCC_RGBP:
+		case VA_FOURCC_BGRP:
 			return DRM_FORMAT_R8;
 		case VA_FOURCC_P010:
+		case VA_FOURCC_P012:
+		case VA_FOURCC_P016:
 			return DRM_FORMAT_GR1616;
 		case VA_FOURCC_I010:
 			return DRM_FORMAT_R16;
@@ -7053,39 +7106,85 @@ static uint32_t drm_format_of_separate_plane(uint32_t fourcc, int plane)
 static uint32_t drm_format_of_composite_object(uint32_t fourcc)
 {
 	switch (fourcc) {
+
 	case VA_FOURCC_NV12:
 		return DRM_FORMAT_NV12;
 	case VA_FOURCC_I420:
+		return DRM_FORMAT_YUV420;
+	case VA_FOURCC_IMC3:
 		return DRM_FORMAT_YUV420;
 	case VA_FOURCC_YV12:
 		return DRM_FORMAT_YVU420;
 	case VA_FOURCC_YV16:
 		return DRM_FORMAT_YVU422;
+	case VA_FOURCC_422H:
+		return DRM_FORMAT_YUV422;
+	case VA_FOURCC_422V:
+		return DRM_FORMAT_YUV422;
+	case VA_FOURCC_444P:
+		return DRM_FORMAT_YUV444;
 	case VA_FOURCC_YUY2:
 		return DRM_FORMAT_YUYV;
+	case VA_FOURCC_YVYU:
+		return DRM_FORMAT_YVYU;
+	case VA_FOURCC_VYUY:
+		return DRM_FORMAT_VYUY;
 	case VA_FOURCC_UYVY:
 		return DRM_FORMAT_UYVY;
+	case VA_FOURCC_AYUV:
+		return DRM_FORMAT_AYUV;
+#if VA_CHECK_VERSION(1, 13, 0)
+	case VA_FOURCC_XYUV:
+		return DRM_FORMAT_XYUV8888;
+#endif
+	case VA_FOURCC_Y210:
+		return DRM_FORMAT_Y210;
+#if VA_CHECK_VERSION(1, 9, 0)
+	case VA_FOURCC_Y212:
+		return DRM_FORMAT_Y216;
+#endif
+	case VA_FOURCC_Y216:
+		return DRM_FORMAT_Y216;
+	case VA_FOURCC_Y410:
+		return DRM_FORMAT_Y410;
+#if VA_CHECK_VERSION(1, 9, 0)
+	case VA_FOURCC_Y412:
+		return DRM_FORMAT_Y416;
+#endif
+	case VA_FOURCC_Y416:
+		return DRM_FORMAT_Y416;
 	case VA_FOURCC_Y800:
 		return DRM_FORMAT_R8;
-
 	case VA_FOURCC_P010:
-	case VA_FOURCC_I010:
-		// These currently have no composite DRM format - they are usable
-		// only as separate planes.
-		return 0;
-
-	case VA_FOURCC_RGBA:
-		return DRM_FORMAT_ABGR8888;
-	case VA_FOURCC_RGBX:
-		return DRM_FORMAT_XBGR8888;
-	case VA_FOURCC_BGRA:
-		return DRM_FORMAT_ARGB8888;
-	case VA_FOURCC_BGRX:
-		return DRM_FORMAT_XRGB8888;
+		return DRM_FORMAT_P010;
+	case VA_FOURCC_P012:
+		return DRM_FORMAT_P016;
+	case VA_FOURCC_P016:
+		return DRM_FORMAT_P016;
 	case VA_FOURCC_ARGB:
-		return DRM_FORMAT_BGRA8888;
+		return DRM_FORMAT_ARGB8888;
 	case VA_FOURCC_ABGR:
+		return DRM_FORMAT_ABGR8888;
+	case VA_FOURCC_RGBA:
 		return DRM_FORMAT_RGBA8888;
+	case VA_FOURCC_BGRA:
+		return DRM_FORMAT_BGRA8888;
+	case VA_FOURCC_XRGB:
+		return DRM_FORMAT_XRGB8888;
+	case VA_FOURCC_XBGR:
+		return DRM_FORMAT_XBGR8888;
+	case VA_FOURCC_RGBX:
+		return DRM_FORMAT_RGBX8888;
+	case VA_FOURCC_BGRX:
+		return DRM_FORMAT_BGRX8888;
+	case VA_FOURCC_A2R10G10B10:
+		return DRM_FORMAT_ARGB2101010;
+	case VA_FOURCC_A2B10G10R10:
+		return DRM_FORMAT_ABGR2101010;
+	case VA_FOURCC_X2R10G10B10:
+		return DRM_FORMAT_XRGB2101010;
+	case VA_FOURCC_X2B10G10R10:
+		return DRM_FORMAT_XBGR2101010;
 
 	default:
 		{
