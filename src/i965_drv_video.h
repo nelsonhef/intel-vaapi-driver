@@ -654,6 +654,11 @@ extern VAStatus i965_MapBuffer(VADriverContextP ctx,
 							   VABufferID buf_id,       /* in */
 							   void **pbuf);            /* out */
 
+extern VAStatus i965_MapBuffer2(VADriverContextP ctx,
+			   					VABufferID buf_id,		/* in */
+			   					void **pbuf,			/* out */
+			   					uint32_t flags);		/* in */
+
 extern VAStatus i965_UnmapBuffer(VADriverContextP ctx, VABufferID buf_id);
 
 extern VAStatus i965_DestroySurfaces(VADriverContextP ctx,

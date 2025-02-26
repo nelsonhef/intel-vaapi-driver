@@ -3225,10 +3225,31 @@ i965_BufferSetNumElements(VADriverContextP ctx,
 	return vaStatus;
 }
 
+#ifndef VA_MAPBUFFER_FLAG_DEFAULT
+#define VA_MAPBUFFER_FLAG_DEFAULT 0
+#endif
+
+#ifndef VA_MAPBUFFER_FLAG_READ
+#define VA_MAPBUFFER_FLAG_READ 1
+#endif
+
+#ifndef VA_MAPBUFFER_FLAG_WRITE
+#define VA_MAPBUFFER_FLAG_WRITE 2
+#endif
+
 VAStatus
 i965_MapBuffer(VADriverContextP ctx,
-			   VABufferID buf_id,       /* in */
-			   void **pbuf)             /* out */
+			   VABufferID buf_id,		/* in */
+			   void **pbuf)				/* out */
+{
+	return i965_MapBuffer2(ctx, buf_id, pbuf, VA_MAPBUFFER_FLAG_DEFAULT);
+}
+
+VAStatus
+i965_MapBuffer2(VADriverContextP ctx,
+			   VABufferID buf_id,		/* in */
+			   void **pbuf,				/* out */
+			   uint32_t flags)			/* in */
 {
 	struct i965_driver_data *i965 = i965_driver_data(ctx);
 	struct object_buffer *obj_buffer = BUFFER(buf_id);
@@ -3242,8 +3263,8 @@ i965_MapBuffer(VADriverContextP ctx,
 	/* When the wrapper_buffer exists, it will wrapper to the
 	 * buffer allocated from backend driver.
 	 */
-	if ((obj_buffer->wrapper_buffer != VA_INVALID_ID) &&
-		i965->wrapper_pdrvctx) {
+	if ((obj_buffer->wrapper_buffer != VA_INVALID_ID) && i965->wrapper_pdrvctx)
+	{
 		VADriverContextP pdrvctx = i965->wrapper_pdrvctx;
 
 		CALL_VTABLE(pdrvctx, vaStatus,
@@ -3257,15 +3278,26 @@ i965_MapBuffer(VADriverContextP ctx,
 	if (obj_buffer->export_refcount > 0)
 		return VA_STATUS_ERROR_INVALID_BUFFER;
 
+	bool write_enabled = flags == VA_MAPBUFFER_FLAG_DEFAULT || (flags & VA_MAPBUFFER_FLAG_WRITE);
+
 	if (NULL != obj_buffer->buffer_store->bo) {
 		unsigned int tiling, swizzle;
 
 		dri_bo_get_tiling(obj_buffer->buffer_store->bo, &tiling, &swizzle);
 
 		if (tiling != I915_TILING_NONE)
+		{
+			/**
+			 * We always provide R/W here, I have no clue if this is a good idea,
+			 * otherwise we would need to make our own helper since libdrm isn't
+			 * enough here.
+			 */
 			drm_intel_gem_bo_map_gtt(obj_buffer->buffer_store->bo);
+		}
 		else
-			dri_bo_map(obj_buffer->buffer_store->bo, 1);
+		{
+			dri_bo_map(obj_buffer->buffer_store->bo, write_enabled);
+		}
 
 		ASSERT_RET(obj_buffer->buffer_store->bo->virtual, VA_STATUS_ERROR_OPERATION_FAILED);
 		*pbuf = obj_buffer->buffer_store->bo->virtual;
@@ -8125,6 +8157,10 @@ VA_DRIVER_INIT_FUNC(VADriverContextP ctx)
 #if VA_CHECK_VERSION(1, 9, 0)
 	vtable->vaSyncBuffer = i965_SyncBuffer;
 	vtable->vaSyncSurface2 = i965_SyncSurface2;
+#endif
+
+#if VA_CHECK_VERSION(1, 21, 0)
+	vtable->vaMapBuffer2 = i965_MapBuffer2;
 #endif
 
 	vtable_vpp->vaQueryVideoProcFilters = i965_QueryVideoProcFilters;
