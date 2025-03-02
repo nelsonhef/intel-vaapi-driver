@@ -2250,9 +2250,9 @@ struct vp8_encoder_kernel_walker_parameter {
 };
 
 struct vp8_encoder_scoreboard_parameters {
-	unsigned int mask;
-	unsigned int type : 1;
-	unsigned int enable : 1;
+	unsigned int                mask;
+	unsigned int                type;
+	unsigned int                enable;
 };
 
 #define VP8_BRC_HISTORY_BUFFER_SIZE     704

@@ -57,7 +57,7 @@ struct i965_avc_ildb_context {
 		int format;
 		int vert_line_stride;
 		int vert_line_stride_ofs;
-		unsigned int is_target : 1;
+		int is_target;
 	} surface[NUM_AVC_ILDB_SURFACES];
 
 	struct {

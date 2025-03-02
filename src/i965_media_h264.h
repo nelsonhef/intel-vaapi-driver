@@ -45,9 +45,7 @@ struct i965_h264_context {
 		int i_flag;
 	} picture;
 
-#if defined(I965_ENABLE_CTG_H264)
 	unsigned int is_g4x_context : 1;
-#endif
 	unsigned int enable_avc_ildb : 1;
 	unsigned int use_avc_hw_scoreboard : 1;
 	unsigned int use_hw_w128 : 1;

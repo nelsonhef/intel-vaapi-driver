@@ -845,7 +845,7 @@ struct huc_cfg_state_parameter {
 struct huc_virtual_addr_parameter {
 	struct {
 		struct i965_gpe_resource *huc_surface_res;
-		unsigned int is_target : 1;
+		uint32_t is_target;
 	} regions[16];
 };
 

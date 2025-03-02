@@ -58,7 +58,7 @@ struct gen_hevc_surface {
 	struct object_surface *nv12_surface_obj;
 	VASurfaceID nv12_surface_id;
 	VADriverContextP ctx;
-	unsigned int has_p010_to_nv12_done : 1;
+	int has_p010_to_nv12_done;
 };
 
 typedef struct gen_vp9_surface GenVP9Surface;
