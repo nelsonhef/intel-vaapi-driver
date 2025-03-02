@@ -66,7 +66,7 @@ struct gen_frame_store {
 
 	   This is only used for H.264 decoding on platforms before Haswell */
 	uint64_t    ref_age;
-} __attribute__((packed));
+};
 
 typedef struct gen_frame_store_context GenFrameStoreContext;
 struct gen_frame_store_context {

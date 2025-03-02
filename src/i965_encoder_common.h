@@ -480,7 +480,7 @@ struct generic_enc_codec_state {
 	uint32_t min_delta_qp;
 	struct intel_roi roi[INTEL_ROI_NUM];
 
-} __attribute__((packed));
+};
 
 /*
  by now VME and PAK use the same context. it will bind the ctx according to the codec and platform, also vdenc and non-vdenc

@@ -13,10 +13,6 @@
 #include "i965_media_h264.h"
 #include "i965_decoder_utils.h"
 
-#if defined(I965_ENABLE_CTG_H264)
-#include "i965_avc_sw_scoreboard.h"
-#endif
-
 enum {
 	INTRA_16X16 = 0,
 	INTRA_8X8,
@@ -708,12 +704,6 @@ i965_media_h264_objects(VADriverContextP ctx,
 
 	assert(media_context->private_context);
 	i965_h264_context = (struct i965_h264_context *)media_context->private_context;
-
-#if defined(I965_ENABLE_CTG_H264)
-	/* issue OBJECT command for software scoreboard befere MC kernels */
-	if (i965_h264_context->is_g4x_context)
-		i965_avc_sw_scoreboard_objects(ctx, i965_h264_context);
-#endif
 
 	dri_bo_map(i965_h264_context->avc_it_command_mb_info.bo, True);
 	assert(i965_h264_context->avc_it_command_mb_info.bo->virtual);

@@ -45,11 +45,10 @@ struct i965_h264_context {
 		int i_flag;
 	} picture;
 
-	unsigned int is_g4x_context : 1;
-	unsigned int enable_avc_ildb : 1;
-	unsigned int use_avc_hw_scoreboard : 1;
-	unsigned int use_hw_w128 : 1;
+	int enable_avc_ildb;
+	int use_avc_hw_scoreboard;
 
+	int use_hw_w128;
 	unsigned int weight128_luma_l0;
 	unsigned int weight128_luma_l1;
 	unsigned int weight128_chroma_l0;
@@ -66,7 +65,7 @@ struct i965_h264_context {
 
 	struct i965_kernel avc_kernels[NUM_H264_AVC_KERNELS];
 	struct intel_batchbuffer *batch;
-} __attribute__((packed));
+};
 
 void i965_media_h264_decode_init(VADriverContextP ctx, struct decode_state *decode_state, struct i965_media_context *media_context);
 void i965_media_h264_dec_context_init(VADriverContextP ctx, struct i965_media_context *media_context);
