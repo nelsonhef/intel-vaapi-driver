@@ -102,7 +102,7 @@ struct gen7_mfd_context {
 	int wa_mpeg2_slice_vertical_position;
 
 	void *driver_context;
-} __attribute__((packed));
+};
 
 static VAConfigAttrib *gen7_lookup_config_attribute(struct object_config *obj_config, VAConfigAttribType type)
 {
