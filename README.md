@@ -28,18 +28,18 @@ This README will be updated when that happens.
 
 # GPU support matrix
 
-| GPU Generation | MPEG-2              | VC1    | H.264 (AVC)         | H.265 (HEVC)        | JPEG             | VP8                 | VP9                    |
-|----------------|---------------------|--------|---------------------|---------------------|------------------|---------------------|------------------------|
-| G45 (CTG)      | DECODE              |        |                     |                     |                  |                     |                        |
-| ILK (5.x)      | DECODE              | DECODE | DECODE              |                     |                  |                     |                        |
-| SNB (6.x)      | DECODE              | DECODE | DECODE<br>ENCODE    |                     |                  |                     |                        |
-| IVB (7.0)      | DECODE<br>ENCODE[1] | DECODE | DECODE<br>ENCODE[1] |                     | DECODE           |                     |                        |
-| HSW (7.5)      | DECODE<br>ENCODE[1] | DECODE | DECODE<br>ENCODE[1] |                     | DECODE           |                     | DECODE[2]              |
-| CHV (8.0 LP)   | DECODE<br>ENCODE[1] | DECODE | DECODE<br>ENCODE[1] | DECODE              | DECODE<br>ENCODE | DECODE<br>ENCODE[1] | DECODE[2]              |
-| BDW (8.0) [3]  | DECODE<br>ENCODE[1] | DECODE | DECODE<br>ENCODE[1] |                     | DECODE           | DECODE              | DECODE[2]              |
-| SKL (9.0) [3]  | DECODE<br>ENCODE[1] | DECODE | DECODE<br>ENCODE[4] | DECODE<br>ENCODE[1] | DECODE<br>ENCODE | DECODE<br>ENCODE    | DECODE[2]              |
-| KBL (9.5) [3]  | DECODE<br>ENCODE[1] | DECODE | DECODE<br>ENCODE[4] | DECODE<br>ENCODE[1] | DECODE<br>ENCODE | DECODE<br>ENCODE[1] | DECODE[5]<br>ENCODE[6] |
-| ??? (10.0)     | ?                   | ?      | ?                   | ?                   | ?                | ?                   | ?                      |
+| GPU Generation | MPEG-2              | VC1    | H.264 (AVC)         | H.265 (HEVC)        | JPEG                | VP8                 | VP9                    |
+|----------------|---------------------|--------|---------------------|---------------------|---------------------|---------------------|------------------------|
+| G45 (CTG)      | DECODE              |        |                     |                     |                     |                     |                        |
+| ILK (5.x)      | DECODE              |        | DECODE              |                     |                     |                     |                        |
+| SNB (6.x)      | DECODE              | DECODE | DECODE<br>ENCODE[1] |                     |                     |                     |                        |
+| IVB (7.0)      | DECODE<br>ENCODE[1] | DECODE | DECODE<br>ENCODE[1] |                     | DECODE              |                     |                        |
+| HSW (7.5)      | DECODE<br>ENCODE[1] | DECODE | DECODE<br>ENCODE[1] |                     | DECODE              |                     | DECODE[2]              |
+| CHV (8.0 LP)   | DECODE<br>ENCODE[1] | DECODE | DECODE<br>ENCODE[1] | DECODE              | DECODE<br>ENCODE[1] | DECODE<br>ENCODE[1] | DECODE[2]              |
+| BDW (8.0) [3]  | DECODE<br>ENCODE[1] | DECODE | DECODE<br>ENCODE[1] |                     | DECODE              | DECODE              | DECODE[2]              |
+| SKL (9.0) [3]  | DECODE<br>ENCODE[1] | DECODE | DECODE<br>ENCODE[4] | DECODE<br>ENCODE[1] | DECODE<br>ENCODE[1] | DECODE<br>ENCODE[1] | DECODE[2]              |
+| KBL (9.5) [3]  | DECODE<br>ENCODE[1] | DECODE | DECODE<br>ENCODE[4] | DECODE<br>ENCODE[1] | DECODE<br>ENCODE[1] | DECODE<br>ENCODE[1] | DECODE[5]<br>ENCODE[6] |
+| ??? (10.0)     | ?                   | ?      | ?                   | ?                   | ?                   | ?                   | ?                      |
 
 [1] - Intel's hardware encoder uses GPU resources during an encode, high GPU load can cause bad encoding performance.
 
