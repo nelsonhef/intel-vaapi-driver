@@ -2075,6 +2075,7 @@ static inline int GetSubsamplingFromFormat(int format)
 		default:
 		{
 			assert(!"Unknown subsampling for format: " + format);
+			return -1;
 		}
 	}
 }
