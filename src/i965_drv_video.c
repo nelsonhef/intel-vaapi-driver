@@ -252,6 +252,36 @@ typedef struct {
 
 static const i965_image_format_map_t
 i965_image_formats_map[I965_MAX_IMAGE_FORMATS + 1] = {
+	/* Native Formats */
+	{
+		I965_SURFACETYPE_YUV,
+		{ VA_FOURCC_NV12, VA_LSB_FIRST, 12, }
+	},
+	{
+		I965_SURFACETYPE_YUV,
+		{ VA_FOURCC_YV12, VA_LSB_FIRST, 12, }
+	},
+	{
+		I965_SURFACETYPE_YUV,
+		{ VA_FOURCC_I420, VA_LSB_FIRST, 12, }
+	},
+	{
+		I965_SURFACETYPE_YUV,
+		{ VA_FOURCC_YUY2, VA_LSB_FIRST, 16, }
+	},
+	{
+		I965_SURFACETYPE_YUV,
+		{ VA_FOURCC_UYVY, VA_LSB_FIRST, 16, }
+	},
+	{
+		I965_SURFACETYPE_YUV,
+		{ VA_FOURCC_422H, VA_LSB_FIRST, 16, }
+	},
+	{
+		I965_SURFACETYPE_YUV,
+		{ VA_FOURCC_P010, VA_LSB_FIRST, 24, }
+	},
+	/* Secondary Formats */
 	{
 		/* [31:0] A:R:G:B 8:8:8:8 little endian */
 		I965_SURFACETYPE_RGBA,
@@ -273,33 +303,10 @@ i965_image_formats_map[I965_MAX_IMAGE_FORMATS + 1] = {
 		{ VA_FOURCC_RGBA, VA_LSB_FIRST, 32, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000 }
 	},
 	{
-		I965_SURFACETYPE_YUV,
-		{ VA_FOURCC_NV12, VA_LSB_FIRST, 12, }
+		/* [31:0] B:G:R:A 8:8:8:8 little endian */
+		I965_SURFACETYPE_RGBA,
+		{ VA_FOURCC_ARGB, VA_LSB_FIRST, 32, 32, 0x0000ff00, 0x00ff0000, 0xff000000, 0x000000ff }
 	},
-	{
-		I965_SURFACETYPE_YUV,
-		{ VA_FOURCC_P010, VA_LSB_FIRST, 24, }
-	},
-	{
-		I965_SURFACETYPE_YUV,
-		{ VA_FOURCC_YUY2, VA_LSB_FIRST, 16, }
-	},
-	{
-		I965_SURFACETYPE_YUV,
-		{ VA_FOURCC_UYVY, VA_LSB_FIRST, 16, }
-	},
-	{
-		I965_SURFACETYPE_YUV,
-		{ VA_FOURCC_YV12, VA_LSB_FIRST, 12, }
-	},
-	{
-		I965_SURFACETYPE_YUV,
-		{ VA_FOURCC_I420, VA_LSB_FIRST, 12, }
-	},
-	{
-		I965_SURFACETYPE_YUV,
-		{ VA_FOURCC_422H, VA_LSB_FIRST, 16, }
-	}
 };
 
 /* List of supported subpicture formats */
@@ -2044,41 +2051,6 @@ i965_surface_external_memory(VADriverContextP ctx,
 	return VA_STATUS_SUCCESS;
 }
 
-static inline int GetSubsamplingFromFormat(int format)
-{
-	switch (format)
-	{
-		case VA_RT_FORMAT_YUV420:
-		case VA_RT_FORMAT_YUV420_10BPP:
-			return SUBSAMPLE_YUV420;
-		
-		case VA_RT_FORMAT_YUV444:
-			return SUBSAMPLE_YUV444;
-
-		case VA_RT_FORMAT_YUV411:
-			return SUBSAMPLE_YUV411;
-
-		case VA_RT_FORMAT_YUV400:
-			return SUBSAMPLE_YUV400;
-
-		/**
-		 * VA-API doesn't give us a way to figure out
-		 * what variant of YUV422 to use, since we default to the HORIZONTAL
-		 * variant by default, use that.
-		 */
-		case VA_RT_FORMAT_YUV422:
-			return SUBSAMPLE_YUV422H;
-
-		case VA_RT_FORMAT_RGB32:
-			return SUBSAMPLE_RGBX;
-
-		default:
-		{
-			assert(!"Unknown subsampling for format: " + format);
-		}
-	}
-}
-
 static VAStatus
 i965_CreateSurfaces2(
 	VADriverContextP    ctx,
@@ -2091,6 +2063,11 @@ i965_CreateSurfaces2(
 	unsigned int        num_attribs
 )
 {
+	ASSERT_RET(ctx, VA_STATUS_ERROR_INVALID_CONTEXT);
+	ASSERT_RET(width, VA_STATUS_ERROR_INVALID_PARAMETER);
+	ASSERT_RET(height, VA_STATUS_ERROR_INVALID_PARAMETER);
+	ASSERT_RET(num_surfaces, VA_STATUS_ERROR_INVALID_PARAMETER);
+
 	struct i965_driver_data *i965 = i965_driver_data(ctx);
 	int i, j;
 	VAStatus vaStatus = VA_STATUS_SUCCESS;
@@ -2144,7 +2121,6 @@ i965_CreateSurfaces2(
 	switch (format)
 	{
 		case VA_RT_FORMAT_YUV420:
-		case VA_RT_FORMAT_YUV420_10BPP:
 		case VA_RT_FORMAT_YUV422:
 		case VA_RT_FORMAT_YUV444:
 		case VA_RT_FORMAT_YUV411:
@@ -2152,18 +2128,18 @@ i965_CreateSurfaces2(
 		case VA_RT_FORMAT_RGB32:
 			break;
 
+		case VA_RT_FORMAT_YUV420_10BPP:
+			/**
+			 * Only allow this format if we support it.
+			 */
+			if (i965->codec_info->has_vpp_p010)
+				break;
+
 		default:
 		{
 			i965_log_debug(ctx, "Rejecting unsupported RT format: %#010x\n", format);
 			return VA_STATUS_ERROR_UNSUPPORTED_RT_FORMAT;
 		}
-	}
-
-	/* Refuse 10bpp formats if we don't actually support them. */
-	if (VA_RT_FORMAT_YUV420_10BPP == format && !i965->codec_info->has_vpp_p010)
-	{
-		i965_log_error(ctx, "i965_CreateSurfaces2: Rejecting VA_RT_FORMAT_YUV420_10BPP on unsupported hardware, this is an application issue.\r\n");
-		return VA_STATUS_ERROR_UNSUPPORTED_RT_FORMAT;
 	}
 
 	/**
@@ -2215,7 +2191,7 @@ i965_CreateSurfaces2(
 		obj_surface->derived_image_id = VA_INVALID_ID;
 		obj_surface->private_data = NULL;
 		obj_surface->free_private_data = NULL;
-		obj_surface->subsampling = GetSubsamplingFromFormat(format);
+		obj_surface->subsampling = GetSubsamplingFromFormat(format, expected_fourcc);
 
 		obj_surface->wrapper_surface = VA_INVALID_ID;
 		obj_surface->exported_primefd = -1;

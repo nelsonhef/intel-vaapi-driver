@@ -46,159 +46,202 @@
 #define VA_FOURCC_I420        VA_FOURCC('I','4','2', '0')
 #endif
 
+static inline int SubsampleForYUV422(int fourcc)
+{
+	switch (fourcc)
+	{
+		case VA_FOURCC_422V:
+			return SUBSAMPLE_YUV422V;
+		
+		case VA_FOURCC_422H:
+		case VA_FOURCC_YUY2:
+		case VA_FOURCC_UYVY:
+			return SUBSAMPLE_YUV422H;
+
+		default: return SUBSAMPLE_YUV420;
+	}
+}
+
+static inline int GetSubsamplingFromFormat(int format, int fourcc)
+{
+	switch (format)
+	{
+		case VA_RT_FORMAT_YUV420:
+		case VA_RT_FORMAT_YUV420_10BPP:
+			return SUBSAMPLE_YUV420;
+		
+		case VA_RT_FORMAT_YUV444:
+			return SUBSAMPLE_YUV444;
+
+		case VA_RT_FORMAT_YUV411:
+			return SUBSAMPLE_YUV411;
+
+		case VA_RT_FORMAT_YUV400:
+			return SUBSAMPLE_YUV400;
+
+		case VA_RT_FORMAT_YUV422:
+			return SubsampleForYUV422(fourcc);
+
+		case VA_RT_FORMAT_RGB32:
+			return SUBSAMPLE_RGBX;
+
+		default:
+		{
+			assert(!"Unknown subsampling for format: " + format);
+			return -1;
+		}
+	}
+}
 
 static void i965_GuessExpectedFourCC(int format, int *fourcc)
 {
-	int32_t expected_fourcc = VA_FOURCC_NV12;
 	switch (format)
 	{
 	case VA_RT_FORMAT_YUV420:
-		expected_fourcc = VA_FOURCC_NV12;
+		*fourcc = VA_FOURCC_NV12;
 		break;
 	case VA_RT_FORMAT_YUV420_12:
-		expected_fourcc = VA_FOURCC_P012;
+		*fourcc = VA_FOURCC_P012;
 		break;
 	case VA_RT_FORMAT_YUV422:
-		expected_fourcc = VA_FOURCC_YUY2;
+		*fourcc = VA_FOURCC_YUY2;
 		break;
 	case VA_RT_FORMAT_YUV422_10:
-		expected_fourcc = VA_FOURCC_Y210;
+		*fourcc = VA_FOURCC_Y210;
 		break;
 	case VA_RT_FORMAT_YUV422_12:
 #if VA_CHECK_VERSION(1, 9, 0)
-		expected_fourcc = VA_FOURCC_Y212;
+		*fourcc = VA_FOURCC_Y212;
 #else
-		expected_fourcc = VA_FOURCC_Y216;
+		*fourcc = VA_FOURCC_Y216;
 #endif
 		break;
 	case VA_RT_FORMAT_YUV444:
-		expected_fourcc = VA_FOURCC_444P;
+		*fourcc = VA_FOURCC_444P;
 		break;
 	case VA_RT_FORMAT_YUV444_10:
-		expected_fourcc = VA_FOURCC_Y410;
+		*fourcc = VA_FOURCC_Y410;
 		break;
 	case VA_RT_FORMAT_YUV444_12:
 #if VA_CHECK_VERSION(1, 9, 0)
-		expected_fourcc = VA_FOURCC_Y412;
+		*fourcc = VA_FOURCC_Y412;
 #else
-		expected_fourcc = VA_FOURCC_Y416;
+		*fourcc = VA_FOURCC_Y416;
 #endif
 		break;
 	case VA_RT_FORMAT_YUV411:
-		expected_fourcc = VA_FOURCC_411P;
+		*fourcc = VA_FOURCC_411P;
 		break;
 	case VA_RT_FORMAT_YUV400:
-		expected_fourcc = VA_FOURCC('4', '0', '0', 'P');
+		*fourcc = VA_FOURCC('4', '0', '0', 'P');
 		break;
 	case VA_RT_FORMAT_YUV420_10BPP:
-		expected_fourcc = VA_FOURCC_P010;
+		*fourcc = VA_FOURCC_P010;
 		break;
 	case VA_RT_FORMAT_RGB16:
-		expected_fourcc = VA_FOURCC_R5G6B5;
+		*fourcc = VA_FOURCC_R5G6B5;
 		break;
 	/**
 	 * We need to lie to Chromium and do ARGB instead of BGRA.
 	 */
 	case VA_RT_FORMAT_RGB32:
-		expected_fourcc = VA_FOURCC_ARGB;
+		*fourcc = VA_FOURCC_ARGB;
 		break;
 	case VA_RT_FORMAT_RGBP:
-		expected_fourcc = VA_FOURCC_RGBP;
+		*fourcc = VA_FOURCC_RGBP;
 		break;
 #ifdef VA_RT_FORMAT_RGB32_10BPP
 	case VA_RT_FORMAT_RGB32_10BPP:
-		expected_fourcc = VA_FOURCC_BGRA;
+		*fourcc = VA_FOURCC_BGRA;
 		break;
 #endif
 	case VA_FOURCC_NV12:
-		expected_fourcc = VA_FOURCC_NV12;
+		*fourcc = VA_FOURCC_NV12;
 		break;
 	case VA_FOURCC_NV21:
-		expected_fourcc = VA_FOURCC_NV21;
+		*fourcc = VA_FOURCC_NV21;
 		break;
 	case VA_FOURCC_ABGR:
-		expected_fourcc = VA_FOURCC_ABGR;
+		*fourcc = VA_FOURCC_ABGR;
 		break;
 	case VA_FOURCC_ARGB:
-		expected_fourcc = VA_FOURCC_ARGB;
+		*fourcc = VA_FOURCC_ARGB;
 		break;
 	case VA_FOURCC_XBGR:
-		expected_fourcc = VA_FOURCC_XBGR;
+		*fourcc = VA_FOURCC_XBGR;
 		break;
 	case VA_FOURCC_XRGB:
-		expected_fourcc = VA_FOURCC_XRGB;
+		*fourcc = VA_FOURCC_XRGB;
 		break;
 	case VA_FOURCC_R5G6B5:
-		expected_fourcc = VA_FOURCC_R5G6B5;
+		*fourcc = VA_FOURCC_R5G6B5;
 		break;
 	case VA_FOURCC_R8G8B8:
-		expected_fourcc = VA_FOURCC_R8G8B8;
+		*fourcc = VA_FOURCC_R8G8B8;
 		break;
 	case VA_FOURCC_YUY2:
-		expected_fourcc = VA_FOURCC_YUY2;
+		*fourcc = VA_FOURCC_YUY2;
 		break;
 	case VA_FOURCC_YV12:
-		expected_fourcc = VA_FOURCC_YV12;
+		*fourcc = VA_FOURCC_YV12;
 		break;
 	case VA_FOURCC_422H:
-		expected_fourcc = VA_FOURCC_422H;
+		*fourcc = VA_FOURCC_422H;
 		break;
 	case VA_FOURCC_422V:
-		expected_fourcc = VA_FOURCC_422V;
+		*fourcc = VA_FOURCC_422V;
 		break;
 	case VA_FOURCC_P208:
-		expected_fourcc = VA_FOURCC_P208;
+		*fourcc = VA_FOURCC_P208;
 		break;
 	case VA_FOURCC_P010:
-		expected_fourcc = VA_FOURCC_P010;
+		*fourcc = VA_FOURCC_P010;
 		break;
 	case VA_FOURCC_P012:
-		expected_fourcc = VA_FOURCC_P012;
+		*fourcc = VA_FOURCC_P012;
 		break;
 	case VA_FOURCC_P016:
-		expected_fourcc = VA_FOURCC_P016;
+		*fourcc = VA_FOURCC_P016;
 		break;
 	case VA_FOURCC_Y210:
-		expected_fourcc = VA_FOURCC_Y210;
+		*fourcc = VA_FOURCC_Y210;
 		break;
 #if VA_CHECK_VERSION(1, 9, 0)
 	case VA_FOURCC_Y212:
-		expected_fourcc = VA_FOURCC_Y212;
+		*fourcc = VA_FOURCC_Y212;
 		break;
 #endif
 	case VA_FOURCC_Y216:
-		expected_fourcc = VA_FOURCC_Y216;
+		*fourcc = VA_FOURCC_Y216;
 		break;
 	case VA_FOURCC_AYUV:
-		expected_fourcc = VA_FOURCC_AYUV;
+		*fourcc = VA_FOURCC_AYUV;
 		break;
 #if VA_CHECK_VERSION(1, 13, 0)
 	case VA_FOURCC_XYUV:
-		expected_fourcc = VA_FOURCC_XYUV;
+		*fourcc = VA_FOURCC_XYUV;
 		break;
 #endif
 	case VA_FOURCC_Y410:
-		expected_fourcc = VA_FOURCC_Y410;
+		*fourcc = VA_FOURCC_Y410;
 		break;
 #if VA_CHECK_VERSION(1, 9, 0)
 	case VA_FOURCC_Y412:
-		expected_fourcc = VA_FOURCC_Y412;
+		*fourcc = VA_FOURCC_Y412;
 		break;
 #endif
 	case VA_FOURCC_Y416:
-		expected_fourcc = VA_FOURCC_Y416;
+		*fourcc = VA_FOURCC_Y416;
 		break;
 	case VA_FOURCC_I420:
-		expected_fourcc = VA_FOURCC_I420;
+		*fourcc = VA_FOURCC_I420;
 		break;
 	case VA_FOURCC_UYVY:
-		expected_fourcc = VA_FOURCC_UYVY;
+		*fourcc = VA_FOURCC_UYVY;
 		break;
 	default:
 		return;
 	}
-
-	*fourcc = expected_fourcc;
 }
 
 // Locally define DRM_FORMAT values not available in older but still
