@@ -2150,13 +2150,19 @@ i965_CreateSurfaces2(
 	switch (format)
 	{
 		case VA_RT_FORMAT_YUV420:
-		case VA_RT_FORMAT_YUV420_10BPP:
 		case VA_RT_FORMAT_YUV422:
 		case VA_RT_FORMAT_YUV444:
 		case VA_RT_FORMAT_YUV411:
 		case VA_RT_FORMAT_YUV400:
 		case VA_RT_FORMAT_RGB32:
 			break;
+
+		case VA_RT_FORMAT_YUV420_10BPP:
+			/**
+			 * Only allow this format if we support it.
+			 */
+			if (i965->codec_info->has_vpp_p010)
+				break;
 
 		default:
 		{
