@@ -46,6 +46,52 @@
 #define VA_FOURCC_I420        VA_FOURCC('I','4','2', '0')
 #endif
 
+static inline int SubsampleForYUV422(int fourcc)
+{
+	switch (fourcc)
+	{
+		case VA_FOURCC_422V:
+			return SUBSAMPLE_YUV422V;
+		
+		case VA_FOURCC_422H:
+		case VA_FOURCC_YUY2:
+		case VA_FOURCC_UYVY:
+			return SUBSAMPLE_YUV422H;
+
+		default: return SUBSAMPLE_YUV420;
+	}
+}
+
+static inline int GetSubsamplingFromFormat(int format, int fourcc)
+{
+	switch (format)
+	{
+		case VA_RT_FORMAT_YUV420:
+		case VA_RT_FORMAT_YUV420_10BPP:
+			return SUBSAMPLE_YUV420;
+		
+		case VA_RT_FORMAT_YUV444:
+			return SUBSAMPLE_YUV444;
+
+		case VA_RT_FORMAT_YUV411:
+			return SUBSAMPLE_YUV411;
+
+		case VA_RT_FORMAT_YUV400:
+			return SUBSAMPLE_YUV400;
+
+		case VA_RT_FORMAT_YUV422:
+			return SubsampleForYUV422(fourcc);
+
+		case VA_RT_FORMAT_RGB32:
+			return SUBSAMPLE_RGBX;
+
+		default:
+		{
+			assert(!"Unknown subsampling for format: " + format);
+			return -1;
+		}
+	}
+}
 
 static void i965_GuessExpectedFourCC(int format, int *fourcc)
 {
