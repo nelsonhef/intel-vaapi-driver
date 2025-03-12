@@ -2137,7 +2137,7 @@ i965_CreateSurfaces2(
 
 		default:
 		{
-			i965_log_debug(ctx, "Rejecting unsupported RT format: %#010x\n", format);
+			i965_log_debug(ctx, "i965_CreateSurfaces2: Rejecting unsupported RT format: %#010x\n", format);
 			return VA_STATUS_ERROR_UNSUPPORTED_RT_FORMAT;
 		}
 	}
@@ -2332,12 +2332,6 @@ i965_QueryImageFormats(VADriverContextP ctx,
 	for (n = 0; i965_image_formats_map[n].va_format.fourcc != 0; n++)
 	{
 		const i965_image_format_map_t * const m = &i965_image_formats_map[n];
-
-		/* Don't expose P010 if we don't support it. */
-		if (m->va_format.fourcc == VA_FOURCC_P010 && !i965->codec_info->has_vpp_p010)
-		{
-			continue;
-		}
 
 		if (format_list)
 			format_list[idx++] = m->va_format;
@@ -7483,6 +7477,8 @@ void i965_log_info(VADriverContextP ctx, const char *format, ...)
 		if (ret > 0)
 			ctx->info_callback(ctx, tmp);
 	}
+
+	va_end(vl);
 }
 
 void i965_log_debug(VADriverContextP ctx, const char *format, ...)
@@ -7493,20 +7489,8 @@ void i965_log_debug(VADriverContextP ctx, const char *format, ...)
 	va_list vl;
 
 	va_start(vl, format);
-
-	if (!ctx->info_callback) {
-		// No info callback: this message is only useful for developers,
-		// so just discard it.
-	} else {
-		// Put the message on the stack.  If it overruns the size of the
-		// then it will just be truncated - callers shouldn't be sending
-		// messages which are too long.
-		char tmp[1024];
-		int ret;
-		ret = vsnprintf(tmp, sizeof(tmp), format, vl);
-		if (ret > 0)
-			ctx->info_callback(ctx, tmp);
-	}
+	vfprintf(stderr, format, vl);
+	va_end(vl);
 }
 
 extern struct hw_codec_info *i965_get_codec_info(int devid);
