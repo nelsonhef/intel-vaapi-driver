@@ -2159,13 +2159,6 @@ i965_CreateSurfaces2(
 		}
 	}
 
-	/* Refuse 10bpp formats if we don't actually support them. */
-	if (VA_RT_FORMAT_YUV420_10BPP == format && !i965->codec_info->has_vpp_p010)
-	{
-		i965_log_error(ctx, "i965_CreateSurfaces2: Rejecting VA_RT_FORMAT_YUV420_10BPP on unsupported hardware, this is an application issue.\r\n");
-		return VA_STATUS_ERROR_UNSUPPORTED_RT_FORMAT;
-	}
-
 	/**
 	 * Chromium doesn't provide a FOURCC to this function,
 	 * this will cause it to explode later on as we need a BO
