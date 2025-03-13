@@ -2051,6 +2051,31 @@ i965_surface_external_memory(VADriverContextP ctx,
 	return VA_STATUS_SUCCESS;
 }
 
+static inline int AlignHeightForFormat(struct i965_driver_data *i965, int su_hint, int format, int height)
+{
+	switch (format)
+	{
+		case VA_FOURCC_NV12:
+		case VA_FOURCC_IMC3:
+		case VA_FOURCC_422H:
+		case VA_FOURCC_422V:
+		case VA_FOURCC_P010:
+		case VA_FOURCC_YUY2:
+		case VA_FOURCC_VYUY:
+		case VA_FOURCC_YVYU:
+		case VA_FOURCC_UYVY:
+			/**
+			 * The iHD driver claims that this is more performant.
+			 */
+			if (!(su_hint & VA_SURFACE_ATTRIB_USAGE_HINT_ENCODER) 
+				&& !(su_hint & VA_SURFACE_ATTRIB_USAGE_HINT_VPP_WRITE))
+				return ALIGN(height, 64);
+
+		default:
+			return ALIGN(height, i965->codec_info->min_linear_hpitch);
+	}
+}
+
 static VAStatus
 i965_CreateSurfaces2(
 	VADriverContextP    ctx,
@@ -2073,6 +2098,7 @@ i965_CreateSurfaces2(
 	VAStatus vaStatus = VA_STATUS_SUCCESS;
 	int expected_fourcc = 0;
 	int memory_type = I965_SURFACE_MEM_NATIVE; /* native */
+	int surface_usage_hint = VA_SURFACE_ATTRIB_USAGE_HINT_GENERIC;
 	VASurfaceAttribExternalBuffers *memory_attribute = NULL;
 
 	for (i = 0; i < num_attribs && attrib_list; i++) {
@@ -2080,6 +2106,12 @@ i965_CreateSurfaces2(
 			(attrib_list[i].flags & VA_SURFACE_ATTRIB_SETTABLE)) {
 			ASSERT_RET(attrib_list[i].value.type == VAGenericValueTypeInteger, VA_STATUS_ERROR_INVALID_PARAMETER);
 			expected_fourcc = attrib_list[i].value.value.i;
+		}
+
+		if ((attrib_list[i].type == VASurfaceAttribUsageHint) &&
+			(attrib_list[i].flags & VA_SURFACE_ATTRIB_SETTABLE)) {
+			ASSERT_RET(attrib_list[i].value.type == VAGenericValueTypeInteger, VA_STATUS_ERROR_INVALID_PARAMETER);
+			surface_usage_hint = attrib_list[i].value.value.i;
 		}
 
 		if ((attrib_list[i].type == VASurfaceAttribMemoryType) &&
@@ -2182,7 +2214,7 @@ i965_CreateSurfaces2(
 		assert(i965->codec_info->min_linear_wpitch);
 		assert(i965->codec_info->min_linear_hpitch);
 		obj_surface->width = ALIGN(width, i965->codec_info->min_linear_wpitch);
-		obj_surface->height = ALIGN(height, i965->codec_info->min_linear_hpitch);
+		obj_surface->height = AlignHeightForFormat(i965, surface_usage_hint, format, height);
 		obj_surface->flags = SURFACE_REFERENCED;
 		obj_surface->fourcc = 0;
 		obj_surface->expected_format = format;
