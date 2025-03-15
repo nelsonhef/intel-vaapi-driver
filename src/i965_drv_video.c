@@ -3289,18 +3289,6 @@ i965_BufferSetNumElements(VADriverContextP ctx,
 	return vaStatus;
 }
 
-#ifndef VA_MAPBUFFER_FLAG_DEFAULT
-#define VA_MAPBUFFER_FLAG_DEFAULT 0
-#endif
-
-#ifndef VA_MAPBUFFER_FLAG_READ
-#define VA_MAPBUFFER_FLAG_READ 1
-#endif
-
-#ifndef VA_MAPBUFFER_FLAG_WRITE
-#define VA_MAPBUFFER_FLAG_WRITE 2
-#endif
-
 VAStatus
 i965_MapBuffer(VADriverContextP ctx,
 			   VABufferID buf_id,		/* in */
