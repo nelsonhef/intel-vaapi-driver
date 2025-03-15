@@ -175,20 +175,10 @@ i965_put_surface_x11(
 		dest_region->pitch = buffer->dri2.pitch;
 
 		dest_region->bo = intel_bo_gem_create_from_name(i965->intel.bufmgr, "rendering buffer", buffer->dri2.name);
-		if (!dest_region->bo)
-		{
-			_i965UnlockMutex(&i965->render_mutex);
-			i965_log_debug(ctx, "i965_put_surface_x11: Failed to allocate rendering buffer.\n");
-			return VA_STATUS_ERROR_UNKNOWN;			
-		}
+		ASSERT_RET_MUTEX(dest_region->bo, &i965->render_mutex, VA_STATUS_ERROR_UNKNOWN);
 
 		ret = dri_bo_get_tiling(dest_region->bo, &(dest_region->tiling), &(dest_region->swizzle));
-		if (ret != 0)
-		{
-			_i965UnlockMutex(&i965->render_mutex);
-			i965_log_debug(ctx, "i965_put_surface_x11: dri_bo_get_tiling() returned an ERROR.\n");
-			return VA_STATUS_ERROR_UNKNOWN;
-		}
+		ASSERT_RET_MUTEX((ret == 0), &i965->render_mutex, VA_STATUS_ERROR_UNKNOWN);
 	}
 
 	dest_region->x = dri_drawable->x;
