@@ -169,6 +169,8 @@ struct intel_device_info {
 	unsigned int urb_size;
 	unsigned int max_wm_threads;
 
+	unsigned int requires_lowres_workaround : 1;
+
 	unsigned int is_g4x         : 1; /* gen4 */
 	unsigned int is_ivybridge   : 1; /* gen7 */
 	unsigned int is_baytrail    : 1; /* gen7 */

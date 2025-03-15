@@ -9,6 +9,7 @@ Version 2.4.4 - XX.XX.XXXX (IRQL fork)
 * Update SECURITY.md
 * Import an optimization from the iHD driver.
 * Fix a potential deadlock problem in i965_put_surface_x11
+* Import a workaround for low-resolution encoding on low-power Gen 8 and 9 hardware.
 
 Version 2.4.3 - 12.Mar.2025 (IRQL fork)
 
