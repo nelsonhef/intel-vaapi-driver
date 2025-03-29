@@ -57,7 +57,7 @@
 #define MBENC_KERNEL_BASE GEN9_AVC_KERNEL_MBENC_QUALITY_I
 #define GPE_RESOURCE_ALIGNMENT 4  /* 4 means 16 = 1 << 4) */
 
-#define REQUIRES_LP_WORKAROUND(i965) i965->intel.device_info->requires_lowres_workaround
+#define REQUIRES_LP_WORKAROUND(i965) i965->intel.device_info->driver_workarounds & HW_WORKAROUND_USE_ALTERNATE_SEARCH_TABLE
 
 #define OUT_BUFFER_2DW(batch, bo, is_target, delta)  do {               \
 		if (bo) {                                                       \

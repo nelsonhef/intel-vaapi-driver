@@ -849,6 +849,8 @@ static const struct intel_device_info ilk_device_info = {
 
 	.urb_size = 1024,
 	.max_wm_threads = 72,       /* 12 * 6 */
+
+	.driver_workarounds = HW_WORKAROUND_INVALID_RGBX_SHADER_USE
 };
 
 static const struct intel_device_info snb_gt1_device_info = {
@@ -857,6 +859,8 @@ static const struct intel_device_info snb_gt1_device_info = {
 
 	.urb_size = 1024,
 	.max_wm_threads = 40,
+
+	.driver_workarounds = HW_WORKAROUND_INVALID_RGBX_SHADER_USE
 };
 
 static const struct intel_device_info snb_gt2_device_info = {
@@ -865,6 +869,8 @@ static const struct intel_device_info snb_gt2_device_info = {
 
 	.urb_size = 1024,
 	.max_wm_threads = 80,
+
+	.driver_workarounds = HW_WORKAROUND_INVALID_RGBX_SHADER_USE
 };
 
 static const struct intel_device_info ivb_gt1_device_info = {
@@ -938,11 +944,10 @@ static const struct intel_device_info bdw_device_info = {
 static const struct intel_device_info chv_device_info = {
 	.gen = 8,
 
-	/** https://github.com/intel/intel-vaapi-driver/issues/541 */
-	.requires_lowres_workaround = 1,
-
 	.urb_size = 4096,
 	.max_wm_threads = 64,       /* per PSD */
+
+	.driver_workarounds = HW_WORKAROUND_USE_ALTERNATE_SEARCH_TABLE,
 
 	.is_cherryview = 1,
 };
@@ -959,11 +964,11 @@ static const struct intel_device_info skl_device_info = {
 static const struct intel_device_info bxt_device_info = {
 	.gen = 9,
 
-	/** https://github.com/intel/intel-vaapi-driver/issues/541 */
-	.requires_lowres_workaround = 1,
-
 	.urb_size = 4096,
 	.max_wm_threads = 64,       /* per PSD */
+
+	.driver_workarounds = HW_WORKAROUND_USE_ALTERNATE_SEARCH_TABLE,
+
 	.is_broxton = 1,
 };
 
@@ -982,8 +987,7 @@ static const struct intel_device_info glk_device_info = {
 	.urb_size = 4096,
 	.max_wm_threads = 64,       /* per PSD */
 
-	/** https://github.com/intel/intel-vaapi-driver/issues/541 */
-	.requires_lowres_workaround = 1,
+	.driver_workarounds = HW_WORKAROUND_USE_ALTERNATE_SEARCH_TABLE,
 
 	.is_glklake = 1,
 };
