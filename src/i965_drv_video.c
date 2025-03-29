@@ -164,7 +164,7 @@ static const i965_fourcc_info i965_fourcc_infos[] = {
 	DEF_RGB(BGRA, RGBX, I_SI),
 	DEF_RGB(BGRX, RGBX, I_SI),
 
-	DEF_RGB(ARGB, RGBX, I_I),
+	DEF_RGB(ARGB, RGBX, I_SI),
 	DEF_RGB(ABGR, RGBX, I_I),
 
 	DEF_INDEX(IA88, RGBX, I_I),
@@ -2223,7 +2223,7 @@ i965_CreateSurfaces2(
 		obj_surface->derived_image_id = VA_INVALID_ID;
 		obj_surface->private_data = NULL;
 		obj_surface->free_private_data = NULL;
-		obj_surface->subsampling = GetSubsamplingFromFormat(format, expected_fourcc);
+		obj_surface->subsampling = get_sampling_from_fourcc(expected_fourcc);
 
 		obj_surface->wrapper_surface = VA_INVALID_ID;
 		obj_surface->exported_primefd = -1;
@@ -2236,9 +2236,18 @@ i965_CreateSurfaces2(
 
 				if (memory_attribute->pixel_format) {
 					if (expected_fourcc)
+					{
 						ASSERT_RET(memory_attribute->pixel_format == expected_fourcc, VA_STATUS_ERROR_INVALID_PARAMETER);
+					}
 					else
+					{
 						expected_fourcc = memory_attribute->pixel_format;
+
+						/**
+					 	 * Update the subsampling if our EXPECTED_FOURCC got changed.
+					 	 */
+						obj_surface->subsampling = get_sampling_from_fourcc(expected_fourcc);
+					}
 				}
 				ASSERT_RET(expected_fourcc, VA_STATUS_ERROR_INVALID_PARAMETER);
 				if (memory_attribute->pitches[0]) {
@@ -5249,7 +5258,6 @@ VAStatus i965_DeriveImage(VADriverContextP ctx,
 
 		switch (image->format.fourcc)
 		{
-			
 		case VA_FOURCC_RGBA:
 		case VA_FOURCC_RGBX:
 			image->format.red_mask = 0x000000ff;
