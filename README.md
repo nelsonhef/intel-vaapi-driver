@@ -58,6 +58,66 @@ and then bump the version to `2.5.x` where only fixes for regressions and critic
 
 [6] - Encoding is supported by this driver, known to be buggy. Likely safe up to 1920x1080 at 60 FPS.
 
+## How to build
+
+## Get
+
+```sh
+git clone https://github.com/nelsonhef/intel-vaapi-driver.git
+```
+## Get dependencies
+
+For example in Ubuntu 24.04 or 22.04
+
+```sh
+apt install build-essential pkgconf autoconf libtool -y
+apt install libdrm-dev libva-dev libx11-dev -y
+```
+
+## Build
+
+```sh
+cd intel-vaapi-driver-src
+./autogen.sh
+./configure LIBVA_DRIVERS_PATH="$(pwd)/../intel-vaapi-driver"
+make install -j $(nproc)
+```
+
+The outcome can be found at `intel-vaapi-driver/i965_drv_video.so`.
+
+## Use
+
+For example on Ubuntu the `i965-va-driver` package installs a single file `/usr/lib/x86_64-linux-gnu/dri/i965_drv_video.so`. Replacing the file with this modified version.
+
+Make copies first
+
+```sh
+sudo cp /usr/lib/x86_64-linux-gnu/dri/i965_drv_video.so /usr/lib/x86_64-linux-gnu/dri/i965_drv_video.so-ubuntu
+sudo cp intel-vaapi-driver/i965_drv_video.so /usr/lib/x86_64-linux-gnu/dri/i965_drv_video.so-modified
+```
+
+You can switch between the upstream and modified driver with
+
+```sh
+sudo cp /usr/lib/x86_64-linux-gnu/dri/i965_drv_video.so-ubuntu /usr/lib/x86_64-linux-gnu/dri/i965_drv_video.so
+```
+
+and
+
+```sh
+sudo cp /usr/lib/x86_64-linux-gnu/dri/i965_drv_video.so-modified /usr/lib/x86_64-linux-gnu/dri/i965_drv_video.so
+```
+
+## Check if it works
+
+```sh
+vainfo
+```
+
+## Acknowledgements
+* https://github.com/irql-notlessorequal/intel-vaapi-driver
+* https://github.com/w8jcik/intel-vaapi-driver
+
 # License.
 
 ```
