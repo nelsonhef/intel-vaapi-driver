@@ -77,7 +77,7 @@ sudo apt install libdrm-dev libva-dev libx11-dev -y
 ## Build
 
 ```sh
-cd intel-vaapi-driver-src
+cd intel-vaapi-driver
 ./autogen.sh
 ./configure LIBVA_DRIVERS_PATH="$(pwd)/../intel-vaapi-driver"
 make install -j $(nproc)
