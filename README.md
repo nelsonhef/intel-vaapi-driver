@@ -67,7 +67,7 @@ git clone https://github.com/nelsonhef/intel-vaapi-driver.git
 ```
 ## Get dependencies
 
-For example in Ubuntu 24.04 or 22.04
+For example in Ubuntu 24.04
 
 ```sh
 sudo apt install build-essential pkgconf autoconf libtool -y
