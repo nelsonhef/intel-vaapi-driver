@@ -1162,7 +1162,7 @@ static inline bool expose_frame_level_decoding(struct i965_driver_data *const i9
 	if (!i965->codec_info->supports_short_slice_dec)
 		return false;
 
-	return profile == VAProfileH264Baseline || profile == VAProfileH264ConstrainedBaseline
+	return profile == VAProfileH264ConstrainedBaseline
 		|| profile == VAProfileH264Main || profile == VAProfileH264High;
 }
 
@@ -2157,15 +2157,9 @@ i965_CreateSurfaces2(
 		case VA_RT_FORMAT_YUV444:
 		case VA_RT_FORMAT_YUV411:
 		case VA_RT_FORMAT_YUV400:
+		case VA_RT_FORMAT_YUV420_10BPP:
 		case VA_RT_FORMAT_RGB32:
 			break;
-
-		case VA_RT_FORMAT_YUV420_10BPP:
-			/**
-			 * Only allow this format if we support it.
-			 */
-			if (i965->codec_info->has_vpp_p010)
-				break;
 
 		default:
 		{
@@ -2367,7 +2361,6 @@ i965_QueryImageFormats(VADriverContextP ctx,
 	if (!ctx)
 		return VA_STATUS_ERROR_INVALID_CONTEXT;
 
-	struct i965_driver_data *i965 = i965_driver_data(ctx);
 	int n, idx = 0;
 
 	for (n = 0; i965_image_formats_map[n].va_format.fourcc != 0; n++)
