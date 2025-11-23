@@ -36,7 +36,7 @@
 # include "i965_output_x11.h"
 #endif
 
-#ifdef HAVE_VA_WAYLAND
+#ifdef HAVE_VA_WAYLAND_DRM
 # include "i965_output_wayland.h"
 #endif
 
@@ -285,17 +285,7 @@ i965_image_formats_map[I965_MAX_IMAGE_FORMATS + 1] = {
 	{
 		/* [31:0] A:R:G:B 8:8:8:8 little endian */
 		I965_SURFACETYPE_RGBA,
-		{ VA_FOURCC_BGRA, VA_LSB_FIRST, 32, 32, 0x00ff0000, 0x0000ff00, 0x000000ff,  0xff000000 }
-	},
-	{
-		/* [31:0] X:B:G:R 8:8:8:8 little endian */
-		I965_SURFACETYPE_RGBA,
-		{ VA_FOURCC_RGBX, VA_LSB_FIRST, 32, 24, 0x000000ff, 0x0000ff00, 0x00ff0000 }
-	},
-	{
-		/* [31:0] X:R:G:B 8:8:8:8 little endian */
-		I965_SURFACETYPE_RGBA,
-		{ VA_FOURCC_BGRX, VA_LSB_FIRST, 32, 24, 0x00ff0000, 0x0000ff00, 0x000000ff }
+		{ VA_FOURCC_BGRA, VA_LSB_FIRST, 32, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 }
 	},
 	{
 		/* [31:0] A:B:G:R 8:8:8:8 little endian */
@@ -303,10 +293,15 @@ i965_image_formats_map[I965_MAX_IMAGE_FORMATS + 1] = {
 		{ VA_FOURCC_RGBA, VA_LSB_FIRST, 32, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000 }
 	},
 	{
-		/* [31:0] B:G:R:A 8:8:8:8 little endian */
+		/* [31:0] X:R:G:B 8:8:8:8 little endian */
 		I965_SURFACETYPE_RGBA,
-		{ VA_FOURCC_ARGB, VA_LSB_FIRST, 32, 32, 0x0000ff00, 0x00ff0000, 0xff000000, 0x000000ff }
+		{ VA_FOURCC_BGRX, VA_LSB_FIRST, 32, 24, 0x00ff0000, 0x0000ff00, 0x000000ff, 0 }
 	},
+	{
+		/* [31:0] X:B:G:R 8:8:8:8 little endian */
+		I965_SURFACETYPE_RGBA,
+		{ VA_FOURCC_RGBX, VA_LSB_FIRST, 32, 24, 0x000000ff, 0x0000ff00, 0x00ff0000, 0 }
+	}
 };
 
 /* List of supported subpicture formats */
@@ -5257,18 +5252,14 @@ VAStatus i965_DeriveImage(VADriverContextP ctx,
 			image->format.green_mask = 0x0000ff00;
 			image->format.blue_mask = 0x00ff0000;
 			break;
+
 		case VA_FOURCC_BGRA:
 		case VA_FOURCC_BGRX:
+		case VA_FOURCC_ARGB:
 			image->format.red_mask = 0x00ff0000;
 			image->format.green_mask = 0x0000ff00;
 			image->format.blue_mask = 0x000000ff;
-			break;
-
-		case VA_FOURCC_ARGB:
-			image->format.red_mask = 0x0000ff00;
-			image->format.green_mask = 0x00ff0000;
-			image->format.blue_mask = 0xff000000;
-			break;		
+			break;	
 
 		default:
 			goto error;
@@ -5276,21 +5267,17 @@ VAStatus i965_DeriveImage(VADriverContextP ctx,
 
 		switch (image->format.fourcc)
 		{
-
 		case VA_FOURCC_RGBA:
 		case VA_FOURCC_BGRA:
+		case VA_FOURCC_ARGB:
 			image->format.alpha_mask = 0xff000000;
 			image->format.depth = 32;
 			break;
+
 		case VA_FOURCC_RGBX:
 		case VA_FOURCC_BGRX:
 			image->format.alpha_mask = 0x00000000;
 			image->format.depth = 24;
-			break;
-
-		case VA_FOURCC_ARGB:
-			image->format.alpha_mask = 0x000000ff;
-			image->format.depth = 32;
 			break;
 
 		default:
@@ -5875,7 +5862,7 @@ i965_sw_putimage(VADriverContextP ctx,
 		/* Don't allow format mismatch */
 		if (obj_surface->fourcc != obj_image->image.format.fourcc)
 		{
-			fprintf(stderr, "i965_sw_putimage: Format mismatch, rejecting call. (surface: %#010x, image: %#010x)\r\n",
+			i965_log_error(ctx, "i965_sw_putimage: Format mismatch, rejecting call. (surface: %#010x, image: %#010x)\r\n",
 					obj_surface->fourcc, obj_image->image.format.fourcc);
 			return VA_STATUS_ERROR_INVALID_IMAGE_FORMAT;
 		}
@@ -6332,6 +6319,7 @@ i965_GetSurfaceAttributes(
 						case VA_FOURCC_BGRX:
 						case VA_FOURCC_RGBX:
 						case VA_FOURCC_RGBA:
+						case VA_FOURCC_ARGB:
 							break;
 						default:
 							attrib_list[i].value.value.i = 0;
@@ -6354,6 +6342,7 @@ i965_GetSurfaceAttributes(
 						case VA_FOURCC_BGRX:
 						case VA_FOURCC_RGBX:
 						case VA_FOURCC_RGBA:
+						case VA_FOURCC_ARGB:
 							break;
 						default:
 							attrib_list[i].value.value.i = 0;
@@ -7124,6 +7113,15 @@ void i965_log_error(VADriverContextP ctx, const char *format, ...)
 	va_end(vl);
 }
 
+void i965_log_error_nocb(const char *format, ...)
+{
+	va_list vl;
+
+	va_start(vl, format);
+	vfprintf(stderr, format, vl);
+	va_end(vl);
+}
+
 void i965_log_info(VADriverContextP ctx, const char *format, ...)
 {
 	va_list vl;
@@ -7149,7 +7147,7 @@ void i965_log_info(VADriverContextP ctx, const char *format, ...)
 
 void i965_log_debug(VADriverContextP ctx, const char *format, ...)
 {
-	if (!(g_intel_debug_option_flags & VA_INTEL_DEBUG_VERBOSE))
+	if (!(g_intel_debug_option_flags & INTEL_DEBUG_FLAGS_VERBOSE))
 		return;
 
 	va_list vl;
@@ -7276,7 +7274,7 @@ struct {
 		0,
 	},
 
-#ifdef HAVE_VA_WAYLAND
+#ifdef HAVE_VA_WAYLAND_DRM
 	{
 		i965_output_wayland_init,
 		i965_output_wayland_terminate,
@@ -7369,7 +7367,7 @@ i965_initialize_wrapper(VADriverContextP ctx, const char *driver_name)
 	vtable = calloc(1, sizeof(*vtable));
 
 	if (!wrapper_pdrvctx || !vtable) {
-		fprintf(stderr, "Failed to allocate memory for wrapper \n");
+		i965_log_error(ctx, "Failed to allocate memory for wrapper \n");
 		free(wrapper_pdrvctx);
 		free(vtable);
 		return VA_STATUS_ERROR_ALLOCATION_FAILED;
@@ -7390,61 +7388,63 @@ i965_initialize_wrapper(VADriverContextP ctx, const char *driver_name)
 
 		handle = dlopen(driver_path, RTLD_NOW | RTLD_GLOBAL | RTLD_NODELETE);
 		if (!handle) {
-			fprintf(stderr, "failed to open %s\n", driver_path);
+			i965_log_error_nocb("failed to open %s\n", driver_path);
 			driver_dir = strtok_r(NULL, ":", &saveptr);
 			continue;
 		}
-		{
-			VADriverInit init_func = NULL;
-			char init_func_s[256];
-			int i;
 
-			static const struct {
-				int major;
-				int minor;
-			} compatible_versions[] = {
-				{VA_MAJOR_VERSION, VA_MINOR_VERSION},
-				{1, 18},
-				{0, 37},
-				{0, 36},
-				{0, 35},
-				{0, 34},
-				{0, 33},
-				{0, 32},
-				{
-					-1,
-				}};
-			for (i = 0; compatible_versions[i].major >= 0; i++) {
-				snprintf(init_func_s, sizeof(init_func_s),
-						 "__vaDriverInit_%d_%d",
-						 compatible_versions[i].major,
-						 compatible_versions[i].minor);
-				init_func = (VADriverInit)dlsym(handle, init_func_s);
-				if (init_func) {
-					break;
-				}
+		VADriverInit init_func = NULL;
+		char init_func_s[256];
+		int i;
+
+		static const struct {
+			int major;
+			int minor;
+		} compatible_versions[] = {
+			{VA_MAJOR_VERSION, VA_MINOR_VERSION},
+			{1, 18},
+			{0, 37},
+			{0, 36},
+			{0, 35},
+			{0, 34},
+			{0, 33},
+			{0, 32},
+			{
+				-1,
 			}
-			if (compatible_versions[i].major < 0) {
-				dlclose(handle);
-				fprintf(stderr, "%s has no function %s\n",
-						driver_path, init_func_s);
-				driver_dir = strtok_r(NULL, ":", &saveptr);
-				continue;
+		};
+
+		for (i = 0; compatible_versions[i].major >= 0; i++) {
+			snprintf(init_func_s, sizeof(init_func_s),
+					 "__vaDriverInit_%d_%d",
+					 compatible_versions[i].major,
+					 compatible_versions[i].minor);
+			init_func = (VADriverInit)dlsym(handle, init_func_s);
+			if (init_func) {
+				break;
 			}
-
-			if (init_func)
-				va_status = (*init_func)(wrapper_pdrvctx);
-
-			if (va_status != VA_STATUS_SUCCESS) {
-				dlclose(handle);
-				fprintf(stderr, "%s init failed, got status %i.\n", driver_path, va_status);
-				driver_dir = strtok_r(NULL, ":", &saveptr);
-				continue;
-			}
-
-			wrapper_pdrvctx->handle = handle;
-			driver_loaded = true;
 		}
+
+		if (compatible_versions[i].major < 0) {
+			dlclose(handle);
+			i965_log_error_nocb("%s has no function %s\n",
+					driver_path, init_func_s);
+			driver_dir = strtok_r(NULL, ":", &saveptr);
+			continue;
+		}
+
+		if (init_func)
+			va_status = (*init_func)(wrapper_pdrvctx);
+
+		if (va_status != VA_STATUS_SUCCESS) {
+			dlclose(handle);
+			i965_log_error_nocb("%s init failed, got status %i.\n", driver_path, va_status);
+			driver_dir = strtok_r(NULL, ":", &saveptr);
+			continue;
+		}
+
+		wrapper_pdrvctx->handle = handle;
+		driver_loaded = true;
 	}
 
 	free(search_path);
@@ -7453,7 +7453,7 @@ i965_initialize_wrapper(VADriverContextP ctx, const char *driver_name)
 		i965->wrapper_pdrvctx = wrapper_pdrvctx;
 		return VA_STATUS_SUCCESS;
 	} else {
-		fprintf(stdout, "Not using %s%s\n", driver_name, DRIVER_EXTENSION);
+		i965_log_debug(ctx, "Not using %s%s\n", driver_name, DRIVER_EXTENSION);
 		free(vtable);
 		free(wrapper_pdrvctx);
 		return VA_STATUS_ERROR_OPERATION_FAILED;

@@ -1,6 +1,6 @@
 project(
   'intel-vaapi-driver', 'c',
-  version : '2.4.5.1',
+  version : '2.4.6.1',
   meson_version : '>= 0.43.0',
   default_options : [ 'warning_level=1',
                       'buildtype=debugoptimized' ])
@@ -72,12 +72,12 @@ if get_option('with_x11') != 'no'
   WITH_X11 = libva_x11_dep.found()
 endif
 
-WITH_WAYLAND = false
-if get_option('with_wayland') != 'no'
+WITH_WAYLAND_DRM = false
+if get_option('with_wayland_drm') != 'no'
   wayland_client_dep = dependency(
     'wayland-client',
     version : '>= 1.11.0',
-    required : get_option('with_wayland') == 'yes')
+    required : get_option('with_wayland_drm') == 'yes')
 
   if wayland_client_dep.found()
     prefix = wayland_client_dep.get_pkgconfig_variable('prefix')
@@ -87,16 +87,29 @@ if get_option('with_wayland') != 'no'
   endif
 
   wl_scanner = find_program('wayland-scanner', wayland_scanner,
-			    required : get_option('with_wayland') == 'yes')
+			    required : get_option('with_wayland_drm') == 'yes')
 
   libva_wayland_dep = dependency(
     'libva-wayland',
     version : libva_version,
-    required : get_option('with_wayland') == 'yes')
+    required : get_option('with_wayland_drm') == 'yes')
 
-  WITH_WAYLAND = (wayland_client_dep.found()
+  # Don't build the wl_drm backend if we're using a
+  # new enough version of libva with dma-buf support.
+  if get_option('with_wayland_drm') == 'auto'
+    libva_modern_dep = dependency('libva',
+      version : '>= 1.22.0',
+      fallback : [ 'libva', 'libva_dep' ])
+
+    WITH_WAYLAND_DRM = (wayland_client_dep.found()
+		  and wl_scanner.found()
+		  and libva_wayland_dep.found()
+      and not libva_modern_dep.found())
+  else
+    WITH_WAYLAND_DRM = (wayland_client_dep.found()
 		  and wl_scanner.found()
 		  and libva_wayland_dep.found())
+  endif
 endif
 
 subdir('src')
