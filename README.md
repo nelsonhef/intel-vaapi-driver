@@ -72,12 +72,11 @@ sudo apt install build-essential pkgconf autoconf libtool -y
 sudo apt install libdrm-dev libva-dev libx11-dev -y
 ```
 
-## Build
+## Build release optimized version
 
 ```sh
 cd intel-vaapi-driver
-./autogen.sh
-./configure LIBVA_DRIVERS_PATH="$(pwd)/../intel-vaapi-driver"
+./autogen.sh LIBVA_DRIVERS_PATH="$(pwd)/../intel-vaapi-driver" CFLAGS="-O3 -DNDEBUG"
 make install -j $(nproc)
 ```
 
